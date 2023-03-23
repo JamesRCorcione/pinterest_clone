@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 const LoginSignup = ({ setOpenLogin }:any) => {
     const classes = useStyle()
     const dispatch = useDispatch<AppDispatch>();
-    const [form, setForm] = useState<IUser>({ userName: '', email: '', password: '', birthday: new Date() })
+    const [form, setForm] = useState<IUser>({ userName: '', email: '', password: '', image: '', birthday: new Date() })
     const [open, setOpen] = useState<boolean>(true)
     const [switchLogin, setSwitchLogin] = useState<boolean>(true)
     const [swithSignup, setSwithSignup] = useState<boolean>(true)
@@ -29,6 +29,7 @@ const LoginSignup = ({ setOpenLogin }:any) => {
           userName: '',
           email: '',
           password: '',
+          image: '',
           birthday: null,
         });
         
@@ -44,6 +45,7 @@ const LoginSignup = ({ setOpenLogin }:any) => {
           userName: '',
           email: '',
           password: '',
+          image: '',
           birthday: null,
         });
 

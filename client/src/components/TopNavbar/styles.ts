@@ -18,10 +18,10 @@ export default makeStyles((theme) => ({
   searchBar: {
     display: 'flex',
     width: '100%',
-    height: '75%',
-    marginLeft: 0,
-    marginRight: 0,
-    marginTop: 5, 
+    height: '65%',
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: 10, 
     borderRadius: 100, 
     border: '1px solid #D3D3D3', 
     backgroundColor: grey[100],
@@ -40,6 +40,5 @@ export default makeStyles((theme) => ({
     paddingLeft: 5,
     radius: 100,
     height: '100%',
-    backgroundColor: 'orange'
   }
 }))

@@ -7,20 +7,34 @@ declare module 'react-file-base64'
 
 //Users
 interface IUser {
-    _id?: mongoose.Types.ObjectId
-    userName: string
-    email: email
-    password: string
-    birthday: Date | null
-  }
-  
-  interface IUsers {
-    users: IUser[]
-    userStatus: string
-    userError: string
-  }
-  
-  interface ValidationErrors {
-    errorMessage: string
-    field_errors: Record<string, any>
-  }
+  _id?: mongoose.Types.ObjectId
+  userName: string
+  image: string
+  email: email
+  password: string
+  birthday: Date | null
+}
+
+interface IUsers {
+  users: IUser[]
+  userStatus: string
+  userError: string
+}
+
+interface ValidationErrors {
+  errorMessage: string
+  field_errors: Record<string, any>
+}
+
+interface IPin {
+  _id?: mongoose.Types.ObjectId,
+  postedBy: User,
+  title: String,
+  text: String
+  image: string,  
+  destination: String,
+}
+
+interface IPins {
+  pins: IPin[]
+}

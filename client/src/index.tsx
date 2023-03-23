@@ -5,9 +5,11 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
+import pinsReducer from './features/pinsSlice';
 
 const store = configureStore({
   reducer: {
+    pinsState: pinsReducer,
   },
 })
 

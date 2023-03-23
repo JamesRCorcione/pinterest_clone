@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 
 import users from './routes/users'
+import pins from './routes/pins'
 
 dotenv.config()
 
@@ -12,7 +13,7 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-//app.use('/api/posts', posts)
+app.use('/api/pins', pins)
 app.use('/api/users', users)
 
 app.get('/', (req, res) => {
