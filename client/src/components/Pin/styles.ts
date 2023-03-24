@@ -3,20 +3,30 @@ import { grey } from '@mui/material/colors';
 
 export default makeStyles((theme) => ({
   container: {
+    position: 'relative',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
-    minWidth: '250px',
-    maxWidth: '400px',
-    padding:10,
+    //minWidth: '250px',
+    //maxWidth: '250px',
+    margin:10,
+    borderRadius: 10,
+    height: 'auto',
+    width: 'auto',
     '&:hover': {
+      backgroundColor: 'blue',
+      opacity: 20
     }
   },
   image: {
-    maxWidth: '250px',
+    height: 'auto',
     overflow: 'hidden',
-    objectFit: 'cover'
+    objectFit: 'cover',
+    '&:hover': {
+      backgroundColor: 'blue',
+      opacity: 20,
+    }
   }
 }))
 

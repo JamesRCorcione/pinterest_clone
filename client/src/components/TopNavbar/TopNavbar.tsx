@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 const TopNavbar = () => {
   const classes = useStyles()
   const navigate = useNavigate()
+  const user = JSON.parse(localStorage.getItem('profile') || "false")
 
   const handleCreatePin = () => {
     navigate('/createPin')
@@ -36,7 +37,7 @@ const TopNavbar = () => {
           </Typography>
         </Button>
         </Box>
-        <Box className={classes.boxList}>
+        <Box onClick={() => navigate(`/today`)} className={classes.boxList}>
         <Button sx={{top: 10, borderRadius: 99, maxWidth: '70px', maxHeight: '50px', minWidth: '70px', minHeight: '50px'}}>
           <Typography variant='subtitle1' color='black'>
             Today
@@ -65,7 +66,7 @@ const TopNavbar = () => {
         <Button sx={{top: 12, borderRadius: 99, maxWidth: '50px', maxHeight: '50px', minWidth: '50px', minHeight: '50px'}}>
           <SmsRoundedIcon sx={{maxWidth: '25px', maxHeight: '25px', minWidth: '25px', minHeight: '25px', color: 'grey'}}  />
         </Button>
-        <Button sx={{top: 12, borderRadius: 99, maxWidth: '50px', maxHeight: '50px', minWidth: '50px', minHeight: '50px'}}>
+        <Button onClick={() => navigate(`/user-profile/:${user._id}`)}sx={{top: 12, borderRadius: 99, maxWidth: '50px', maxHeight: '50px', minWidth: '50px', minHeight: '50px'}}>
         <Avatar sx={{maxWidth: '25px', maxHeight: '25px', minWidth: '25px', minHeight: '25px'}} />
         </Button>
         <Button sx={{top: 22, borderRadius: 99, maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px'}}>

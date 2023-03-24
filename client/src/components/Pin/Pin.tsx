@@ -5,7 +5,9 @@ import { MdDownloadForOffline } from 'react-icons/md'
 import { AiTwotoneDelete } from 'react-icons/ai'
 import { BsFillArrowUpRightCircleFill } from 'react-icons/bs'
 import { fetchUser } from '../../utils/fetchUser'
-import { Box } from '@mui/material'
+import { Box, Button } from '@mui/material'
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import UploadIcon from '@mui/icons-material/Upload';
 
 import useStyles from './styles'
 
@@ -24,8 +26,8 @@ const Pin = ({ pin }:PinProps) => {
   const classes = useStyles()
   const { postedBy, image, _id, destination } = pin
 
-  const imageHeight = getImageDimensions(image)
-  console.log('image',image)
+  //const imageHeight = getImageDimensions(image).then(jData => console.log(jData))
+  //console.log('image',imageHeight)
 
   return (
     
@@ -40,32 +42,23 @@ const Pin = ({ pin }:PinProps) => {
         <img className={classes.image} alt="user-post" src={image} />
         {postHovered && (
           <Box 
-            style={{ height: '100%'}}
+            sx={{position: 'absolute', top:0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', height: '100%'}}
             >
-            <Box>
-              <Box>
-                <a
-                  href={`${image}?dl=`}
-                  download
-                  onClick={(e) => {
-                    e.stopPropagation()
-                  }}
-                >
-                  <MdDownloadForOffline />
-                </a>
-              </Box>
+            <Box sx={{display: 'flex', alignItems: 'center', justifyItems: 'justify-between'}}>
+              
               {(true) ? (
-                <button
-                  type="button" 
+                <Button sx={{position: 'absolute', top: 10, right: 10, borderRadius: 99, minHeight: 40, maxHeight: 40, minWidth: 70, maxWidth: 70, backgroundColor: 'red'}}
+                  variant="contained" 
                   onClick={(e) => {
                     e.stopPropagation()
                     //savePin(_id)
                   }}
                   >
                     Saved
-                </button>
+                </Button>
               ) : (
-                <button 
+                <Button sx={{position: 'absolute', top: 10, right: 10, borderRadius: 99, minHeight: 40, maxHeight: 40, minWidth: 70, maxWidth: 70, backgroundColor: 'red'}}
+                  variant="contained" 
                   onClick={(e) => {
                     e.stopPropagation()
                     //savePin(_id)
@@ -73,13 +66,51 @@ const Pin = ({ pin }:PinProps) => {
                   type="button" 
                   >
                     {savingPost ? 'Saving...' : 'Save'}
-                </button>
+                </Button>
                 
               )}
             </Box>
+
+
+            <Box>
+                <Button sx={{minHeight: 30, maxHeight: 30, minWidth: 120, maxWidth: 120, borderRadius: 99, position: 'absolute', bottom: 15, left: 10, backgroundColor: 'grey'}}
+                  href={`${destination}`}
+                  variant='contained'
+                  onClick={(e) => {
+                    e.stopPropagation()
+                  }}
+                >
+                  {destination}
+                </Button>
+              </Box>
+
+              <Box>
+                <Button sx={{minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30, backgroundColor: 'grey', borderRadius: 99, position: 'absolute', bottom: 15, right: 60, }}
+                  href={`${image}?dl=`}
+                  download
+                  onClick={(e) => {
+                    e.stopPropagation()
+                  }}
+                >
+                  <UploadIcon />
+                </Button>
+            </Box>
+
+            <Box>
+                <Button sx={{minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30, backgroundColor: 'grey', borderRadius: 99, position: 'absolute', bottom: 15, right: 15}}
+                  href={`${image}?dl=`}
+                  download
+                  onClick={(e) => {
+                    e.stopPropagation()
+                  }}
+                >
+                  <MoreHorizIcon />
+                </Button>
+            </Box>
+
             <Box>
                  
-                  {postedBy?._id === user?.sub && (                    
+                  {(false) && (                    
                     <button
                       type="button"
                       onClick={(e) => {

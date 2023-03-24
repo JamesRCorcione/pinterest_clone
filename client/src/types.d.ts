@@ -38,3 +38,7 @@ interface IPin {
 interface IPins {
   pins: IPin[]
 }
+
+interface PinProps {
+  pin: IPin
+}

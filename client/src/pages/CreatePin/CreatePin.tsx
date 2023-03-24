@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { categories } from '../../utils/data'
 import { uuid } from 'uuidv4'
-import Spinner from '../Spinner/Spinner'
+import Spinner from '../../components/Spinner/Spinner'
 
 import { createPin } from '../../features/pinsSlice'
 import { SetMealOutlined } from '@mui/icons-material'
@@ -25,6 +25,8 @@ const CreatePin = ({user}:CreatePinProps) => {
 
     const handlePinSave = (e:React.FormEvent) => {
       e.preventDefault()
+
+      
       dispatch(createPin(pin))
       setPin({ title: '', text: '', postedBy: user?._id, image: '', destination: '' })
       navigate('/')
