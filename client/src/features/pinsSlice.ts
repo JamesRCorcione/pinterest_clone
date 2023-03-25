@@ -28,7 +28,6 @@ export const createPin = createAsyncThunk(
   async (pin: IPin, { rejectWithValue }) => {
     try {
       const response = await axios.post(baseURL + 'pins', pin)
-      console.log(response.data,'response  creat')
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -46,7 +45,6 @@ export const getPins = createAsyncThunk(
   async (page: any = null, { rejectWithValue }) => {
     try {
       const response = await axios.get(baseURL + 'pins')
-      console.log(response.data,'response slice')
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access

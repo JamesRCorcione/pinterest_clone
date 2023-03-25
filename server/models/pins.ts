@@ -1,7 +1,11 @@
 import mongoose from 'mongoose'
 
 const pinSchema = new mongoose.Schema({
-    postedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    postedBy: { 
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        userName: { type: String },
+        image: { type: String },        
+    },
     title: { type: String },
     text: { type: String },
     image: { type: String, required: true},  

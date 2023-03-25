@@ -15,7 +15,6 @@ const Feed = () => {
   const { pins } = pinsState
   const dispatch = useDispatch<AppDispatch>()
   const { categoryId } = useParams()
-  console.log('pins',pins)
 
   useEffect(() => {
     dispatch(getPins(null))
@@ -47,7 +46,6 @@ const Feed = () => {
 
   if(!pins?.length) return <h2>No Pins Available</h2>
 
-  console.log('pins', pins)
 
   return (
     <div>

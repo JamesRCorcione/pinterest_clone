@@ -1,4 +1,4 @@
-import { Box, Button, Card, Paper, styled, TextField, Typography, Link, Divider, IconButton } from '@mui/material'
+import { Box, Button, Card, Paper, styled, TextField, Typography, Link, Divider, IconButton, useEventCallback } from '@mui/material'
 import { useDispatch } from 'react-redux'
 import React, { useState } from 'react'
 import Dialog from '@mui/material/Dialog';
@@ -13,7 +13,8 @@ import { useNavigate } from 'react-router-dom';
 const LoginSignup = ({ setOpenLogin }:any) => {
     const classes = useStyle()
     const dispatch = useDispatch<AppDispatch>();
-    const [form, setForm] = useState<IUser>({ userName: '', email: '', password: '', image: '', birthday: new Date() })
+    const navigate = useNavigate()
+    const [form, setForm] = useState<IUser>({ userName: '', email: '', password: '', image: '', birthday: new Date(), saves: [] })
     const [open, setOpen] = useState<boolean>(true)
     const [switchLogin, setSwitchLogin] = useState<boolean>(true)
     const [swithSignup, setSwithSignup] = useState<boolean>(true)
@@ -21,7 +22,6 @@ const LoginSignup = ({ setOpenLogin }:any) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(form)
 
         dispatch(SignUp(form));   
 
@@ -31,6 +31,7 @@ const LoginSignup = ({ setOpenLogin }:any) => {
           password: '',
           image: '',
           birthday: null,
+          saves: []
         });
         
         handleExit()
@@ -47,14 +48,18 @@ const LoginSignup = ({ setOpenLogin }:any) => {
           password: '',
           image: '',
           birthday: null,
+          saves: []
         });
 
         handleExit()
+        
     };  
 
     const handleExit = () => {
         setOpen((open) => !open)
         setOpenLogin((openLogin:boolean) => !openLogin)
+        navigate('/')
+        window.location.reload();
     }
 
     const handleLoginSwitch = () => {

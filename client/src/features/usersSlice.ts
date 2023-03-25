@@ -59,6 +59,34 @@ export const SignIn = createAsyncThunk(
   }
 )
 
+export const GetUserById = createAsyncThunk (
+    'users',
+    async (id: any = null, { rejectWithValue }) => {
+      try {
+        const response = await axios.get(baseURL + `users/${id.userId}`)
+        return response.data
+      } catch (err: any) {
+        let error: AxiosError<ValidationErrors> = err // cast the error for access
+          throw error 
+      }
+    }
+)
+
+export const SavePin = createAsyncThunk (
+  'users',
+  async ({id, pin}:SavePinProps, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(baseURL + `users/${id}`, pin)
+      localStorage.setItem('profile', JSON.stringify({ ...response.data }))
+      return response.data
+    } catch (err: any) {
+      let error: AxiosError<ValidationErrors> = err // cast the error for access
+      console.log(error)      
+        throw error 
+    }
+  }
+)
+
 export const Logout = createAsyncThunk(
   'users',
   async () => {
@@ -83,6 +111,15 @@ export const Logout = createAsyncThunk(
         .addCase(SignIn.fulfilled, (state, action) => {
           return { ...state, users: [action.payload, ...state.users], userStatus: 'success', userError: '' }
         })    
+        .addCase(GetUserById.fulfilled, (state, action) => {
+          return { ...state, user: action.payload, pinStatus: 'success', pinError: '' }
+        })
+        .addCase(SavePin.fulfilled, (state, action) => {
+          const updatedUsers = state.users.map((user) =>
+        user._id === action.payload._id ? action.payload : user
+        )
+        return { ...state, users: updatedUsers, pinStatus: 'success', pinError: '' }
+        }) 
         .addMatcher(
           isRejectedAction,
           // `action` will be inferred as a RejectedAction due to isRejectedAction being defined as a type guard

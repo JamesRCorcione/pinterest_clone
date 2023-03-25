@@ -1,17 +1,20 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
 import { MdDownloadForOffline } from 'react-icons/md'
 import { AiTwotoneDelete } from 'react-icons/ai'
 import { BsFillArrowUpRightCircleFill } from 'react-icons/bs'
 import { fetchUser } from '../../utils/fetchUser'
-import { Box, Button } from '@mui/material'
+import { Avatar, Box, Button, Typography } from '@mui/material'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import UploadIcon from '@mui/icons-material/Upload';
 
 import useStyles from './styles'
 
 import { getImageDimensions } from '../../utils/getImageHeight'
+import { useDispatch, useSelector } from 'react-redux'
+import { SavePin } from '../../features/usersSlice'
+import userEvent from '@testing-library/user-event'
 
 
 interface PinProps {
@@ -19,19 +22,43 @@ interface PinProps {
 }
 
 const Pin = ({ pin }:PinProps) => {
+  let user = (JSON.parse(localStorage.getItem('profile') || "false"))
   const [postHovered, setPostHovered] = useState(false)
-  const [savingPost, setSavingPost] = useState(false)
+  let alreadySaved = user?.result.saves?.filter((save:any) => save?._id === pin?._id)
+  alreadySaved = alreadySaved?.length > 0
+  const [savingPost, setSavingPost] = useState(alreadySaved)
   const navigate = useNavigate();
-  const user =  fetchUser()
+  const dispatch = useDispatch<AppDispatch>()  
   const classes = useStyles()
   const { postedBy, image, _id, destination } = pin
 
+
+
   //const imageHeight = getImageDimensions(image).then(jData => console.log(jData))
   //console.log('image',imageHeight)
+  
 
-  return (
-    
 
+  console.log('already', alreadySaved?.length, user.result.saves.length === 0 )
+
+  const savePin = () => {
+    if (alreadySaved?.length === 0 || user.result.saves.length === 0) {
+      setSavingPost(true)
+
+      dispatch(SavePin({id: user._id, pin: pin}))
+        .then(() => {
+          //window.location.reload();
+          //etSavingPost(false);
+        })    
+      }
+  }
+
+  useEffect(() => {
+    user = (JSON.parse(localStorage.getItem('profile') || "false"))
+  }, [savePin])
+
+
+  return (  
     <Box>
       <Box
         onMouseEnter={() => setPostHovered(true)}
@@ -46,12 +73,12 @@ const Pin = ({ pin }:PinProps) => {
             >
             <Box sx={{display: 'flex', alignItems: 'center', justifyItems: 'justify-between'}}>
               
-              {(true) ? (
+              {savingPost ? (
                 <Button sx={{position: 'absolute', top: 10, right: 10, borderRadius: 99, minHeight: 40, maxHeight: 40, minWidth: 70, maxWidth: 70, backgroundColor: 'red'}}
                   variant="contained" 
                   onClick={(e) => {
                     e.stopPropagation()
-                    //savePin(_id)
+                    savePin()
                   }}
                   >
                     Saved
@@ -61,7 +88,7 @@ const Pin = ({ pin }:PinProps) => {
                   variant="contained" 
                   onClick={(e) => {
                     e.stopPropagation()
-                    //savePin(_id)
+                    savePin()
                   }}
                   type="button" 
                   >
@@ -127,13 +154,21 @@ const Pin = ({ pin }:PinProps) => {
         )}
         </Box>
         <Link
-          to={`user-profile/${postedBy?._id}`}
+          to={`user-profile/${postedBy?.userId}`}
         >
-          <img  
-            src={postedBy?.image}
-            alt="user-profile"
-          />
-          <p>{postedBy?.userName}</p>
+          <Box sx={{display: 'flex', paddingLeft: 3}}>
+            {postedBy?.image ?
+            <img  
+              src={postedBy?.image}
+              alt="user-profile"
+            />
+            :
+            <Avatar>{postedBy.userName.charAt(0)}</Avatar>
+            }
+            <Box sx={{marginLeft: 2, marginTop: 1}}>
+              <Typography sx={{boxShadow: 'none', textDecoration: 'none'}}>{postedBy?.userName}</Typography>
+              </Box>
+          </Box>
         </Link>
     </Box>
   )

@@ -31,7 +31,6 @@ export const createPin = async (req: Request, res: Response) => {
         const { title, text, postedBy, image, destination } = req.body
         const selectedFileURL = await cloudinary.uploader.upload(image)
 
-        console.log(selectedFileURL.secure_url)
 
         //let initComments = new Comments()         
         //initComments = await initComments.save()

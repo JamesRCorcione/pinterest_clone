@@ -13,6 +13,7 @@ interface IUser {
   email: email
   password: string
   birthday: Date | null
+  saves: IPin[]
 }
 
 interface IUsers {
@@ -28,7 +29,11 @@ interface ValidationErrors {
 
 interface IPin {
   _id?: mongoose.Types.ObjectId,
-  postedBy: User,
+  postedBy: {
+    userId: mongoose.Types.ObjectId
+    userName: String
+    image: null
+  },
   title: String,
   text: String
   image: string,  
@@ -40,5 +45,10 @@ interface IPins {
 }
 
 interface PinProps {
+  pin: IPin
+}
+
+interface SavePinProps {
+  id: mongoose.Types.ObjectId,
   pin: IPin
 }
