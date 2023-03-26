@@ -15,6 +15,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { AccountCircle } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { Logout } from '../../features/usersSlice';
+import { fetchUser } from '../../utils/fetchUser';
 
 
 interface MyToken {
@@ -27,7 +28,7 @@ const TopNavbar = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const dispatch = useDispatch<AppDispatch>()
-  const [user, setUser] = useState<any>(JSON.parse(localStorage.getItem('profile') || "false"))
+  const [user, setUser] = useState<any>(fetchUser())
 
   const [openMenu, setOpenMenu] = useState<boolean>()
   const [openChat, setOpenChat] = useState<boolean>()
@@ -36,20 +37,20 @@ const TopNavbar = () => {
   const logoutUser = () => {
     dispatch(Logout())
     setUser(null)
-    navigate('/landingPage')
     window.location.reload();
+    navigate('/landingPage')
+    
   }
 
   useEffect(() => {
       const token = user?.token
       if(token) {
-          const decodedToken = decode<MyToken>(token)      
-          
+          const decodedToken = decode<MyToken>(token)  
 
           if(decodedToken.exp * 1000 < new Date().getTime()) logoutUser()
       }        
 
-      setUser((JSON.parse(localStorage.getItem('profile') || "false")))
+      setUser(fetchUser())
   }, [location])
 
   const handleOpenMenu = () => {
@@ -122,7 +123,7 @@ const TopNavbar = () => {
         sx={{top: 12, borderRadius: 99, maxWidth: '50px', maxHeight: '50px', minWidth: '50px', minHeight: '50px'}}>
           <SmsRoundedIcon sx={{maxWidth: '25px', maxHeight: '25px', minWidth: '25px', minHeight: '25px', color: 'grey'}}  />
         </Button>
-        <Button onClick={() => navigate(`/user-profile/${user.result._id}`)}sx={{top: 12, borderRadius: 99, maxWidth: '50px', maxHeight: '50px', minWidth: '50px', minHeight: '50px'}}>
+        <Button onClick={() => navigate(`/user-profile/${user._id}`)}sx={{top: 12, borderRadius: 99, maxWidth: '50px', maxHeight: '50px', minWidth: '50px', minHeight: '50px'}}>
         <Avatar sx={{maxWidth: '25px', maxHeight: '25px', minWidth: '25px', minHeight: '25px'}} />
         </Button>
 
@@ -135,7 +136,7 @@ const TopNavbar = () => {
         {openMenu && 
           <Box sx={{position: 'absolute', top: 55, right: 10}}>
             <Box id='menu' sx={{height: 250, width: 200, borderRadius: 3, backgroundColor: 'white', boxShadow: 5}}>
-              <Button onClick={() => navigate(`/user-profile/${user.result._id}`)} sx={{paddingRight: 10, marginTop: 2, height: 50, width: '100%'}}>Profile</Button>
+              <Button onClick={() => navigate(`/user-profile/${user._id}`)} sx={{paddingRight: 10, marginTop: 2, height: 50, width: '100%'}}>Profile</Button>
               <Button onClick={logoutUser} sx={{paddingRight: 10, height: 50, width: '100%'}}>Logout</Button>
             </Box>
           </Box>

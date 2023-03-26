@@ -1,25 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
 import { Box, createTheme, ThemeProvider } from '@mui/material'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 import LandingPage from './pages/LandingPage/LandingPage';
-import Home from './pages/Home/Home'
 import TopNavbar from './components/TopNavbar/TopNavbar';
 import CreatePin from './pages/CreatePin/CreatePin';
 import Feed from './components/Feed/Feed';
 import Profile from './pages/Profile/Profile';
 import SuggestedFeeds from './pages/SuggestedFeeds/SuggestedFeeds';
 import PinDetails from './components/PinDetails/PinDetails';
-
-
+import Search from './components/Search/Search';
+import { fetchUser } from './utils/fetchUser';
 
 function App() {
-  const user = (JSON.parse(localStorage.getItem('profile') || "false"))
+  const user = fetchUser()
+  const [searchTerm, setSearchTerm] = useState<string>('')
 
-
+  
   return (    
     <>
     <BrowserRouter>
@@ -31,12 +32,15 @@ function App() {
       <Box sx={{width:'100%'}}>
         <TopNavbar />      
       <Routes>
-        <Route path='/landingPage' index element={<LandingPage />} />
-        <Route path='/*' index element={<Feed />} />
+        <Route path='/landinPage' index element={<LandingPage />} />
+        <Route path='/' index element={<Feed />} />
         <Route path='/today' index element={<SuggestedFeeds />} />
         <Route path='/createPin' index element={<CreatePin user={user} />} />
         <Route path="/pin-detail/:pinId" element={<PinDetails />} />
         <Route path='/user-profile/:userId' index element={<Profile  />} />    
+
+        <Route path="/category/:categoryId" element={<Feed />} />
+        <Route path="/search" element={<Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
       </Routes>    
       </Box>
     

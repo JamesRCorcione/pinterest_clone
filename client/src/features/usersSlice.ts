@@ -28,7 +28,7 @@ export const SignUp = createAsyncThunk(
   async (user: IUser, { rejectWithValue }) => {
     try {
       const response = await axios.post(baseURL + 'users/signup', user)
-      localStorage.setItem('profile', JSON.stringify({ ...response.data }))
+      localStorage.setItem('profile', JSON.stringify({ ...response.data.result }))
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -47,6 +47,7 @@ export const SignIn = createAsyncThunk(
     try {
       const response = await axios.post(baseURL + 'users/signin', user)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
+      console.log(response.data)
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -64,6 +65,7 @@ export const GetUserById = createAsyncThunk (
     async (id: any = null, { rejectWithValue }) => {
       try {
         const response = await axios.get(baseURL + `users/${id.userId}`)
+        console.log('response', response.data)
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -77,11 +79,11 @@ export const SavePin = createAsyncThunk (
   async ({id, pin}:SavePinProps, { rejectWithValue }) => {
     try {
       const response = await axios.put(baseURL + `users/${id}`, pin)
+      console.log('rsponse',response.data)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
-      return response.data
+      return response.data.saves
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
-      console.log(error)      
         throw error 
     }
   }
@@ -115,10 +117,10 @@ export const Logout = createAsyncThunk(
           return { ...state, user: action.payload, pinStatus: 'success', pinError: '' }
         })
         .addCase(SavePin.fulfilled, (state, action) => {
-          const updatedUsers = state.users.map((user) =>
-        user._id === action.payload._id ? action.payload : user
-        )
-        return { ...state, users: updatedUsers, pinStatus: 'success', pinError: '' }
+          const updatedUser = state.users.map((user) =>
+          user._id === action.payload._id ? action.payload : user
+          )
+        return { ...state, user: updatedUser, pinStatus: 'success', pinError: '' }
         }) 
         .addMatcher(
           isRejectedAction,

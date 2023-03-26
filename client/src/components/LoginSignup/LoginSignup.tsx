@@ -1,6 +1,6 @@
 import { Box, Button, Card, Paper, styled, TextField, Typography, Link, Divider, IconButton, useEventCallback } from '@mui/material'
 import { useDispatch } from 'react-redux'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Dialog from '@mui/material/Dialog';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -8,6 +8,7 @@ import { SignIn, SignUp } from '../../features/usersSlice'
 
 import useStyle from './styles'
 import { useNavigate } from 'react-router-dom';
+import { fetchUser } from '../../utils/fetchUser';
 
 
 const LoginSignup = ({ setOpenLogin }:any) => {
@@ -20,10 +21,11 @@ const LoginSignup = ({ setOpenLogin }:any) => {
     const [swithSignup, setSwithSignup] = useState<boolean>(true)
 
 
-    const handleSubmit = (e: React.FormEvent) => {
+
+    const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        dispatch(SignUp(form));   
+        await dispatch(SignUp(form));   
 
         setForm({
           userName: '',
@@ -33,14 +35,14 @@ const LoginSignup = ({ setOpenLogin }:any) => {
           birthday: null,
           saves: []
         });
-        
         handleExit()
     };  
 
-    const handleSignIn = (e: React.FormEvent) => {
+
+    const handleSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        dispatch(SignIn(form));   
+        await dispatch(SignIn(form));   
 
         setForm({
           userName: '',
@@ -50,16 +52,15 @@ const LoginSignup = ({ setOpenLogin }:any) => {
           birthday: null,
           saves: []
         });
-
-        handleExit()
-        
+        handleExit()        
     };  
 
     const handleExit = () => {
         setOpen((open) => !open)
         setOpenLogin((openLogin:boolean) => !openLogin)
-        navigate('/')
         window.location.reload();
+        navigate('/')
+        
     }
 
     const handleLoginSwitch = () => {
@@ -161,7 +162,7 @@ const LoginSignup = ({ setOpenLogin }:any) => {
 
                 
                 <Box className={classes.formContainer} sx={{marginTop: 40}}>
-                    <form autoComplete='off' noValidate onSubmit={handleSubmit} >  
+                    <form autoComplete='off' noValidate onSubmit={handleSignUp} >  
                         <TextField className={classes.inputTextSignupFinal} name="username" variant="outlined" label="Username" fullWidth onChange={(e) => setForm({ ...form, userName: e.target.value })} />
                         <TextField className={classes.inputTextSignupFinal} name="password" variant="outlined" label="Password" fullWidth onChange={(e) => setForm({ ...form, password: e.target.value })} />
 

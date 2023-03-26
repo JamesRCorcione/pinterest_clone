@@ -40,7 +40,6 @@ export const createPin = async (req: Request, res: Response) => {
         pin = await pin.save()
         res.send(pin)
       } catch (error) {
-        console.log(error)
         res.status(500).send(error)
       }
 }

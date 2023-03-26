@@ -1,4 +1,6 @@
 export const fetchUser = () => {
-    const userInfo = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user') || 'false') : localStorage.clear()
+    let userInfo = JSON.parse(localStorage.getItem('profile') || 'false')
+    if (userInfo?.result)
+        userInfo = userInfo.result
     return userInfo
 }

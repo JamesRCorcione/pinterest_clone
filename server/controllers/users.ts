@@ -24,8 +24,6 @@ export const signup = async (req: Request, res: Response) => {
 
       const token = jwt.sign( { userName: result.userName, id: result._id }, '72b75dee48278c05eeb945d6899d83d5', { expiresIn: "1h" } )
 
-      console.log(result)
-
       res.status(201).json({ result, token })
     } catch (error) {
       res.status(500).send(error)
@@ -59,8 +57,6 @@ export const getUser = async (req: Request, res: Response) => {
 
   try {
       const user = await User.findById(id)
-
-      console.log(user)
       
       res.status(200).json(user)
   } catch (error) {
@@ -74,9 +70,11 @@ export const savePin = async (req: Request, res: Response) => {
 
   try {
       const updatedUser = await User.findByIdAndUpdate(id,
-        {$push: {'saves': pin}}
+          {$push: {'saves': pin}},
+          { 'new': true },  
         )
 
+        console.log(updatedUser)
 
       res.status(200).json(updatedUser)
   } catch (error) {

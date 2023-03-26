@@ -22,40 +22,34 @@ interface PinProps {
 }
 
 const Pin = ({ pin }:PinProps) => {
-  let user = (JSON.parse(localStorage.getItem('profile') || "false"))
-  const [postHovered, setPostHovered] = useState(false)
-  let alreadySaved = user?.result.saves?.filter((save:any) => save?._id === pin?._id)
-  alreadySaved = alreadySaved?.length > 0
-  const [savingPost, setSavingPost] = useState(alreadySaved)
+  const user = fetchUser()
+  const [postHovered, setPostHovered] = useState(false)  
+  const [savingPost, setSavingPost] = useState(false)
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>()  
   const classes = useStyles()
   const { postedBy, image, _id, destination } = pin
-
-
-
-  //const imageHeight = getImageDimensions(image).then(jData => console.log(jData))
-  //console.log('image',imageHeight)
   
 
+  let alreadySaved = user?.saves?.filter((save:any) => save?._id === pin?._id)
+  alreadySaved = alreadySaved?.length > 0 ? alreadySaved : [];
 
-  console.log('already', alreadySaved?.length, user.result.saves.length === 0 )
+  console.log(user)
 
-  const savePin = () => {
-    if (alreadySaved?.length === 0 || user.result.saves.length === 0) {
-      setSavingPost(true)
-
-      dispatch(SavePin({id: user._id, pin: pin}))
-        .then(() => {
-          //window.location.reload();
-          //etSavingPost(false);
-        })    
-      }
+  const savePin = async () => {
+    if (alreadySaved.length === 0) {      
+      setSavingPost(true)   
+      await dispatch(SavePin({id: user._id, pin: pin}))
+      .then(() => {
+        //window.location.reload();
+        setSavingPost(false);
+      })
+      
+    }
+    else {
+      console.log('Already Saved')
+    }
   }
-
-  useEffect(() => {
-    user = (JSON.parse(localStorage.getItem('profile') || "false"))
-  }, [savePin])
 
 
   return (  
@@ -73,7 +67,7 @@ const Pin = ({ pin }:PinProps) => {
             >
             <Box sx={{display: 'flex', alignItems: 'center', justifyItems: 'justify-between'}}>
               
-              {savingPost ? (
+              {alreadySaved?.length !== 0 ? (
                 <Button sx={{position: 'absolute', top: 10, right: 10, borderRadius: 99, minHeight: 40, maxHeight: 40, minWidth: 70, maxWidth: 70, backgroundColor: 'red'}}
                   variant="contained" 
                   onClick={(e) => {
