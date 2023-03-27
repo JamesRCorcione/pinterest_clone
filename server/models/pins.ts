@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 
 const pinSchema = new mongoose.Schema({
+    creatorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     postedBy: { 
         userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         userName: { type: String },

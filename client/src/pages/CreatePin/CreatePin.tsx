@@ -14,13 +14,11 @@ import FileBase from 'react-file-base64'
 
 
 interface CreatePinProps {
-    user: {
-      result: IUser
-    }
+    user: IUser    
 }
 
 const CreatePin = ({user}:CreatePinProps) => {
-    const [pin, setPin] = useState({ title: '', text: '', postedBy: {userId: user?.result._id, userName: user?.result.userName, image: null}, image: '', destination: '' })
+    const [pin, setPin] = useState({ title: '', text: '', creatorId: user?._id, postedBy: {userId: user?._id, userName: user?.userName, image: null}, image: '', destination: '' })
     const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>()
 
@@ -29,7 +27,7 @@ const CreatePin = ({user}:CreatePinProps) => {
 
       
       dispatch(createPin(pin))
-      setPin({ title: '', text: '', postedBy: {userId: '', userName: '', image: null}, image: '', destination: '' })
+      setPin({ title: '', text: '', creatorId: user?._id, postedBy: {userId: '', userName: '', image: null}, image: '', destination: '' })
       navigate('/')
     }
 

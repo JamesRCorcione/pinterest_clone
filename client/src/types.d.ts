@@ -29,6 +29,7 @@ interface ValidationErrors {
 
 interface IPin {
   _id?: mongoose.Types.ObjectId,
+  creatorId: mongoose.Types.ObjectId
   postedBy: {
     userId: mongoose.Types.ObjectId
     userName: String

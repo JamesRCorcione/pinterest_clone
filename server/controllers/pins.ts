@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 import { v2 as cloudinary } from 'cloudinary'
 
 import Pin from '../models/pins'
+import mongoose from 'mongoose'
 
 dotenv.config()
 
@@ -28,14 +29,14 @@ export const createPin = async (req: Request, res: Response) => {
     
         //if (error) return res.status(400).send(error.details[0].message)
     
-        const { title, text, postedBy, image, destination } = req.body
+        const { title, text, creatorId, postedBy, image, destination } = req.body
         const selectedFileURL = await cloudinary.uploader.upload(image)
 
 
         //let initComments = new Comments()         
         //initComments = await initComments.save()
     
-        let pin = new Pin({ title, text, postedBy, image: selectedFileURL.secure_url, destination })
+        let pin = new Pin({ title, text, creatorId, postedBy, image: selectedFileURL.secure_url, destination })
     
         pin = await pin.save()
         res.send(pin)
@@ -46,22 +47,39 @@ export const createPin = async (req: Request, res: Response) => {
 
 //Retreive
 export const getPins = async (req: Request, res: Response) => {
-
     try {
-        const posts = await Pin.find().sort({ date: -1 })
-        res.send(posts)
+        const pins = await Pin.find().sort({ date: -1 })
+        res.send(pins)
       } catch (error) {
         res.status(500).send("Error: " + error)
       }
+}
+
+export const getPinsByCreator = async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  try {
+      const objectId = new mongoose.Types.ObjectId(id)
+
+      const createdPins = await Pin.aggregate([
+        {'$match': { 'creatorId': objectId}}
+      ]).exec()      
+
+
+      res.status(200).json(createdPins)
+  } catch (error) {
+    console.log('sdfgsdf')
+      res.status(404).json({ message: error })
+  }
 }
 
 export const getPin = async (req: Request, res: Response) => {
   const { id } = req.params
 
   try {
-      const post = await Pin.findById(id)
+      const pin = await Pin.findById(id)
       
-      res.status(200).json(post)
+      res.status(200).json(pin)
   } catch (error) {
       res.status(404).json({ message: error })
   }
@@ -104,3 +122,5 @@ export const deletePin = async (req: Request, res: Response) => {
 
   res.send(deletedPost)
 }
+
+

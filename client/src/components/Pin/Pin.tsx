@@ -34,7 +34,6 @@ const Pin = ({ pin }:PinProps) => {
   let alreadySaved = user?.saves?.filter((save:any) => save?._id === pin?._id)
   alreadySaved = alreadySaved?.length > 0 ? alreadySaved : [];
 
-  console.log(user)
 
   const savePin = async () => {
     if (alreadySaved.length === 0) {      
@@ -45,10 +44,7 @@ const Pin = ({ pin }:PinProps) => {
         setSavingPost(false);
       })
       
-    }
-    else {
-      console.log('Already Saved')
-    }
+    }   
   }
 
 

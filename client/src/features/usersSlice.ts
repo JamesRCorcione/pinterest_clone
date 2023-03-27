@@ -47,7 +47,6 @@ export const SignIn = createAsyncThunk(
     try {
       const response = await axios.post(baseURL + 'users/signin', user)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
-      console.log(response.data)
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -64,8 +63,7 @@ export const GetUserById = createAsyncThunk (
     'users',
     async (id: any = null, { rejectWithValue }) => {
       try {
-        const response = await axios.get(baseURL + `users/${id.userId}`)
-        console.log('response', response.data)
+        const response = await axios.get(baseURL + `users/${id}`)
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -79,7 +77,6 @@ export const SavePin = createAsyncThunk (
   async ({id, pin}:SavePinProps, { rejectWithValue }) => {
     try {
       const response = await axios.put(baseURL + `users/${id}`, pin)
-      console.log('rsponse',response.data)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data.saves
     } catch (err: any) {

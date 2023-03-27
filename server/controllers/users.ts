@@ -74,8 +74,6 @@ export const savePin = async (req: Request, res: Response) => {
           { 'new': true },  
         )
 
-        console.log(updatedUser)
-
       res.status(200).json(updatedUser)
   } catch (error) {
       res.status(404).json({ message: error })
