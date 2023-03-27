@@ -39,7 +39,7 @@ function App() {
         <Route path="/pin-detail/:pinId" element={<PinDetails />} />
         <Route path='/user-profile/:userId' index element={<Profile  />} />    
 
-        <Route path="/category/:categoryId" element={<Feed />} />
+        <Route path="/category/:category" element={<Feed />} />
         <Route path="/search" element={<Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
       </Routes>    
       </Box>

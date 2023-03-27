@@ -29,14 +29,14 @@ export const createPin = async (req: Request, res: Response) => {
     
         //if (error) return res.status(400).send(error.details[0].message)
     
-        const { title, text, creatorId, postedBy, image, destination } = req.body
+        const { title, text, category, creatorId, postedBy, image, destination } = req.body
         const selectedFileURL = await cloudinary.uploader.upload(image)
 
 
         //let initComments = new Comments()         
         //initComments = await initComments.save()
     
-        let pin = new Pin({ title, text, creatorId, postedBy, image: selectedFileURL.secure_url, destination })
+        let pin = new Pin({ title, text, category, creatorId, postedBy, image: selectedFileURL.secure_url, destination })
     
         pin = await pin.save()
         res.send(pin)
@@ -65,8 +65,24 @@ export const getPinsByCreator = async (req: Request, res: Response) => {
         {'$match': { 'creatorId': objectId}}
       ]).exec()      
 
-
       res.status(200).json(createdPins)
+  } catch (error) {
+    console.log('sdfgsdf')
+      res.status(404).json({ message: error })
+  }
+}
+
+export const getPinsByCategory = async (req: Request, res: Response) => {
+  const { category } = req.params
+
+  try {
+      const categoryPins = await Pin.aggregate([
+        {'$match': { 'category': category}}
+      ]).exec()      
+
+      console.log(category, categoryPins)
+
+      res.status(200).json(categoryPins)
   } catch (error) {
     console.log('sdfgsdf')
       res.status(404).json({ message: error })

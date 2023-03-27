@@ -57,6 +57,24 @@ export const getPins = createAsyncThunk(
   }
 )
 
+export const getPinsByCategory = createAsyncThunk(
+  'pins/category/getPinsByCategory',
+  async (category: any = null, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(baseURL + `pins/category/${category}`)
+      console.log('response', response.data)
+      return response.data
+    } catch (err: any) {
+      let error: AxiosError<ValidationErrors> = err // cast the error for access
+      if (!error.response) {
+        throw err
+      }
+      // We got validation errors, let's return those so we can reference in our component and set form errors
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
 export const getPinsByCreator = createAsyncThunk(
   'pins/user-created-pins/getPinByCreator',
   async (id: any = null, { rejectWithValue }) => {
@@ -162,7 +180,9 @@ const pinSlice = createSlice({
         return { ...state, pins: currentPins, pinStatus: 'success', pinError: '' }
       })
       .addCase(getPinsByCreator.fulfilled, (state, action) => {
-        console.log('hi2',action.payload)
+        return { ...state, pins: action.payload, pinStatus: 'success', pinError: '' }
+      })
+      .addCase(getPinsByCategory.fulfilled, (state, action) => {
         return { ...state, pins: action.payload, pinStatus: 'success', pinError: '' }
       })
       .addMatcher(

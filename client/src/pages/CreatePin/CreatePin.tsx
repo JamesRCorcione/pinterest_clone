@@ -18,7 +18,7 @@ interface CreatePinProps {
 
 
 const CreatePin = ({user}:CreatePinProps) => {
-    const [pin, setPin] = useState({ title: '', text: '', creatorId: user?._id, postedBy: {userId: user?._id, userName: user?.userName, image: null}, image: '', destination: '' })
+    const [pin, setPin] = useState({ title: '', text: '', category: '', creatorId: user?._id, postedBy: {userId: user?._id, userName: user?.userName, image: null}, image: '', destination: '' })
     const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>()
 
@@ -27,7 +27,7 @@ const CreatePin = ({user}:CreatePinProps) => {
 
       
       dispatch(createPin(pin))
-      setPin({ title: '', text: '', creatorId: user?._id, postedBy: {userId: '', userName: '', image: null}, image: '', destination: '' })
+      setPin({ title: '', text: '', category: '', creatorId: user?._id, postedBy: {userId: '', userName: '', image: null}, image: '', destination: '' })
       navigate('/')
     }
 
@@ -60,7 +60,7 @@ const CreatePin = ({user}:CreatePinProps) => {
         <TextField
           sx={{backgroundColor: 'white'}}
           type="text"
-          placeholder="Enter Post Text"
+          placeholder="Enter Pin Text"
           fullWidth
           multiline
           rows={5}
@@ -73,11 +73,29 @@ const CreatePin = ({user}:CreatePinProps) => {
           sx={{backgroundColor: 'white'}}
           name="tags" 
           variant="outlined" 
-          label="Tags (coma separated)" 
+          label="External Website Link" 
           fullWidth 
           value={pin.destination} 
           onChange={(e:any) => setPin({ ...pin, destination: e.target.value })}
-         />        
+         />     
+
+        <div className="flex flex-col">
+          <div>
+            <p className="mb-2 font-semibold text-lg sm:text-xl">Choose Pin Category</p>
+            <select
+              onChange={(e) => setPin({ ...pin, category: e.target.value })}
+              className="outline-none w-4/5 text-base border-b-2 border-gray-200 p-2 rounded-md cursor-pointer"
+              >
+                <option value="other" className="bg-white">Select Category</option>
+                {categories.map((category) => (
+                  <option className="text-base border-0 outline-none capitalize bg-white text-black" value={category.name}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+          </div>
+        </div>
+
         <div><FileBase type="file" multiple={false} onDone={({ base64 }:any) => setPin({ ...pin, image: base64 })} /></div>
     
         <Button
