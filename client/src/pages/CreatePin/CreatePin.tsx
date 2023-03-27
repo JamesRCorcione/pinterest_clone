@@ -4,7 +4,6 @@ import { AiOutlineCloudUpload } from 'react-icons/ai'
 import { MdDelete } from 'react-icons/md'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { categories } from '../../utils/data'
 import { uuid } from 'uuidv4'
 import Spinner from '../../components/Spinner/Spinner'
 
@@ -16,6 +15,7 @@ import FileBase from 'react-file-base64'
 interface CreatePinProps {
     user: IUser    
 }
+
 
 const CreatePin = ({user}:CreatePinProps) => {
     const [pin, setPin] = useState({ title: '', text: '', creatorId: user?._id, postedBy: {userId: user?._id, userName: user?.userName, image: null}, image: '', destination: '' })
@@ -30,6 +30,18 @@ const CreatePin = ({user}:CreatePinProps) => {
       setPin({ title: '', text: '', creatorId: user?._id, postedBy: {userId: '', userName: '', image: null}, image: '', destination: '' })
       navigate('/')
     }
+
+
+    const categories = [
+      {
+        name: 'nature',
+        image: 'https://res.cloudinary.com/dspevi97j/image/upload/v1679943182/b9ubgbulndo4txnvd9cu.jpg',
+      },
+      {
+        name: 'space',
+        image: 'https://res.cloudinary.com/dspevi97j/image/upload/v1679952013/mp1x32v4zpv15hyqovgq.jpg',
+      },
+    ]
 
 
   return (

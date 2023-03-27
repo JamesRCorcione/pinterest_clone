@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { getPins } from '../../features/pinsSlice'
 
-import { feedQuery, searchQuery } from '../../utils/data'
 import MasonryLayout from '../MasonryLayout/MasonryLayout'
 import Spinner from '../Spinner/Spinner'
 

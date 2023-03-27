@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
 import MasonryLayout from '../MasonryLayout/MasonryLayout'
-import { feedQuery, searchQuery } from '../../utils/data'
 import Spinner from '../Spinner/Spinner'
 
 const Search = ({ searchTerm }:any) => {
@@ -11,7 +10,7 @@ const Search = ({ searchTerm }:any) => {
   useEffect(() => {
     if (searchTerm !== '') {
       setLoading(true)
-      const query = searchQuery(searchTerm.toLowerCase())      
+      //const query = searchQuery(searchTerm.toLowerCase())      
     } else {      
     }
   }, [searchTerm])
