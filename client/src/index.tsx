@@ -6,10 +6,12 @@ import reportWebVitals from './reportWebVitals';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import pinsReducer from './features/pinsSlice';
+import commentsReducer from './features/commentsSlice';
 
 const store = configureStore({
   reducer: {
     pinsState: pinsReducer,
+    commentsState: commentsReducer,
   },
 })
 

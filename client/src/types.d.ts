@@ -53,3 +53,19 @@ interface SavePinProps {
   id: mongoose.Types.ObjectId,
   pin: IPin
 }
+
+interface IComment {
+  _id?: mongoose.Types.ObjectId,
+  pinId: mongoose.Types.ObjectId
+  parentId: mongoose.Types.ObjectId
+  userName: String
+  userImage: String
+  date: Date
+  text: String
+  hearts: Number
+  replies: IComment[]
+}
+
+interface IComments {
+  comments: IComment[]
+}
