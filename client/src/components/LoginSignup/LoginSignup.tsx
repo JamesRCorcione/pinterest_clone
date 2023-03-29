@@ -11,13 +11,13 @@ import { useNavigate } from 'react-router-dom';
 import { fetchUser } from '../../utils/fetchUser';
 
 
-const LoginSignup = ({ setOpenLogin }:any) => {
+const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
     const classes = useStyle()
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate()
     const [form, setForm] = useState<IUser>({ userName: '', email: '', password: '', image: '', birthday: new Date(), saves: [] })
     const [open, setOpen] = useState<boolean>(true)
-    const [switchLogin, setSwitchLogin] = useState<boolean>(true)
+    const [switchLogin, setSwitchLogin] = useState<boolean>(isSignUp)
     const [swithSignup, setSwithSignup] = useState<boolean>(true)
 
 

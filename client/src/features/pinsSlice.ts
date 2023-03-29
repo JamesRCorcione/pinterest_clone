@@ -22,12 +22,24 @@ function isPendingAction(action: Action) {
   return action.type.endsWith('pending')
 }
 
+
+const API = axios.create({ baseURL: 'http://localhost:8080/api/' })
+
+API.interceptors.request.use((req) => {
+  if (localStorage.getItem('profile')) {
+    req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem('profile')).token}`
+  }
+
+  return req
+})
+
+
 export const createPin = createAsyncThunk(
   'pins/createPin',
   
   async (pin: IPin, { rejectWithValue }) => {
     try {
-      const response = await axios.post(baseURL + 'pins', pin)
+      const response = await API.post(baseURL + 'pins', pin)
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -151,6 +163,24 @@ export const deletePin = createAsyncThunk(
 )
 
 
+export const searchPins = createAsyncThunk(
+  'pins/searchPins',
+  async (searchTerm: any, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(baseURL + 'pins/search/'+ searchTerm)
+      console.log('resp')
+      return response.data
+    } catch (err: any) {
+      let error: AxiosError<ValidationErrors> = err // cast the error for access
+      if (!error.response) {
+        throw err
+      }
+      // We got validation errors, let's return those so we can reference in our component and set form errors
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
 
 const pinSlice = createSlice({
   name: 'pins',
@@ -183,6 +213,9 @@ const pinSlice = createSlice({
         return { ...state, pins: action.payload, pinStatus: 'success', pinError: '' }
       })
       .addCase(getPinsByCategory.fulfilled, (state, action) => {
+        return { ...state, pins: action.payload, pinStatus: 'success', pinError: '' }
+      })
+      .addCase(searchPins.fulfilled, (state, action) => {
         return { ...state, pins: action.payload, pinStatus: 'success', pinError: '' }
       })
       .addMatcher(

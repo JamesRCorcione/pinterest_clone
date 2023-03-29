@@ -16,7 +16,6 @@ export default makeStyles((theme) => ({
     },      
   },
   searchBar: {
-    display: 'flex',
     width: '100%',
     height: '65%',
     marginLeft: 5,

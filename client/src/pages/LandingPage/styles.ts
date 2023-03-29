@@ -11,9 +11,9 @@ export default makeStyles((theme) => ({
   one: {
     height: '100vh',
     display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'blue',
+    flexDirection: 'column',
+    //justifyContent: 'center',
+    //alignItems: 'center',
     scrollSnapAlign: 'start'
   },
   two: {

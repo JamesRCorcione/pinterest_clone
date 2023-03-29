@@ -1,4 +1,4 @@
-import { Box, Button, IconButton } from '@mui/material'
+import { Box, Button, IconButton, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import useStyles from './styles'
 import decode from 'jwt-decode'
@@ -21,38 +21,51 @@ const LandingPage = () => {
   let user = fetchUser()
   const location = useLocation()
   const [openLogin, setOpenLogin] = React.useState<boolean>(false);
+  const [isSignUp, setIsSignUp] = React.useState<boolean>(false);
 
 
-  const handleSignUp = () => {
+  const handleSignUp = (isSignUp:boolean) => {
+    setIsSignUp(isSignUp)
     setOpenLogin(() => true);
   }
   
   return (
     <Box>
       {openLogin &&
-          <LoginSignup setOpenLogin={setOpenLogin} />
-      }
-      
-      <Box sx={{ backgroundColor: 'white', zIndex: 2000, width: '100%', display: 'flex', flexDirection: 'row', position: 'fixed', top: 0}}>
-        <Box>
-          <IconButton disableFocusRipple disableRipple>
-            Pinterest
-          </IconButton>
-        </Box>
+          <LoginSignup isSignUp={isSignUp} setOpenLogin={setOpenLogin} />
+      }         
 
-        <Box sx={{position: 'absolute', top: 5, right: 10}}>
-          <Button>
-            Login
-          </Button>
-          <Button onClick={handleSignUp}>
-            Sign Up
-          </Button>
-        </Box>
-      </Box>
-
-      <Box className={classes.container}>
+      <Box className={classes.container}>        
         <section className={classes.one}>
-          <h1>First Page</h1>
+          
+          <Box sx={{display: 'flex', height: 50, width: '100%'}}>
+            <Box>
+              <IconButton disableFocusRipple disableRipple>
+                Pinterest
+              </IconButton>
+            </Box>
+
+            <Box sx={{display: 'flex', justifyContent: 'end', alignItems: 'end', width: '100%' }}>
+              <Button
+                variant='contained'
+                sx={{height: 40, borderRadius: 10, marginRight: 2}}
+                onClick={() => handleSignUp(true)}
+              >
+                <Typography sx={{textTransform: 'none', fontSize: 14, fontWeight: 'bold'}}>Log in</Typography>
+              </Button>
+              <Button 
+                variant='contained'
+                sx={{height: 40, borderRadius: 10, marginRight: 2}}
+                onClick={() => handleSignUp(false)}
+              >
+                <Typography sx={{textTransform: 'none', fontSize: 14, fontWeight: 'bold'}}>Sign up</Typography>
+              </Button>
+            </Box>
+          </Box>
+
+          <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <h1>First Page</h1>
+          </Box>
         </section>
         <section className={classes.two}>
           <h1>Second Page</h1>

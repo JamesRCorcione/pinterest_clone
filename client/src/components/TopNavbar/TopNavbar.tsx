@@ -16,6 +16,7 @@ import { AccountCircle } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { Logout } from '../../features/usersSlice';
 import { fetchUser } from '../../utils/fetchUser';
+import Search from '../Search/Search';
 
 
 interface MyToken {
@@ -29,6 +30,7 @@ const TopNavbar = () => {
   const location = useLocation()
   const dispatch = useDispatch<AppDispatch>()
   const [user, setUser] = useState<any>(fetchUser())
+  const [searchTerm, setSearchTerm] = useState<string>('')
 
   const [openMenu, setOpenMenu] = useState<boolean>()
   const [openChat, setOpenChat] = useState<boolean>()
@@ -69,12 +71,14 @@ const TopNavbar = () => {
     setOpenChat(false)
     
   }
+  const handleSearch = (e:any) => {
+    e.preventDefault();
+    navigate(`/search/${searchTerm}`)
+  }
 
   const notifications = document.getElementById('notifications');
   const chat = document.getElementById('chat');
   const menu = document.getElementById('menu');
-
-
 
 
 
@@ -110,8 +114,13 @@ const TopNavbar = () => {
       </Box>
 
       <Box className={classes.searchBar}>
-        <SearchIcon sx={{paddingTop: 1.5, marginLeft: 2, color: grey[600]}} />  
-        <Input placeholder='Search Pinterest' disableUnderline={true} sx={{ typography: 'subtitle2', width: '100%', marginTop: 0.5, marginLeft: 1, color: grey[600]}} />
+        <form onSubmit={(e) => handleSearch(e)}>
+          <SearchIcon sx={{paddingTop: 1.5, marginLeft: 2, color: grey[600]}} /> 
+          <Input 
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder='Search Pinterest' disableUnderline={true} sx={{position: 'abolute', bottom: 30, left: 40, typography: 'subtitle2', width: '100%', marginLeft: 1, color: grey[600]}} 
+          />
+        </form>
       </Box>
 
       <Box sx={{display:'flex', justifyContent:'end', height: '100%'}}>

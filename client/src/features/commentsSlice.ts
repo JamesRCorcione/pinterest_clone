@@ -80,7 +80,6 @@ export const createComment = createAsyncThunk(
     
     async ({pinId, commentId, text, userName, userImage}: CreateReplyProps, { rejectWithValue }) => {
       try {
-          console.log(pinId, commentId, text, userName, userImage)
         const response = await axios.post(baseURL + `comments/reply/${pinId}`, {text, commentId, userName, userImage})
         console.log('response')
         return response.data

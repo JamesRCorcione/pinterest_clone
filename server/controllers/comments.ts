@@ -10,8 +10,9 @@ import Comments from '../models/comments'
 //Comments
 //Retreive
 export const getComments = async (req: Request, res: Response) => {
+  const { id } = req.params
     try {
-        const comments = await Comments.find().sort({ date: -1 })
+        const comments = await Comments.find({pinId: id}).sort({ date: -1 })
   
         res.status(200).send(comments)
       } catch (error) {

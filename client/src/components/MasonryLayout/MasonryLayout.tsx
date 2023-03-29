@@ -6,9 +6,9 @@ import useStyles from './styles'
 
 const breakpointObj = {
   default: 3,
-  3000: 5,
+  3000: 6,
   2000: 5,
-  1200: 3,
+  1200: 4,
   1000: 2,
   500: 1,
 }

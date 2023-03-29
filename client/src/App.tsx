@@ -18,34 +18,33 @@ import { fetchUser } from './utils/fetchUser';
 
 function App() {
   const user = fetchUser()
-  const [searchTerm, setSearchTerm] = useState<string>('')
-
   
   return (    
     <>
-    <BrowserRouter>
-    {!user
-    ? 
-    <LandingPage />
-    :
-    
-      <Box sx={{width:'100%'}}>
-        <TopNavbar />      
-      <Routes>
-        <Route path='/landinPage' index element={<LandingPage />} />
-        <Route path='/' index element={<Feed />} />
-        <Route path='/today' index element={<SuggestedFeeds />} />
-        <Route path='/createPin' index element={<CreatePin user={user} />} />
-        <Route path="/pin-detail/:pinId" element={<PinDetails />} />
-        <Route path='/user-profile/:userId' index element={<Profile  />} />    
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_API_TOKEN!}>
+      <BrowserRouter>
+      {!user
+      ? 
+      <LandingPage />
+      :      
+        <Box sx={{width:'100%'}}>
+          <TopNavbar />
+        <Routes>
+          <Route path='/landinPage' index element={<LandingPage />} />
+          <Route path='/' index element={<Feed />} />
+          <Route path='/today' index element={<SuggestedFeeds />} />
+          <Route path='/createPin' index element={<CreatePin user={user} />} />
+          <Route path='/pin-detail/:pinId' element={<PinDetails />} />
+          <Route path='/user-profile/:userId' index element={<Profile  />} />    
 
-        <Route path="/category/:category" element={<Feed />} />
-        <Route path="/search" element={<Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />} />
-      </Routes>    
-      </Box>
-    
-    }
-    </BrowserRouter>
+          <Route path='/category/:category' element={<Feed />} />
+          <Route path='/search/:searchTerm' element={<Search />} />
+        </Routes>    
+        </Box>
+      
+      }
+      </BrowserRouter>
+    </GoogleOAuthProvider>
     </>
   );
 }

@@ -1,6 +1,12 @@
 // Infer the `RootState` and `AppDispatch` types from the store itself
 type RootState = ReturnType<typeof store.getState>
-type AppDispatch = typeof store.dispatch
+type AppDispatch = ThunkDispatch<RootState, any, AnyAction>
+type TypedThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  AnyAction
+>
 
 declare module 'react-file-base64'
 

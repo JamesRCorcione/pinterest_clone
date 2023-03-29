@@ -48,6 +48,7 @@ export const createPin = async (req: Request, res: Response) => {
 //Retreive
 export const getPins = async (req: Request, res: Response) => {
     try {
+        //Need to use .limit() on find to reduce load in...
         const pins = await Pin.find().sort({ date: -1 })
         res.send(pins)
       } catch (error) {
@@ -96,6 +97,24 @@ export const getPin = async (req: Request, res: Response) => {
       const pin = await Pin.findById(id)
       
       res.status(200).json(pin)
+  } catch (error) {
+      res.status(404).json({ message: error })
+  }
+}
+
+export const getSearchPins = async (req: Request, res: Response) => {
+  const { searchTerm } = req.params
+  try {
+      const pins = await Pin.find({
+        $or:[
+          {title: { "$regex": searchTerm, "$options": "i" }},
+          {text: { "$regex": searchTerm, "$options": "i" }},
+          {category: { "$regex": searchTerm, "$options": "i" }},
+          {destination: { "$regex": searchTerm, "$options": "i" }},
+          {'postedBy.userName': { "$regex": searchTerm, "$options": "i" }},
+      ]})
+      
+      res.status(200).json(pins)
   } catch (error) {
       res.status(404).json({ message: error })
   }
