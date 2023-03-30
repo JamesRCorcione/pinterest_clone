@@ -1,27 +1,38 @@
-import axios, { AxiosHeaders } from 'axios'
-import { NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
+import { Request, Response, NextFunction } from 'express'
+import dotenv from 'dotenv'
 
+dotenv.config()
+interface JwtPayload {
+        id: string
+}
+interface GoogleToken {
+    sub: string
+}
 
+//non-custom auth is just googleauth
 const auth = async (req: Request, res: Response, next: NextFunction) => {
-        console.log('iswhatitis')
+    console.log('working as intended... :)')
     try {
-        console.log(res)
-        console.log(req)
-        //const token = req.headers?.authorization.split(' ')[1]
-        //const isCustomAuth = token.lenth < 500
-//
-        //let decodedData
-//
-        //if (token && isCustomAuth) {
-        //    decodedData = jwt.verify(token, '72b75dee48278c05eeb945d6899d83d5')
-//
-        //    req.userId = decodedData?.id
-        //} else {
-        //    decodedData = jwt.decode(token)
-//
-        //    req.userId = decodedData?.sub
-        //}
+        const token = req.headers.authorization?.split(' ')[1] as string
+        const isCustomAuth = token.length < 500
+
+        console.log(token)
+
+        let decodedData
+        if (token && isCustomAuth) {
+
+            const secret = process.env.SECRET as string
+            decodedData = jwt.verify(token, secret) as JwtPayload
+
+            req.headers.userId = decodedData.id
+        } else {
+            console.log('herer')
+
+            decodedData = jwt.decode(token) as GoogleToken
+
+            req.headers.userId = decodedData?.sub
+        }
 
 
         next()    

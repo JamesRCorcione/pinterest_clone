@@ -16,6 +16,13 @@ cloudinary.config({
 })
 
 
+interface middlewareRequest extends Request {
+  headers: {
+      authorization: string 
+  },
+  userId: string
+}
+
 //Create
 export const createPin = async (req: Request, res: Response) => {
     try {

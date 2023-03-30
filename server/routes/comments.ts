@@ -4,7 +4,7 @@ import auth from '../middleware/auth.js'
 
 const router = express.Router()
 router.get('/:id', getComments)
-router.post('/:id', auth, createComment)
-router.post('/reply/:id', auth, createReply)
+router.post('/:id', createComment)
+router.post('/reply/:id', createReply)
 
 export default router

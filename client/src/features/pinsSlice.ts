@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, Action } from '@reduxjs/toolkit'
 import axios, { AxiosError } from 'axios'
-import { convertCompilerOptionsFromJson } from 'typescript'
+import { NextFunction } from 'express'
+
 
 const baseURL = 'http://localhost:8080/api/'
 
@@ -27,19 +28,18 @@ const API = axios.create({ baseURL: 'http://localhost:8080/api/' })
 
 API.interceptors.request.use((req) => {
   if (localStorage.getItem('profile')) {
-    req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem('profile')).token}`
+    req.headers.authorization = `Bearer ${JSON.parse(localStorage.getItem('profile') || 'false').token}`
   }
 
   return req
 })
-
 
 export const createPin = createAsyncThunk(
   'pins/createPin',
   
   async (pin: IPin, { rejectWithValue }) => {
     try {
-      const response = await API.post(baseURL + 'pins', pin)
+      const response = await API.post('pins', pin)
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -56,7 +56,7 @@ export const getPins = createAsyncThunk(
   'pins/getPins',
   async (page: any = null, { rejectWithValue }) => {
     try {
-      const response = await axios.get(baseURL + 'pins')
+      const response = await API.get('pins')
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -73,7 +73,7 @@ export const getPinsByCategory = createAsyncThunk(
   'pins/category/getPinsByCategory',
   async (category: any = null, { rejectWithValue }) => {
     try {
-      const response = await axios.get(baseURL + `pins/category/${category}`)
+      const response = await API.get(`pins/category/${category}`)
       console.log('response', response.data)
       return response.data
     } catch (err: any) {
@@ -92,7 +92,7 @@ export const getPinsByCreator = createAsyncThunk(
   async (id: any = null, { rejectWithValue }) => {
     try {
       console.log(`pins/user-created/` + id)
-      const response = await axios.get(baseURL + `pins/user-created-pins/${id}`)
+      const response = await API.get(`pins/user-created-pins/${id}`)
       console.log('response', response.data)
       return response.data
     } catch (err: any) {
@@ -111,7 +111,7 @@ export const getPin = createAsyncThunk(
   'pins/getPin',
   async (id: any = null, { rejectWithValue }) => {
     try {
-      const response = await axios.get(baseURL + `pins/${id}`)      
+      const response = await API.get(`pins/${id}`)      
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -131,7 +131,7 @@ export const updatePin = createAsyncThunk(
     try {
       const { _id, title, text, image, destination, postedBy } = pin
 
-      const response = await axios.put(baseURL + 'pins/' + _id, pin)
+      const response = await API.put('pins/' + _id, pin)
 
       return response.data.comments 
     } catch (err: any) {
@@ -149,7 +149,7 @@ export const deletePin = createAsyncThunk(
   'pins/deletePin',
   async (id: any, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(baseURL + 'pins/' + id)
+      const response = await API.delete('pins/' + id)
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -167,7 +167,7 @@ export const searchPins = createAsyncThunk(
   'pins/searchPins',
   async (searchTerm: any, { rejectWithValue }) => {
     try {
-      const response = await axios.get(baseURL + 'pins/search/'+ searchTerm)
+      const response = await API.get('pins/search/'+ searchTerm)
       console.log('resp')
       return response.data
     } catch (err: any) {

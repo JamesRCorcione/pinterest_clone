@@ -18,7 +18,7 @@ const MasonryLayout = ({ pins }:any) => {
   return (
     <div>
       <Masonry className={classes.pin} breakpointCols={breakpointObj}>
-        {pins?.map((pin:IPin) => <Pin key={pin._id} pin={pin} />)}
+        {pins?.map((pin:IPin, i:number) => <Pin key={i} pin={pin} />)}
       </Masonry>
     </div>
   )

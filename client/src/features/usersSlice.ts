@@ -59,6 +59,47 @@ export const SignIn = createAsyncThunk(
   }
 )
 
+
+
+export const GoogleSignUp = createAsyncThunk(
+  'users',
+  async (user: any, { rejectWithValue }) => {
+    console.log(user)
+    try {      
+      const response = await axios.post(baseURL + 'users/googleSignup', user)
+      localStorage.setItem('profile', JSON.stringify({ ...response.data.result }))
+      return response.data
+    } catch (err: any) {
+      let error: AxiosError<ValidationErrors> = err // cast the error for access
+      if (!error.response) {
+        throw err
+      }
+      // We got validation errors, let's return those so we can reference in our component and set form errors
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const GoogleSignIn = createAsyncThunk(
+  'users',
+  async (user:any, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(baseURL + 'users/googleSignin', user)
+      localStorage.setItem('profile', JSON.stringify({ ...response.data }))
+      return response.data
+    } catch (err: any) {
+      let error: AxiosError<ValidationErrors> = err // cast the error for access
+      if (!error.response) {
+        throw err
+      }
+      // We got validation errors, let's return those so we can reference in our component and set form errors
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+
+
 export const GetUserById = createAsyncThunk (
     'users',
     async (id: any = null, { rejectWithValue }) => {
@@ -109,7 +150,13 @@ export const Logout = createAsyncThunk(
         })   
         .addCase(SignIn.fulfilled, (state, action) => {
           return { ...state, users: [action.payload, ...state.users], userStatus: 'success', userError: '' }
-        })    
+        })   
+        .addCase(GoogleSignUp.fulfilled, (state, action) => {
+          return { ...state, users: [action.payload, ...state.users], userStatus: 'success', userError: '' }
+        })   
+        .addCase(GoogleSignIn.fulfilled, (state, action) => {
+          return { ...state, users: [action.payload, ...state.users], userStatus: 'success', userError: '' }
+        })  
         .addCase(GetUserById.fulfilled, (state, action) => {
           return { ...state, user: action.payload, pinStatus: 'success', pinError: '' }
         })

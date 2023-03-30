@@ -18,7 +18,8 @@ import { fetchUser } from './utils/fetchUser';
 
 function App() {
   const user = fetchUser()
-  
+  console.log(user)
+
   return (    
     <>
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_API_TOKEN!}>

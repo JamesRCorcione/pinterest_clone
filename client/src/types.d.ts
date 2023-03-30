@@ -10,6 +10,15 @@ type TypedThunk<ReturnType = void> = ThunkAction<
 
 declare module 'react-file-base64'
 
+declare global {
+  namespace Express {
+      export interface Request {
+          userId?: String;
+          authorization?: String          
+      }
+  }
+}
+
 
 //Users
 interface IUser {
