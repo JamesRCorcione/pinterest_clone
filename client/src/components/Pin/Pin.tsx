@@ -15,6 +15,7 @@ import { getImageDimensions } from '../../utils/getImageHeight'
 import { useDispatch, useSelector } from 'react-redux'
 import { SavePin } from '../../features/usersSlice'
 import userEvent from '@testing-library/user-event'
+import { grey } from '@mui/material/colors'
 
 
 interface PinProps {
@@ -42,8 +43,7 @@ const Pin = ({ pin }:PinProps) => {
       .then(() => {
         //window.location.reload();
         setSavingPost(false);
-      })
-      
+      })      
     }   
   }
   
@@ -53,8 +53,6 @@ const Pin = ({ pin }:PinProps) => {
   }
   
 
-
-
   return (  
     <Box>
       <Box
@@ -63,8 +61,12 @@ const Pin = ({ pin }:PinProps) => {
         onClick={() => navigate(`/pin-detail/${_id}`)}
         className={classes.container}        
         >
-        <img className={classes.image} alt="user-post" src={image} />
-        {postHovered && (
+        
+        {!postHovered ?
+         ( <img className={classes.imageOp} alt="user-post" src={image}  /> )
+        : (
+          <>
+          <img className={classes.image} alt="user-post" src={image}  />
           <Box 
             sx={{position: 'absolute', top:0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', height: '100%'}}
             >
@@ -97,19 +99,25 @@ const Pin = ({ pin }:PinProps) => {
 
 
             <Box>
-                <Button sx={{minHeight: 30, maxHeight: 30, minWidth: 120, maxWidth: 120, borderRadius: 99, position: 'absolute', bottom: 15, left: 10, backgroundColor: 'grey'}}
+                <Button
+                  sx={{'&:hover': { backgroundColor: grey[100], opacity: 1}, minHeight: 30, maxHeight: 30, minWidth: 90, maxWidth: 120, borderRadius: 99, position: 'absolute', bottom: 15, left: 10, backgroundColor: grey[200], opacity: 0.9}}
                   href={`${destination}`}
                   variant='contained'
                   onClick={(e) => {
                     e.stopPropagation()
                   }}
                 >
-                  {destination}
+                  {destination.length < 12 ?
+                    <Typography sx={{fontSize: 10, color: 'black'}}>{destination}</Typography>
+                  :
+                  <Typography sx={{fontSize: 10, color: 'black'}}>{destination.slice(12,23)}...</Typography>
+                  }
                 </Button>
               </Box>
 
               <Box>
-                <Button sx={{minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30, backgroundColor: 'grey', borderRadius: 99, position: 'absolute', bottom: 15, right: 60, }}
+                <Button 
+                  sx={{'&:hover': { backgroundColor: grey[100], opacity: 1}, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30, backgroundColor: grey[200], borderRadius: 99, position: 'absolute', bottom: 15, right: 60, opacity: 0.9 }}
                   href={`${image}?dl=`}
                   download
                   onClick={(e) => {
@@ -121,7 +129,9 @@ const Pin = ({ pin }:PinProps) => {
             </Box>
 
             <Box>
-                <Button sx={{minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30, backgroundColor: 'grey', borderRadius: 99, position: 'absolute', bottom: 15, right: 15}}
+                <Button 
+                  className={classes.bottomButtons}
+                  sx={{'&:hover': { backgroundColor: grey[100], opacity: 1}, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30, backgroundColor: grey[200], borderRadius: 99, position: 'absolute', bottom: 15, right: 15, opacity: 0.9}}
                   href={`${image}?dl=`}
                   download
                   onClick={(e) => {
@@ -148,6 +158,7 @@ const Pin = ({ pin }:PinProps) => {
                   )}
             </Box>
           </Box>
+          </>
         )}
         </Box>
 

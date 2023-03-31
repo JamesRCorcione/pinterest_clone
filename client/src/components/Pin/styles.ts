@@ -10,22 +10,27 @@ export default makeStyles((theme) => ({
     overflow: 'hidden',
     //minWidth: '250px',
     //maxWidth: '250px',
+    backgroundColor: 'black',
     margin:10,
     borderRadius: 10,
     height: 'auto',
     width: 'auto',
-    '&:hover': {
-      backgroundColor: 'blue',
-      opacity: 20
-    }
+    cursor: "pointer",
   },
   image: {
-    height: 'auto',
     overflow: 'hidden',
     objectFit: 'cover',
+    backgroundColor: 'black',
+    opacity: .6
+  },
+  imageOp: {
+    overflow: 'hidden',
+    objectFit: 'cover',   
+  },
+  bottomButtons: {
+    backgoundColor: 'pink',
     '&:hover': {
-      backgroundColor: 'blue',
-      opacity: 20,
+      backgroundColor: grey[100]
     }
   }
 }))

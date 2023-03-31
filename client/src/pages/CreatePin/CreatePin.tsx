@@ -8,7 +8,6 @@ import { uuid } from 'uuidv4'
 import Spinner from '../../components/Spinner/Spinner'
 
 import { createPin } from '../../features/pinsSlice'
-import { SetMealOutlined } from '@mui/icons-material'
 import FileBase from 'react-file-base64'
 
 
@@ -87,8 +86,8 @@ const CreatePin = ({user}:CreatePinProps) => {
               className="outline-none w-4/5 text-base border-b-2 border-gray-200 p-2 rounded-md cursor-pointer"
               >
                 <option value="other" className="bg-white">Select Category</option>
-                {categories.map((category) => (
-                  <option className="text-base border-0 outline-none capitalize bg-white text-black" value={category.name}>
+                {categories.map((category, i) => (
+                  <option key={i} className="text-base border-0 outline-none capitalize bg-white text-black" value={category.name}>
                     {category.name}
                   </option>
                 ))}
