@@ -29,6 +29,7 @@ const API = axios.create({ baseURL: 'http://localhost:8080/api/' })
 API.interceptors.request.use((req) => {
   if (localStorage.getItem('profile')) {
     req.headers.authorization = `Bearer ${JSON.parse(localStorage.getItem('profile') || 'false').token}`
+    req.headers.authorizationtype = `${JSON.parse(localStorage.getItem('profile') || 'false').authType}`
   }
 
   return req
@@ -74,7 +75,6 @@ export const getPinsByCategory = createAsyncThunk(
   async (category: any = null, { rejectWithValue }) => {
     try {
       const response = await API.get(`pins/category/${category}`)
-      console.log('response', response.data)
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -91,9 +91,7 @@ export const getPinsByCreator = createAsyncThunk(
   'pins/user-created-pins/getPinByCreator',
   async (id: any = null, { rejectWithValue }) => {
     try {
-      console.log(`pins/user-created/` + id)
       const response = await API.get(`pins/user-created-pins/${id}`)
-      console.log('response', response.data)
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access

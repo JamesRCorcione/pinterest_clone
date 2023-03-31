@@ -17,7 +17,6 @@ interface CommentProps {
 }
 
 function generateReplies({user, pinId, comment}:CommentProps) {
-  console.log('replies',comment)
   return (
     comment?.replies.map((reply) => (
       <Reply user={user} pinId={pinId} comment={reply} />

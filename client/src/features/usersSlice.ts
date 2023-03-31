@@ -28,7 +28,7 @@ export const SignUp = createAsyncThunk(
   async (user: IUser, { rejectWithValue }) => {
     try {
       const response = await axios.post(baseURL + 'users/signup', user)
-      localStorage.setItem('profile', JSON.stringify({ ...response.data.result }))
+      localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -64,10 +64,9 @@ export const SignIn = createAsyncThunk(
 export const GoogleSignUp = createAsyncThunk(
   'users',
   async (user: any, { rejectWithValue }) => {
-    console.log(user)
     try {      
       const response = await axios.post(baseURL + 'users/googleSignup', user)
-      localStorage.setItem('profile', JSON.stringify({ ...response.data.result }))
+      localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -85,6 +84,43 @@ export const GoogleSignIn = createAsyncThunk(
   async (user:any, { rejectWithValue }) => {
     try {
       const response = await axios.post(baseURL + 'users/googleSignin', user)
+      localStorage.setItem('profile', JSON.stringify({ ...response.data }))
+      return response.data
+    } catch (err: any) {
+      let error: AxiosError<ValidationErrors> = err // cast the error for access
+      if (!error.response) {
+        throw err
+      }
+      // We got validation errors, let's return those so we can reference in our component and set form errors
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const FacebookSignUp = createAsyncThunk(
+  'users',
+  async (user: any, { rejectWithValue }) => {
+    try {      
+      const response = await axios.post(baseURL + 'users/facebookSignup', user)
+      localStorage.setItem('profile', JSON.stringify({ ...response.data }))
+      return response.data
+    } catch (err: any) {
+      let error: AxiosError<ValidationErrors> = err // cast the error for access
+      if (!error.response) {
+        throw err
+      }
+      // We got validation errors, let's return those so we can reference in our component and set form errors
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const FacebookSignIn = createAsyncThunk(
+  'users',
+  async (user:any, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(baseURL + 'users/facebookSignin', user)
+
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {
@@ -157,6 +193,9 @@ export const Logout = createAsyncThunk(
         .addCase(GoogleSignIn.fulfilled, (state, action) => {
           return { ...state, users: [action.payload, ...state.users], userStatus: 'success', userError: '' }
         })  
+        .addCase(FacebookSignIn.fulfilled, (state, action) => {
+          return { ...state, users: [action.payload, ...state.users], userStatus: 'success', userError: '' }
+        }) 
         .addCase(GetUserById.fulfilled, (state, action) => {
           return { ...state, user: action.payload, pinStatus: 'success', pinError: '' }
         })

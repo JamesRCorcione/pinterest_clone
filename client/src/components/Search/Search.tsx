@@ -15,17 +15,14 @@ const Search = () => {
   
   
 
-  console.log(searchTerm)
   useEffect(() => {
     if (searchTerm !== '') {
       setLoading(true)
-      console.log(searchTerm)
       dispatch(searchPins(searchTerm))
               .then((data:any) => {
                 setPins(data.payload)
                 setLoading(false)
               })
-      //console.log('query',query)
       
     } else {      
     }

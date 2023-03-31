@@ -25,7 +25,6 @@ const Profile = () => {
       .then((jsonData:any) => setCreatedPins(jsonData.payload))
   }, [])
 
-  console.log('pin',createdPins)
 
   return (
     <Box>

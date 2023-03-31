@@ -75,7 +75,6 @@ export const getPinsByCreator = async (req: Request, res: Response) => {
 
       res.status(200).json(createdPins)
   } catch (error) {
-    console.log('sdfgsdf')
       res.status(404).json({ message: error })
   }
 }
@@ -88,11 +87,9 @@ export const getPinsByCategory = async (req: Request, res: Response) => {
         {'$match': { 'category': category}}
       ]).exec()      
 
-      console.log(category, categoryPins)
 
       res.status(200).json(categoryPins)
   } catch (error) {
-    console.log('sdfgsdf')
       res.status(404).json({ message: error })
   }
 }

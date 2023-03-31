@@ -46,6 +46,13 @@ const Pin = ({ pin }:PinProps) => {
       
     }   
   }
+  
+  const handleGoToProfile = () => {
+    navigate(`/user-profile/${postedBy?.userId}`)
+    window.location.reload();
+  }
+  
+
 
 
   return (  
@@ -143,9 +150,7 @@ const Pin = ({ pin }:PinProps) => {
           </Box>
         )}
         </Box>
-        <Link
-          to={`user-profile/${postedBy?.userId}`}
-        >
+
           <Box sx={{display: 'flex', paddingLeft: 3}}>
             {postedBy?.image ?
             <img  
@@ -155,11 +160,13 @@ const Pin = ({ pin }:PinProps) => {
             :
             <Avatar>{postedBy.userName.charAt(0)}</Avatar>
             }
-            <Box sx={{marginLeft: 2, marginTop: 1}}>
+            <Button 
+              onClick={handleGoToProfile}
+              sx={{marginLeft: 2, marginTop: 1}}
+            >
               <Typography sx={{boxShadow: 'none', textDecoration: 'none'}}>{postedBy?.userName}</Typography>
-              </Box>
+            </Button>
           </Box>
-        </Link>
     </Box>
   )
 }

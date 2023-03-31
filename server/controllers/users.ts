@@ -14,9 +14,6 @@ dotenv.config()
 export const getUser = async (req: Request, res: Response) => { 
   const { id } = req.params
 
-  console.log(dotenv.config())
-  console.log('Hi', process.env.SECRET)
-
   try {
       const user = await User.findById(id)
       
@@ -57,7 +54,7 @@ export const signup = async (req: Request, res: Response) => {
       const secret = process.env.SECRET as string
       const token = jwt.sign( { userName: result.userName, id: result._id }, secret, { expiresIn: "1h" } )
 
-      res.status(201).json({ result, token })
+      res.status(201).json({ result, token, authType: 'Custom' })
     } catch (error) {
       res.status(500).send(error)
     }
@@ -80,7 +77,7 @@ export const signin = async (req: Request, res: Response) => {
     const secret = process.env.SECRET as string
     const token = jwt.sign({ userName: oldUser.userName, id: oldUser._id }, secret, { expiresIn: "1h" })
 
-    res.status(200).json({ result: oldUser, token })
+    res.status(200).json({ result: oldUser, token, authType: 'Custom' })
   } catch (err) {
     res.status(500).json({ message: "Something went wrong" })
   }
@@ -90,40 +87,62 @@ export const googleSignup = async (req: Request, res: Response) => {
   const { email, given_name, family_name, picture, sub } = req.body
   const password = 'terst'
 
-  console.log(email, given_name, family_name, picture, sub)
 
   try {
     const oldUser = await User.findOne({ email })
 
     if (oldUser) return res.status(400).json({ message: "User already exists" })
-
-    const hashedPassword = await bcrypt.hash(password, 12)
   
-    const result = await User.create({ email, password: hashedPassword, userName: `${family_name} ${given_name}`, image: picture })
+    const result = await User.create({ email, password: 'N/A', userName: `${family_name} ${given_name}`, image: picture })
 
-    const secret = process.env.SECRET as string
-    const token = jwt.sign( { email: result.email, id: result._id }, secret, { expiresIn: "1h" } )
-
-    res.status(201).json({ result, sub })
+    res.status(201).json({ result, token: sub, authType: 'Google' })
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" })    
   }
 }
 
 export const googleSignin = async (req: Request, res: Response) => {
-  const { email } = req.body
+  const { email, sub } = req.body
 
   try {
     const oldUser = await User.findOne({ email })
 
     if (!oldUser) return res.status(404).json({ message: "User doesn't exist" })
 
-    const secret = process.env.SECRET as string
-    const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, { expiresIn: "1h" })
 
-    res.status(200).json({ result: oldUser, token })
+    res.status(200).json({ result: oldUser, token: sub, authType: 'Google' })
   } catch (err) {
     res.status(500).json({ message: "Something went wrong" })
   }
+}
 
+export const facebookSignup = async (req: Request, res: Response) => {
+  const { email, name, picture, accessToken } = req.body
+
+  try {
+    const oldUser = await User.findOne({ email })
+
+    if (oldUser) return res.status(400).json({ message: "User already exists" })
+
+  
+    const result = await User.create({ email, password: 'N/A', userName: name, image: picture.data.url })
+
+
+    res.status(201).json({ result, token: accessToken, authType: 'Facebook' })
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" })    
+  }
+}
+
+export const facebookSignin = async (req: Request, res: Response) => {
+  const { email, accessToken } = req.body
+  try {
+    const oldUser = await User.findOne({ email })
+
+    if (!oldUser) return res.status(404).json({ message: "User doesn't exist" })
+
+    res.status(200).json({ result: oldUser, token: accessToken, authType: 'Facebook' })
+  } catch (err) {
+    res.status(500).json({ message: "Something went wrong" })
+  }
 }

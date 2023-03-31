@@ -36,7 +36,6 @@ const Reply = ({user, pinId, comment}:CommentProps) => {
     }
   }
 
-  console.log(comment)
 
   return (
     <>

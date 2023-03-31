@@ -41,7 +41,6 @@ const PinDetails = () => {
     dispatch(getComments(pinId))
   }, [])
 
-  console.log(comments)
 
   useEffect(() => {
     dispatch(getPin(pinId))

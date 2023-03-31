@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Dialog from '@mui/material/Dialog';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { GoogleSignIn, GoogleSignUp, SignIn, SignUp } from '../../features/usersSlice'
+import { FacebookSignIn, FacebookSignUp, GoogleSignIn, GoogleSignUp, SignIn, SignUp } from '../../features/usersSlice'
 import FacebookLogin from 'react-facebook-login';
 
 import useStyle from './styles'
@@ -15,11 +15,12 @@ import axios from 'axios';
 import { BorderAll, Height } from '@mui/icons-material';
 
 
+
 const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
     const classes = useStyle()
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate()
-    const [form, setForm] = useState<IUser>({ userName: '', email: '', password: '', image: '', birthday: new Date(), saves: [] })
+    const [form, setForm] = useState<IUser>({ userName: '', email: '', password: '', image: '', birthday: null, saves: [] })
     const [open, setOpen] = useState<boolean>(true)
     const [switchLogin, setSwitchLogin] = useState<boolean>(isSignUp)
     const [swithSignup, setSwithSignup] = useState<boolean>(true)
@@ -66,53 +67,28 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
           const user = userInfo.data
           //const token = response.access_token.split('.')[1]
 
-          //console.log(user)
     
           try {
             if (!switchLogin) {
-              dispatch(GoogleSignUp(user))
+              await dispatch(GoogleSignUp(user))
             } else {
-              dispatch(GoogleSignIn(user))
+              await dispatch(GoogleSignIn(user))
             }
+            handleExit()
           } catch (error) {
             console.log(error)
           }
         },
         onError: () => console.log("Login Failed")
     })
-
-    const handleFacebookLoginLoginResponse = async function(response: any): Promise<boolean> {
-        console.log(response)
-        if (response.error !== undefined) {
-            console.log(`Error: ${response.error}`);
-            return false;
-          } else {
-            try {
-              // Gather Facebook user info
-              const userId: string = response.id;
-              const userEmail: string = response.email;
-              const userAccessToken: string = response.accessToken;
-
-              try {
-
-                // logIn returns the corresponding ParseUser object
-                alert(
-                  `Success! User  has successfully signed in!`,
-                );
-                // Update state variable holding current user
-                return true;
-              } catch (error: any) {
-                // Error can be caused by wrong parameters or lack of Internet connection
-                alert(`Error! ${error.message}`);
-                console.log("Error gathering Facebook user info, please try again!")
-                return false;
-              }
-            } catch (error: any) {
-              console.log("Error gathering Facebook user info, please try again!")
-              return false;
-            }
-          }
-    }
+    const loginWithFacebook = async (response: any) => {
+        await dispatch(FacebookSignIn(response));
+        handleExit() 
+    };
+    const signupWithFacebook = async (response: any) => {
+        await dispatch(FacebookSignUp(response)); 
+        handleExit()
+    };
 
     const handleExit = () => {
         setOpen((open) => !open)
@@ -144,35 +120,38 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
             <Box className={classes.externalLogin} sx={{marginTop: 23}}>
                 <Button 
                     onClick={() => googleLogin()}
-                    className={classes.buttonSubmit} variant="contained" color="primary" size="large" type="submit" fullWidth
+                    sx={{borderRadius: 99, height: 45}}
+                    className={classes.buttonSubmit} variant="contained" size="large" type="submit" 
                 >
-                    Google Log in
+                    Login with Google
                 </Button>                            
                 <FacebookLogin
-                    appId="772299484215013"
-                    size='small'
-                    autoLoad={true}
+                    appId={'772299484215013'}
                     fields="name,email,picture"
-                    textButton={'Facebook Log in'}
+                    callback={loginWithFacebook}
+                    icon="fa-facebook"
+                    onFailure={(err) => {
+                    console.log("FB LOGIN ERROR:", err);
+                    }}
                     containerStyle={{
-                        textAlign: "center",
-                        backgroundColor: "#3b5998",
-                        borderColor: "#3b5998",
-                        flex: 1,
-                        display: "flex",
-                        color: "#fff",
-                        cursor: "pointer",
-                        marginBottom: "3px",
-                        borderRadius: 100
+                    textAlign: "center",
+                    backgroundColor: "#3b5998",
+                    borderColor: "#3b5998",
+                    flex: 1,
+                    display: "flex",
+                    color: "#fff",
+                    cursor: "pointer",
+                    marginBottom: 3,
+                    borderRadius: 99,
+                    marginTop: 10
                     }}
                     buttonStyle={{
-                        flex: 1,
-                        textTransform: "none",
-                        padding: "12px",
-                        background: "none",
-                        border: "none",
+                    flex: 1,
+                    textTransform: "none",
+                    padding: "12px",
+                    background: "none",
+                    border: "none",
                     }}
-                    callback={handleFacebookLoginLoginResponse}
                 />                          
             </Box>
             <Divider sx={{paddingTop: 1.7, margin: 'auto', width: '70%', color: 'grey'}}>
@@ -199,8 +178,8 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                     </Box>
 
 
-                    <Button onClick={handleSignIn} className={classes.buttonSubmit} sx={{marginTop: 3}} variant="contained" color="primary" size="large" type="submit" fullWidth>
-                    <Typography sx={{fontStyle: 'sans', fontSize: '12px', textTransform: 'unset',}}>Log In</Typography>
+                    <Button onClick={handleSignIn} className={classes.buttonSubmit} sx={{borderRadius: 99, marginTop: 3}} variant="contained" color="primary" size="large" type="submit" fullWidth>
+                    <Typography sx={{fontStyle: 'sans', fontSize: '12px', textTransform: 'unset'}}>Log In</Typography>
                     </Button>                            
                 </form>
             </Box>
@@ -222,16 +201,40 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                 <Box className={classes.externalLogin} sx={{marginTop: 28.5,}}>
                     <Button 
                         onClick={() => googleLogin()}
-                        className={classes.buttonSubmit} variant="contained" color="primary" size="large" type="submit" fullWidth
+                        sx={{borderRadius: 99, height: 45}}
+                        className={classes.buttonSubmit} variant="contained" color="primary" size="large" type="submit" 
                     >
                         Google Sign up
                     </Button>                            
-                    <Button 
-                        onClick={handleFacebookLoginLoginResponse}
-                        className={classes.buttonSubmit} variant="contained" color="primary" size="large" type="submit" fullWidth
-                    >
-                        Facebook Sign up
-                    </Button>                            
+                    <FacebookLogin
+                    appId={'772299484215013'}
+                    fields="name,email,picture"
+                    callback={signupWithFacebook}
+                    icon="fa-facebook"
+                    onFailure={(err) => {
+                    console.log("FB LOGIN ERROR:", err);
+                    }}
+                    containerStyle={{
+                    textAlign: "center",
+                    backgroundColor: "#3b5998",
+                    borderColor: "#3b5998",
+                    flex: 1,
+                    display: "flex",
+                    color: "#fff",
+                    cursor: "pointer",
+                    marginBottom: "3px",
+                    borderRadius: 99,
+                    marginTop: 10
+                    }}
+                    buttonStyle={{
+                    flex: 1,
+                    textTransform: "none",
+                    padding: "12px",
+                    background: "none",
+                    border: "none",
+                    }}
+                    textButton='Sign up with Facebook'
+                />                           
                 </Box>
                 <Divider sx={{paddingTop: 2.5, margin: 'auto', width: '70%', color: 'grey'}}>
                     <Typography sx={{fontStyle: 'sans', fontSize: '12px'}}>OR</Typography>
@@ -239,7 +242,10 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                 <Box className={classes.formContainer} sx={{marginTop: 4}} >
                     <form autoComplete='off' >  
                         <TextField className={classes.inputTextSignup} name="email" variant="outlined" label="Email" fullWidth onChange={(e) => setForm({ ...form, email: e.target.value })} />
-                        <Button onClick={handleSignupSwitch} className={classes.buttonSubmit} variant="contained" color="primary" size="large" type="submit" fullWidth>
+                        <Button 
+                            sx={{borderRadius: 99, width: '100%'}}
+                            onClick={handleSignupSwitch} className={classes.buttonSubmit} variant="contained" color="primary" size="large" type="submit" 
+                        >
                         <Typography sx={{fontStyle: 'sans', fontSize: '12px'}}>Continue</Typography>
                         </Button>                            
                     </form>
@@ -266,7 +272,6 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                         <TextField className={classes.inputTextSignupFinal} name="password" variant="outlined" label="Password" fullWidth onChange={(e) => setForm({ ...form, password: e.target.value })} />
 
                         <Button className={classes.buttonSubmit} sx={{marginTop: 0}} variant="contained" color="primary" size="large" type="submit" fullWidth>
-                        <Typography sx={{fontStyle: 'sans', fontSize: '12px', textTransform: 'unset',}}>Continue</Typography>
                         </Button>                            
                     </form>
                 </Box>      

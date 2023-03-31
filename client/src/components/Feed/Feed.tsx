@@ -18,7 +18,6 @@ const Feed = () => {
   useEffect(() => {
     setLoading(true)
 
-    console.log(category)
     if(category) {
       dispatch(getPinsByCategory(category))
     } else {

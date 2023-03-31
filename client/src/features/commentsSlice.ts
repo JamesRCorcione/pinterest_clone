@@ -43,7 +43,6 @@ export const getComments = createAsyncThunk(
     async (id:any = null, { rejectWithValue }) => {
       try {
         const response = await axios.get(baseURL + `comments/${id}`)
-        console.log('response')
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -62,7 +61,6 @@ export const createComment = createAsyncThunk(
     async ({pinId, text, userName, userImage}: CreateCommentProps, { rejectWithValue }) => {
       try {
         const response = await axios.post(baseURL + `comments/${pinId}`, {text, userName, userImage})
-        console.log('response')
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -81,7 +79,6 @@ export const createComment = createAsyncThunk(
     async ({pinId, commentId, text, userName, userImage}: CreateReplyProps, { rejectWithValue }) => {
       try {
         const response = await axios.post(baseURL + `comments/reply/${pinId}`, {text, commentId, userName, userImage})
-        console.log('response')
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
