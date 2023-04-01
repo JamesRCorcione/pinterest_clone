@@ -1,7 +1,7 @@
 import Feed from '../Feed/Feed'
 import { Box, Button, Typography, Link, TextField, Input, Avatar } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { getPin } from '../../features/pinsSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -34,11 +34,13 @@ const PinDetails = () => {
   const [text, setText] = useState<any>()
   const { pinId } = useParams()
   const classes = useStyle()
+  const location = useLocation()
 
 
   useEffect(() => {
     dispatch(getComments(pinId))
-  }, [])
+    window.scrollTo(0, 0)
+  }, [location])
 
 
   useEffect(() => {
@@ -114,7 +116,7 @@ const PinDetails = () => {
           
           <img className={classes.image} src={pin?.image}></img>
 
-          <Box sx={{display: 'flex', flexDirection: 'column', flex: 'wrap', maxHeight: 900, height: 'auto', width: 400}}>  
+          <Box sx={{display: 'flex', flexDirection: 'column', flex: 'wrap', maxHeight: '92vh', height: 'auto', width: 400}}>  
 
             <Box sx={{display: 'flex', width: 400}}>
                 <MoreHorizIcon sx={{position: 'relative', left: 30, top: 40}} />
@@ -153,7 +155,7 @@ const PinDetails = () => {
               {detailsRender()}              
             </Box>
             :
-            <Box sx={{flex: 'wrap', overflowY: 'auto', overflowX: 'hidden', marginTop: 5, marginRight: 2, marginLeft: 2}}>
+            <Box sx={{flex: 'wrap', overflowY: 'auto', overflowX: 'hidden', height: '100%', marginTop: 5, marginRight: 2, marginLeft: 2}}>
               {detailsRender()}
               <Box sx={{display: 'flex', flexDirection: 'column',  overflowY: 'auto',  height: 'auto', width: 400}}>
                 {comments &&
