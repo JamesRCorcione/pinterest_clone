@@ -3,12 +3,12 @@ import { grey } from '@mui/material/colors';
 
 export default makeStyles((theme) => ({
   image: {
-    width: '100%',
+    width: 400,
+    height: '100%',
     borderTopLeftRadius: 40,
     borderBottomLeftRadius: 40,
     objectFit: 'cover',
     '&:hover': {
-      backgroundColor: 'blue',
       opacity: 20,
     }
   },
@@ -20,7 +20,6 @@ export default makeStyles((theme) => ({
   searchBar: {
     width: '90%',
     height: 50,
-    marginTop: 5,
     borderRadius: 99, 
     border: '1px solid #D3D3D3', 
     backgroundColor: grey[100],

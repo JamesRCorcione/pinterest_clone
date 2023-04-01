@@ -7,7 +7,7 @@ export default makeStyles((theme) => ({
     '&:hover': {
       transition: 1,
       left: 0
-    }
+    },
   },
 }))
 

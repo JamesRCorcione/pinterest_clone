@@ -161,23 +161,33 @@ const Pin = ({ pin }:PinProps) => {
           </>
         )}
         </Box>
-
-          <Box sx={{display: 'flex', paddingLeft: 3}}>
-            {postedBy?.image ?
-            <img  
-              src={postedBy?.image}
-              alt="user-profile"
-            />
-            :
-            <Avatar>{postedBy.userName.charAt(0)}</Avatar>
-            }
-            <Button 
-              onClick={handleGoToProfile}
-              sx={{marginLeft: 2, marginTop: 1}}
-            >
-              <Typography sx={{boxShadow: 'none', textDecoration: 'none'}}>{postedBy?.userName}</Typography>
-            </Button>
+          <Box sx={{marginLeft: 2}}>
+            <Typography sx={{fontSize: 14}}>{pin.title}</Typography>
           </Box>
+
+          
+      <Box sx={{display: 'flex'}}>
+        <Button 
+          style={{ backgroundColor: 'transparent' }} 
+          onClick={handleGoToProfile}
+          sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
+        >
+          {postedBy?.image 
+          ?
+            <>
+              <img  
+                src={postedBy?.image}
+                alt="user-profile"
+              />
+            </>
+          :
+            <>
+              <Avatar sx={{minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{postedBy.userName.charAt(0)}</Avatar>
+            </>
+          }
+          <Typography sx={{marginLeft:1, fontSize: 12, color: 'black', boxShadow: 'none', textDecoration: 'none'}}>{postedBy?.userName}</Typography>
+        </Button>
+      </Box>          
     </Box>
   )
 }

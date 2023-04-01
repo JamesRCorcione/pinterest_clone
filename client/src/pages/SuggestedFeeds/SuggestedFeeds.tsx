@@ -22,10 +22,10 @@ const SuggestedFeeds = () => {
           <Typography sx={{textAlign: 'center', fontSize: 36, fontWeight: 600}}>Stay Inspired</Typography>
 
           
-          <Box sx={{display: 'flex', backgroundColor: 'pink', marginX:25, marginTop: 5}}>
+          <Box sx={{display: 'flex', marginX:25, marginTop: 5}}>
             <Box sx={{display: 'flex', flexWrap: 'wrap', justifyContent: 'start', alignItems: 'start', marginLeft: 1.6}} >
             {suggestedFeedIdeas.map((feedIdea, i) => (
-              <Box key={i} sx={{position: 'relative', borderRadius: 10, backgroundColor: 'blue', margin: 1, maxHeight: '300px', minHeight: '300px', maxWidth: '400px', minWidth: '400px'}}>
+              <Box key={i} sx={{position: 'relative', borderRadius: 10, margin: 1, maxHeight: '300px', minHeight: '300px', maxWidth: '400px', minWidth: '400px'}}>
                 <Button onClick={() => navigate(`/category/${feedIdea}`)} sx={{maxHeight: '300px', minHeight: '300px', maxWidth: '400px', minWidth: '400px'}}>
                   <Typography sx={{position: 'absolute', top: 20, left: 20, textDecoration: 'capitalize'}}>{feedIdea}</Typography>
                 </Button>

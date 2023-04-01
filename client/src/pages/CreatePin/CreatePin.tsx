@@ -9,6 +9,7 @@ import Spinner from '../../components/Spinner/Spinner'
 
 import { createPin } from '../../features/pinsSlice'
 import FileBase from 'react-file-base64'
+import { grey } from '@mui/material/colors'
 
 
 interface CreatePinProps {
@@ -44,7 +45,8 @@ const CreatePin = ({user}:CreatePinProps) => {
 
 
   return (
-    <Box sx={{display: 'flex', justifyContent: 'center'}}>
+    <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', height: '94vh', backgroundColor: grey[300]}}>
+    <Box sx={{ marginBottom: 50, display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: 5, height: 650, width: 800, backgroundColor: 'white'}}>
       <form onSubmit={handlePinSave}>
         <br />
         <br />
@@ -109,6 +111,7 @@ const CreatePin = ({user}:CreatePinProps) => {
             Add Post         
         </Button>
       </form>  
+    </Box>
     </Box>
   )
 }

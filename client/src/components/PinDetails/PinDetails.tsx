@@ -1,6 +1,6 @@
 import Feed from '../Feed/Feed'
 import { Box, Button, Typography, Link, TextField, Input, Avatar } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getPin } from '../../features/pinsSlice'
 import { useDispatch, useSelector } from 'react-redux'
@@ -35,7 +35,6 @@ const PinDetails = () => {
   const { pinId } = useParams()
   const classes = useStyle()
 
-  
 
   useEffect(() => {
     dispatch(getComments(pinId))
@@ -110,16 +109,14 @@ const PinDetails = () => {
   return (
     <>
     <Box>  
-      <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2}}>
+      <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginY: 2}}>
         <Box sx={{display: 'flex', borderRadius: 10, boxShadow: 10, width: 800, height: 'auto'}}>
           
-          <Box sx={{display: 'flex', height: 'auto', width: 400}}>
-            <img className={classes.image} src={pin?.image}></img>
-          </Box>
+          <img className={classes.image} src={pin?.image}></img>
 
-          <Box sx={{display: 'flex', flexDirection: 'column', flex: 'wrap', height: 500, width: 400,}}>  
+          <Box sx={{display: 'flex', flexDirection: 'column', flex: 'wrap', maxHeight: 900, height: 'auto', width: 400}}>  
 
-            <Box sx={{display: 'flex', width: 400,}}>
+            <Box sx={{display: 'flex', width: 400}}>
                 <MoreHorizIcon sx={{position: 'relative', left: 30, top: 40}} />
                 <UploadIcon sx={{position: 'relative', left: 50, top: 40}}/>
                 <ContentCopyIcon sx={{position: 'relative', left: 70, top: 40}} />
@@ -152,13 +149,13 @@ const PinDetails = () => {
 
             {expandComments
             ?
-            <Box sx={{flex: 'wrap', overflowY: 'auto', overflowX: 'hidden', marginTop: 5, marginRight: 2, marginLeft: 2}}>
+            <Box sx={{flex: 'wrap',overflowY: 'auto', overflowX: 'hidden', height: '100%', marginTop: 5,  marginRight: 2, marginLeft: 2}}>
               {detailsRender()}              
             </Box>
             :
             <Box sx={{flex: 'wrap', overflowY: 'auto', overflowX: 'hidden', marginTop: 5, marginRight: 2, marginLeft: 2}}>
               {detailsRender()}
-              <Box sx={{display: 'flex', flexDirection: 'column',  overflowY: 'auto',  height: 'auto', width: 400,}}>
+              <Box sx={{display: 'flex', flexDirection: 'column',  overflowY: 'auto',  height: 'auto', width: 400}}>
                 {comments &&
                   comments.map((comment:IComment, i:number) => (
                     <Comment key={i} pinId={pinId} user={user} comment={comment} />
@@ -167,30 +164,31 @@ const PinDetails = () => {
               </Box>              
             </Box>   
             }         
-                
-            
+            <Box sx={{display: 'flex', height: 70, flexDirection: 'column', justifyContent: 'end', alignContent: 'end'}}>
+              <Divider /> 
+            <Box sx={{marginBottom: 1, display: 'flex', justifyContent: 'end', alignItems: 'end'}}>              
+                <Avatar sx={{marginBottom: 1, marginLeft: 2, marginRight: 2}}>{user.userName.charAt(0)}</Avatar>
+                <Box sx={{marginTop: 1, marginRight: 5}} className={classes.searchBar}>
+                  <form onSubmit={handleComment}>
+                    <Input      
+                      onChange={(e:any) => setText(e.target.value)}             
+                      placeholder='Add a comment'
+                      disableUnderline={true} 
+                      sx={{ typography: 'subtitle2', width: '100%', marginTop: 1.5, marginLeft: 2, color: grey[600]}} 
+                    />        
+                  </form>                        
+                </Box>
+              </Box>
+            </Box>
           </Box>   
         </Box>
       </Box>      
+      
     </Box>
 
 
-    <Box sx={{position: 'relative', bottom: 70, left: 575, width: 375}}>
-      <Box sx={{display: 'flex'}}>
-        <Divider />
-        <Avatar sx={{marginTop: 1, marginLeft: 2, marginRight: 2}}>{user.userName.charAt(0)}</Avatar>
-        <Box className={classes.searchBar}>
-          <form onSubmit={handleComment}>
-            <Input      
-              onChange={(e:any) => setText(e.target.value)}             
-              placeholder='Add a comment'
-              disableUnderline={true} 
-              sx={{ typography: 'subtitle2', width: '180%', marginTop: 1.5, marginLeft: 2, color: grey[600]}} 
-            />        
-          </form>                        
-        </Box>
-      </Box>
-    </Box>
+
+    
 
       <Box sx={{position: 'absolute', left: '50%'}}>
         <Box sx={{position: 'relative', left: '-50%'}}>
