@@ -4,7 +4,12 @@ import mongoose from 'mongoose'
 const commentsSchema = new mongoose.Schema({    
         pinId: { type: mongoose.Schema.Types.ObjectId, default: null },
         parentId: { type: mongoose.Schema.Types.ObjectId, default: null },
-        username: { type: String, default: 'Anon' },
+        userCommenting: { 
+                userId: { type: mongoose.Schema.Types.ObjectId, default: null},
+                userName: { type: String, default: null},
+                userImage: { type: String, default: null},
+        },
+        taggedUser: { type: String, default: null},
         date: { type: Date, default: new Date() },
         text: { type: String, default: '' },
         hearts: { type: Number, default: 0 },

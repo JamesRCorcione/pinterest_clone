@@ -18,7 +18,6 @@ import { fetchUser } from './utils/fetchUser';
 
 function App() {
   const user = fetchUser()
-  console.log(user)
 
   return (    
     <>

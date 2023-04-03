@@ -8,6 +8,7 @@ import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 import Reply from './Reply/Reply';
+import { useNavigate } from 'react-router-dom';
 
 
 interface CommentProps {
@@ -18,40 +19,48 @@ interface CommentProps {
 
 function generateReplies({user, pinId, comment}:CommentProps) {
   return (
-    comment?.replies.map((reply) => (
-      <Reply user={user} pinId={pinId} comment={reply} />
+    comment?.replies.slice(0).reverse().map((reply, i) => (
+      <Reply key={i} user={user} pinId={pinId} comment={reply} commentId={comment._id} />
     ))
   )
 }
 
-
-
-
 const Comment = ({user, pinId, comment}:CommentProps) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const [replying, setReplying] = useState(false)
   const [text, setText] = useState<any>()
+
 
   const handleReplying = () => {
     setReplying((reply:any) => !reply)
   }
   
-  const handleReplySubmit = async (e:any) => {
+  const handleReplySubmit = (e:any) => {
     e.preventDefault()
     if (pinId) {
-      await dispatch(createReply({pinId, commentId: comment._id, text, userName: user.userName, userImage: user.userImage}))
+      const userCommenting = {
+        userId: user._id,
+        userName: user.userName,
+        userImage: user.image
+      }      
+      dispatch(createReply({pinId, commentId: comment._id, text, userCommenting, taggedUser: 'anon'}))
     }
   }
 
+  //Doesnt allow duplicate rendering of nested comments
   if (comment.parentId) {
     return null
-  } 
+  }
+
+  
+
 
   return (
     <>
       <Box sx={{display: 'flex'}}>
-        <Avatar sx={{marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>J</Avatar>
-        <Typography sx={{fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}>Anon</Typography>
+        <Avatar onClick={() => navigate(`/user-profile/${user._id}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{user.userName.charAt(0)}</Avatar>
+        <Typography onClick={() => navigate(`/user-profile/${comment._id}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}>{comment.userCommenting?.userName}</Typography>
         <Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5 }}>{comment?.text}</Typography>
         
       </Box>
@@ -82,8 +91,7 @@ const Comment = ({user, pinId, comment}:CommentProps) => {
               >
             </TextField>        
           </form>  
-      }
-      
+      }      
       {comment?.replies?.length > 0 &&
         generateReplies({user, pinId, comment})
       }

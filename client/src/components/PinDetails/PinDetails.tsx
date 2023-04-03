@@ -38,15 +38,16 @@ const PinDetails = () => {
 
 
   useEffect(() => {
+    dispatch(getPin(pinId))
+      .then((data:any) => setPin(data.payload))
     dispatch(getComments(pinId))
     window.scrollTo(0, 0)
   }, [location])
 
 
-  useEffect(() => {
-    dispatch(getPin(pinId))
-      .then((data:any) => setPin(data.payload))
-  }, [pinId])
+  useEffect(() => {    
+    dispatch(getComments(pinId))
+  }, [comments.length])
   
   let alreadySaved = user?.saves?.filter((save:any) => save?._id === pin?._id)
   alreadySaved = alreadySaved?.length > 0 ? alreadySaved : [];
@@ -59,15 +60,19 @@ const PinDetails = () => {
       .then(() => {
         //window.location.reload();
         setSavingPost(false);
-      })
-      
+      })      
     }   
   }
   
-  const handleComment = async (e:any) => {
+  const handleComment =  (e:any) => {
     e.preventDefault()
     if (pinId) {
-      await dispatch(createComment({pinId, text, userName: user.userName, userImage: user.userImage}))
+      const userCommenting = {
+        userId: user._id,
+        userName: user.userName,
+        userImage: user.image
+      }
+      dispatch(createComment({pinId, text, userCommenting }))
     }
   }
 
@@ -106,7 +111,6 @@ const PinDetails = () => {
       </>
     )
   }
-
 
   return (
     <>

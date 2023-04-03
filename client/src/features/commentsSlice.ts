@@ -24,17 +24,24 @@ function isPendingAction(action: Action) {
 
 interface CreateCommentProps {
     pinId: String,
-    userName: any, 
-    userImage: any,
+    userCommenting: {
+      userId: any
+      userName: any, 
+      userImage: any,
+    }
     text: any,     
 }
 
 interface CreateReplyProps {
   pinId: String,
   commentId: any,
-  userName: any, 
-  userImage: any,
-  text: any,     
+  userCommenting: {
+    userId: any
+    userName: any, 
+    userImage: any,
+  }
+  taggedUser: any,
+  text: any, 
 }
 
 export const getComments = createAsyncThunk(
@@ -58,9 +65,9 @@ export const getComments = createAsyncThunk(
 export const createComment = createAsyncThunk(
     'comments/createComment',
     
-    async ({pinId, text, userName, userImage}: CreateCommentProps, { rejectWithValue }) => {
+    async ({pinId, text, userCommenting={ userId: null, userName: null, userImage: null}}: CreateCommentProps, { rejectWithValue }) => {
       try {
-        const response = await axios.post(baseURL + `comments/${pinId}`, {text, userName, userImage})
+        const response = await axios.post(baseURL + `comments/${pinId}`, {text, userCommenting})
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -76,9 +83,9 @@ export const createComment = createAsyncThunk(
   export const createReply = createAsyncThunk(
     'comments/createReply',
     
-    async ({pinId, commentId, text, userName, userImage}: CreateReplyProps, { rejectWithValue }) => {
+    async ({pinId, commentId, text, taggedUser= null, userCommenting={ userId: null, userName: null, userImage: null}}: CreateReplyProps, { rejectWithValue }) => {
       try {
-        const response = await axios.post(baseURL + `comments/reply/${pinId}`, {text, commentId, userName, userImage})
+        const response = await axios.post(baseURL + `comments/reply/${pinId}`, {text, commentId, userCommenting})
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access

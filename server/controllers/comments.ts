@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 import { v2 as cloudinary } from 'cloudinary'
 
 import Comments from '../models/comments'
+import User from '../models/users'
 
 
 //Comments
@@ -35,9 +36,10 @@ export const getComments = async (req: Request, res: Response) => {
   
   export const createComment = async (req: Request, res: Response) => {
     const { id } = req.params
-    const { userName, userImage, text, } = req.body
+    const { userCommenting, text, commentId} = req.body
+
   
-    let data = { pinId: id, userName, userImage, text, date: new Date(), hearts: 0, replies: [] }    
+    let data = { pinId: id, userCommenting, text, date: new Date(), hearts: 0, replies: [] }    
     const comment = new Comments(data)  
 
     comment.save()
@@ -50,10 +52,18 @@ export const getComments = async (req: Request, res: Response) => {
   
   export const createReply = async (req: Request, res: Response) => {
     const { id } = req.params
-    const { commentId, userName, userImage, text } = req.body
+    const { commentId, userCommenting, text} = req.body
 
-    try {  
-      let data = { pinId: id, parentId: commentId, userName, userImage, text, date: new Date(), hearts: 0, replies: [] }    
+    console.log(commentId, text)
+
+    try {        
+
+      const prev = await Comments.findById(commentId)
+      
+      console.log('sertser', prev?.userCommenting?.userName)
+      
+      let data = { pinId: id, parentId: commentId, userCommenting, text, date: new Date(), hearts: 0, replies: [], taggedUser: prev?.userCommenting?.userName}
+
       const comment = new Comments(data)
 
       comment.save()
@@ -61,10 +71,8 @@ export const getComments = async (req: Request, res: Response) => {
       const updatedComment = await Comments.findByIdAndUpdate(commentId,
         {$push: {'replies': comment}},
         { 'new': true },  
-      )
-  
+      )  
 
-      
       res.status(200).json({updatedComment})
     } catch (error) {
       res.status(500).json({ message: error })

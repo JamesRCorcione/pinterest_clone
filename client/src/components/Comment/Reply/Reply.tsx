@@ -7,45 +7,56 @@ import { createReply } from '../../../features/commentsSlice'
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-
+import { useNavigate } from 'react-router-dom';
+import Comment from '../Comment';
 
 interface CommentProps {
   user: any, 
   pinId: any, 
   comment: IComment
+  commentId: any
 }
 
 
-
-
-
-
-const Reply = ({user, pinId, comment}:CommentProps) => {
+const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const [replying, setReplying] = useState(false)
   const [text, setText] = useState<any>()
 
   const handleReplying = () => {
     setReplying((reply:any) => !reply)
   }
+
   
-  const handleReplySubmit = async (e:any) => {
+  const handleReplySubmit = (e:any) => {
     e.preventDefault()
     if (pinId) {
-      await dispatch(createReply({pinId, commentId: comment._id, text, userName: user.userName, userImage: user.userImage}))
+      const userCommenting = {
+        userId: user._id,
+        userName: user.userName,
+        userImage: user.image
+      }
+      dispatch(createReply({pinId, commentId, text, userCommenting, taggedUser: null }))
     }
-  }
+  }  
 
+  console.log(comment.text, comment)
 
+  
   return (
     <>
-    <Box sx={{paddingLeft: 7}}>
-      <Box sx={{display: 'flex'}}>
-        <Avatar sx={{marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>J</Avatar>
-        <Typography sx={{fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}>Anon</Typography>
-        <Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5 }}>{comment?.text}</Typography>
-        
+    <Box sx={{paddingLeft: 7, marginRight: 7}}>
+      <Box sx={{display: 'flex', backgroundColor: 'pink'}}>
+        <Avatar onClick={() => navigate(`/user-profile/${user._id}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{user.userName.charAt(0)}</Avatar> 
+        {(comment.taggedUser)
+        ?
+          <Typography sx={{wordBreak: 'break-word'}}>{comment._id} {comment.userCommenting.userName} @{comment.taggedUser} {comment?.text}</Typography>
+        :
+          <Typography sx={{wordBreak: 'break-word'}}>{comment._id} {comment.userCommenting.userName} {comment?.text}</Typography>
+        }
       </Box>
+
       <Box sx={{display: 'flex', marginLeft: 4.5, marginBottom: 2}}>
           <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>2mo</Typography>
           <Box sx={{marginRight: 1, size: 'small'}}>
@@ -74,8 +85,7 @@ const Reply = ({user, pinId, comment}:CommentProps) => {
               >
             </TextField>        
           </form>  
-      }
-      
+      }   
     </>
   )
 }

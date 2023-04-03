@@ -73,10 +73,14 @@ interface IComment {
   _id?: mongoose.Types.ObjectId,
   pinId: mongoose.Types.ObjectId
   parentId: mongoose.Types.ObjectId
-  userName: String
-  userImage: String
-  date: Date
+  userCommenting : {
+    userId: mongoose.Types.ObjectId
+    userName: String
+    userImage: String
+  }  
+  taggedUser: String
   text: String
+  date: Date
   hearts: Number
   replies: IComment[]
 }
