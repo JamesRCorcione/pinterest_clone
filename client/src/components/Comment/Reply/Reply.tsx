@@ -37,7 +37,7 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
         userName: user.userName,
         userImage: user.image
       }
-      dispatch(createReply({pinId, commentId, text, userCommenting, taggedUser: null }))
+      dispatch(createReply({pinId, commentId, replyId: comment._id, text, userCommenting, taggedUser: null }))
     }
   }  
 

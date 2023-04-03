@@ -35,6 +35,7 @@ interface CreateCommentProps {
 interface CreateReplyProps {
   pinId: String,
   commentId: any,
+  replyId: any
   userCommenting: {
     userId: any
     userName: any, 
@@ -83,9 +84,9 @@ export const createComment = createAsyncThunk(
   export const createReply = createAsyncThunk(
     'comments/createReply',
     
-    async ({pinId, commentId, text, taggedUser= null, userCommenting={ userId: null, userName: null, userImage: null}}: CreateReplyProps, { rejectWithValue }) => {
+    async ({pinId, commentId, replyId, text, taggedUser= null, userCommenting={ userId: null, userName: null, userImage: null}}: CreateReplyProps, { rejectWithValue }) => {
       try {
-        const response = await axios.post(baseURL + `comments/reply/${pinId}`, {text, commentId, userCommenting})
+        const response = await axios.post(baseURL + `comments/reply/${pinId}`, {text, commentId, replyId, userCommenting})
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access

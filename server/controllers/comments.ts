@@ -52,13 +52,13 @@ export const getComments = async (req: Request, res: Response) => {
   
   export const createReply = async (req: Request, res: Response) => {
     const { id } = req.params
-    const { commentId, userCommenting, text} = req.body
+    const { commentId, replyId, userCommenting, text} = req.body
 
-    console.log(commentId, text)
+    console.log(replyId, text)
 
     try {        
 
-      const prev = await Comments.findById(commentId)
+      const prev = await Comments.findById(replyId)
       
       console.log('sertser', prev?.userCommenting?.userName)
       

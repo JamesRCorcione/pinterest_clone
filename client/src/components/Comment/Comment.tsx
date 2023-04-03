@@ -44,7 +44,7 @@ const Comment = ({user, pinId, comment}:CommentProps) => {
         userName: user.userName,
         userImage: user.image
       }      
-      dispatch(createReply({pinId, commentId: comment._id, text, userCommenting, taggedUser: 'anon'}))
+      dispatch(createReply({pinId, commentId: comment._id, replyId: null, text, userCommenting, taggedUser: 'anon'}))
     }
   }
 
@@ -52,8 +52,6 @@ const Comment = ({user, pinId, comment}:CommentProps) => {
   if (comment.parentId) {
     return null
   }
-
-  
 
 
   return (
