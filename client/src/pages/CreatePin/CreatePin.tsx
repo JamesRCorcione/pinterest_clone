@@ -31,25 +31,45 @@ const CreatePin = ({user}:CreatePinProps) => {
       navigate('/')
     }
 
-
+    //Starting Categories
     const categories = [
       {
-        name: 'nature',
-        image: 'https://res.cloudinary.com/dspevi97j/image/upload/v1679943182/b9ubgbulndo4txnvd9cu.jpg',
+        name: 'Home Decor',
       },
       {
-        name: 'space',
-        image: 'https://res.cloudinary.com/dspevi97j/image/upload/v1679952013/mp1x32v4zpv15hyqovgq.jpg',
+        name: 'DIY and Crafts',
+      },
+      {
+        name: 'Food and Drink',
+      },
+      {
+        name: 'Women\’s Fashion',
+      },
+      {
+        name: 'Health and Wellness',
+      },
+      {
+        name: 'Sports',
+      },
+      {
+        name: 'Travel',
+      },
+      {
+        name: 'Cars',
+      },
+      {
+        name: 'Gardening',
+      },
+      {
+        name: 'Weddings',
       },
     ]
 
 
   return (
     <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', height: '94vh', backgroundColor: grey[300]}}>
-    <Box sx={{ marginBottom: 50, display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: 5, height: 650, width: 800, backgroundColor: 'white'}}>
+    <Box sx={{ marginTop: 5, marginBottom: 10, display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: 5, height: 650, width: 800, backgroundColor: 'white'}}>
       <form onSubmit={handlePinSave}>
-        <br />
-        <br />
         <input
           type="text"
           placeholder="Enter a Title"

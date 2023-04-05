@@ -38,6 +38,18 @@ interface HeartCommentProps {
   userId: string
   replyId: string
 }
+interface DeleteReplyProps {
+  pinId: string
+  commentId: string
+  replyId: string
+}
+
+interface UpdateReplyProps {
+  pinId: string
+  commentId: string
+  replyId: string
+  text: string
+}
 
 interface CreateReplyProps {
   pinId: String,
@@ -89,8 +101,6 @@ export const createComment = createAsyncThunk(
     }
   )
 
-
-
   export const heartCommentPin = createAsyncThunk(
     'comments/heartCommentPin',
 
@@ -111,6 +121,99 @@ export const createComment = createAsyncThunk(
   )
 
 
+  export const heartReplyPin = createAsyncThunk(
+    'comments/heartReplyPin',
+
+    async ({pinId, commentId, userId, replyId}: HeartCommentProps, { rejectWithValue }) => {
+      try {
+        const response = await axios.post(baseURL + `comments/heartReplyPin/${pinId}`, {commentId, userId, replyId})
+        
+        return response.data
+      } catch (err: any) {
+        let error: AxiosError<ValidationErrors> = err // cast the error for access
+        if (!error.response) {
+          throw err
+        }
+        // We got validation errors, let's return those so we can reference in our component and set form errors
+        return rejectWithValue(error.response.data)
+      }
+    }
+  )
+
+  export const deleteReply = createAsyncThunk(
+    'comments/deleteReply',
+    async ({pinId, commentId,  replyId}: DeleteReplyProps, { rejectWithValue }) => {
+      console.log('d', pinId)
+      try {
+        const response = await axios.delete(baseURL + `comments/${commentId}/deleteReply/${replyId}`)
+        console.log('responser', response.data)
+        return response.data
+      } catch (err: any) {
+        let error: AxiosError<ValidationErrors> = err // cast the error for access
+        if (!error.response) {
+          throw err
+        }
+        // We got validation errors, let's return those so we can reference in our component and set form errors
+        return rejectWithValue(error.response.data)
+      }
+    }
+  )
+
+  export const updateReply = createAsyncThunk(
+    'comments/updateReply',
+    async ({pinId, commentId,  replyId, text}: UpdateReplyProps, { rejectWithValue }) => {
+      try {
+  
+        const response = await axios.put(baseURL + `comments/${commentId}/updateReply/${replyId}`, {text})  
+        return response.data
+      } catch (err: any) {
+        let error: AxiosError<ValidationErrors> = err // cast the error for access
+        if (!error.response) {
+          throw err
+        }
+        // We got validation errors, let's return those so we can reference in our component and set form errors
+        return rejectWithValue(error.response.data)
+      }
+    }
+  )
+
+  export const deleteComment = createAsyncThunk(
+    'comments/deleteComment',
+    async ({pinId, commentId,  replyId}: DeleteReplyProps, { rejectWithValue }) => {
+      console.log('d', pinId)
+      try {
+        const response = await axios.delete(baseURL + `comments/${commentId}`)
+        console.log('responser', response.data)
+        return response.data
+      } catch (err: any) {
+        let error: AxiosError<ValidationErrors> = err // cast the error for access
+        if (!error.response) {
+          throw err
+        }
+        // We got validation errors, let's return those so we can reference in our component and set form errors
+        return rejectWithValue(error.response.data)
+      }
+    }
+  )
+
+  export const updateComment = createAsyncThunk(
+    'comments/updateComment',
+    async ({pinId, commentId,  replyId, text}: UpdateReplyProps, { rejectWithValue }) => {
+      try {
+  
+        const response = await axios.put(baseURL + `comments/${commentId}`, {text})  
+        return response.data
+      } catch (err: any) {
+        let error: AxiosError<ValidationErrors> = err // cast the error for access
+        if (!error.response) {
+          throw err
+        }
+        // We got validation errors, let's return those so we can reference in our component and set form errors
+        return rejectWithValue(error.response.data)
+      }
+    }
+  )
+
 const commentsSlice = createSlice({
   name: 'pins',
   initialState,
@@ -120,12 +223,33 @@ const commentsSlice = createSlice({
       .addCase(createComment.fulfilled, (state, action) => {
         return { ...state, comments: [action.payload, ...state.comments], commentStatus: 'success', commentError: '' }
       })        
-      .addCase(heartCommentPin.fulfilled, (state, action) => {
+      .addCase(heartReplyPin.fulfilled, (state, action) => {
         return { ...state, comments: [action.payload, ...state.comments], commentStatus: 'success', commentError: '' }
       })   
+      .addCase(heartCommentPin.fulfilled, (state, action) => {
+        return { ...state, comments: [action.payload, ...state.comments], commentStatus: 'success', commentError: '' }
+      })
       .addCase(getComments.fulfilled, (state, action) => {
         return { ...state, comments: action.payload, commentStatus: 'success', commentError: '' }
       })   
+      .addCase(updateReply.fulfilled, (state, action) => {
+        const updatedComments = state.comments.map((reply) =>
+        reply._id === action.payload._id ? action.payload : reply
+        )
+        return { ...state, comments: updatedComments, commentStatus: 'success', commentError: '' }
+      })
+      .addCase(updateComment.fulfilled, (state, action) => {
+        const updatedComments = state.comments.map((reply) =>
+        reply._id === action.payload._id ? action.payload : reply
+        )
+        return { ...state, comments: updatedComments, commentStatus: 'success', commentError: '' }
+      })
+      .addCase(deleteComment.fulfilled, (state, action) => {
+        const currentComments = state.comments.filter(
+          (comment) => comment._id !== action.payload._id
+        )
+        return { ...state, comments: currentComments, commentStatus: 'success', commentError: '' }
+      })
       .addMatcher(
         isPendingAction,
         // `action` will be inferred as a RejectedAction due to isRejectedAction being defined as a type guard

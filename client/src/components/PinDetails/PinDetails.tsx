@@ -36,6 +36,7 @@ const PinDetails = () => {
   const classes = useStyle()
   const location = useLocation()
 
+  console.log(comments)
 
   useEffect(() => {
     dispatch(getPin(pinId))
