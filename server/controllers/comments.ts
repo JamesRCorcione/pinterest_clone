@@ -6,6 +6,8 @@ import { v2 as cloudinary } from 'cloudinary'
 
 import Comments from '../models/comments'
 import User from '../models/users'
+import mongoose from 'mongoose'
+import Replies from '../models/replies'
 
 
 //Comments
@@ -21,13 +23,14 @@ export const getComments = async (req: Request, res: Response) => {
       }
   }
   
-  export const getComment = async (req: Request, res: Response) => {
+  export const getReplies = async (req: Request, res: Response) => {
     const { id } = req.params
   
     try {
-        const comment = await Comments.findById(id)
+        const replies = await Replies.find({parentId: id}).sort({ date: -1 })
         
-        res.status(200).json(comment)
+
+        res.status(200).json(replies)
     } catch (error) {
         res.status(404).json({ message: error })
     }
@@ -39,7 +42,7 @@ export const getComments = async (req: Request, res: Response) => {
     const { userCommenting, text, commentId} = req.body
 
   
-    let data = { pinId: id, userCommenting, text, date: new Date(), hearts: 0, replies: [] }    
+    let data = { pinId: id, userCommenting, text, date: new Date(), hearts: [], replies: [] }    
     const comment = new Comments(data)  
 
     comment.save()
@@ -53,32 +56,45 @@ export const getComments = async (req: Request, res: Response) => {
   export const createReply = async (req: Request, res: Response) => {
     const { id } = req.params
     const { commentId, replyId, userCommenting, text} = req.body
-
-    console.log(replyId, text)
-
-    try {        
+    try {
+      console.log()
 
       const prev = await Comments.findById(replyId)
       
-      console.log('sertser', prev?.userCommenting?.userName)
-      
-      let data = { pinId: id, parentId: commentId, userCommenting, text, date: new Date(), hearts: 0, replies: [], taggedUser: prev?.userCommenting?.userName}
+      let data = { pinId: id, parentId: commentId, userCommenting, text, date: new Date(), hearts: [], taggedUser: prev?.userCommenting?.userName}
 
-      const comment = new Comments(data)
+      const reply = new Replies(data)
 
-      comment.save()
+      reply.save()
 
       const updatedComment = await Comments.findByIdAndUpdate(commentId,
-        {$push: {'replies': comment}},
-        { 'new': true },  
-      )  
+        {$push: {'replies': reply}},
+      )
+
 
       res.status(200).json({updatedComment})
     } catch (error) {
+      
       res.status(500).json({ message: error })
-    }
-    
+    }    
   }
   
-    
-    
+
+  export const heartCommentPin = async (req: Request, res: Response) => {
+    const { id } = req.params
+    const { commentId, userId, replyId } = req.body
+
+    console.log('check', commentId, userId, replyId)
+  
+    try {
+      let updatedComment = await Comments.findByIdAndUpdate(commentId,
+        {$push: { 'hearts': userId}}
+      )
+      console.log('user', updatedComment)
+
+      res.status(200).json({updatedComment})
+    } catch (error) {
+      //console.log(error)
+      //res.status(500).json({ message: error })
+    }
+  }

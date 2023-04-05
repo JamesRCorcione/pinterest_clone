@@ -24,7 +24,6 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
             decodedData = jwt.verify(token, secret) as JwtPayload
             req.headers.userId = decodedData.id
         }  else if (authType === 'Google') {
-            console.log('google')
             decodedData = jwt.decode(token) as GoogleToken
             req.headers.userId = decodedData?.sub
         } else if (authType === 'Facebook') {
@@ -35,7 +34,7 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
         }
         next()    
     } catch (error) {
-        console.log('error')
+        console.log('error', error)
     }
 }
 

@@ -32,6 +32,13 @@ interface CreateCommentProps {
     text: any,     
 }
 
+interface HeartCommentProps {
+  pinId: string
+  commentId: string
+  userId: string
+  replyId: string
+}
+
 interface CreateReplyProps {
   pinId: String,
   commentId: any,
@@ -63,6 +70,7 @@ export const getComments = createAsyncThunk(
     }
   )
 
+
 export const createComment = createAsyncThunk(
     'comments/createComment',
     
@@ -81,12 +89,15 @@ export const createComment = createAsyncThunk(
     }
   )
 
-  export const createReply = createAsyncThunk(
-    'comments/createReply',
-    
-    async ({pinId, commentId, replyId, text, taggedUser= null, userCommenting={ userId: null, userName: null, userImage: null}}: CreateReplyProps, { rejectWithValue }) => {
+
+
+  export const heartCommentPin = createAsyncThunk(
+    'comments/heartCommentPin',
+
+    async ({pinId, commentId, userId, replyId}: HeartCommentProps, { rejectWithValue }) => {
       try {
-        const response = await axios.post(baseURL + `comments/reply/${pinId}`, {text, commentId, replyId, userCommenting})
+        const response = await axios.post(baseURL + `comments/heartCommentPin/${pinId}`, {commentId, userId, replyId})
+        
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -108,8 +119,8 @@ const commentsSlice = createSlice({
     builder
       .addCase(createComment.fulfilled, (state, action) => {
         return { ...state, comments: [action.payload, ...state.comments], commentStatus: 'success', commentError: '' }
-      })      
-      .addCase(createReply.fulfilled, (state, action) => {
+      })        
+      .addCase(heartCommentPin.fulfilled, (state, action) => {
         return { ...state, comments: [action.payload, ...state.comments], commentStatus: 'success', commentError: '' }
       })   
       .addCase(getComments.fulfilled, (state, action) => {

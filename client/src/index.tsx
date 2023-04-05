@@ -9,12 +9,14 @@ import { configureStore } from "@reduxjs/toolkit"
 import { Provider } from 'react-redux';
 import pinsReducer from './features/pinsSlice';
 import commentsReducer from './features/commentsSlice';
+import repliesReducer from './features/repliesSlice';
 import pinSlice  from '../src/features/pinsSlice'
 
   export const store = configureStore({
     reducer: {
       pinsState: pinsReducer,
       commentsState: commentsReducer,
+      repliesState: repliesReducer,
     },
     middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

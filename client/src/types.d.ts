@@ -81,10 +81,29 @@ interface IComment {
   taggedUser: String
   text: String
   date: Date
-  hearts: Number
-  replies: IComment[]
+  hearts: mongoose.Types.ObjectId[]
+  replies: mongoose.Types.ObjectId[]
 }
 
 interface IComments {
   comments: IComment[]
+}
+
+interface IReply {
+  _id?: mongoose.Types.ObjectId,
+  pinId: mongoose.Types.ObjectId
+  parentId: mongoose.Types.ObjectId
+  userCommenting : {
+    userId: mongoose.Types.ObjectId
+    userName: String
+    userImage: String
+  }  
+  taggedUser: String
+  text: String
+  date: Date
+  hearts: mongoose.Types.ObjectId[]
+}
+
+interface IReplys {
+ replies: IReply[]
 }
