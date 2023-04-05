@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import pinsReducer from './features/pinsSlice';
 import commentsReducer from './features/commentsSlice';
 import repliesReducer from './features/repliesSlice';
+import categoriesReducer from './features/categoriesSlice';
 import pinSlice  from '../src/features/pinsSlice'
 
   export const store = configureStore({
@@ -17,6 +18,7 @@ import pinSlice  from '../src/features/pinsSlice'
       pinsState: pinsReducer,
       commentsState: commentsReducer,
       repliesState: repliesReducer,
+      categoriesState: categoriesReducer,
     },
     middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

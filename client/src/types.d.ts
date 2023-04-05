@@ -107,3 +107,13 @@ interface IReply {
 interface IReplys {
  replies: IReply[]
 }
+
+interface ICategory {
+  _id?: mongoose.Types.ObjectId,
+  category: string
+}
+
+
+interface ICategories {
+  categories: ICategory[] 
+ }

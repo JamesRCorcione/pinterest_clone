@@ -7,6 +7,7 @@ import users from './routes/users'
 import pins from './routes/pins'
 import comments from './routes/comments'
 import replies from './routes/replies'
+import categories from './routes/categories'
 
 dotenv.config()
 
@@ -19,6 +20,7 @@ app.use('/api/pins', pins)
 app.use('/api/users', users)
 app.use('/api/comments', comments)
 app.use('/api/replies', replies)
+app.use('/api/categories', categories)
 
 app.get('/', (req, res) => {
   res.send('welcome...')

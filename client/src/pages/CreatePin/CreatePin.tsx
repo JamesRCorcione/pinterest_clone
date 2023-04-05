@@ -1,8 +1,8 @@
 import { Box, Button, TextField } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AiOutlineCloudUpload } from 'react-icons/ai'
 import { MdDelete } from 'react-icons/md'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { uuid } from 'uuidv4'
 import Spinner from '../../components/Spinner/Spinner'
@@ -10,6 +10,7 @@ import Spinner from '../../components/Spinner/Spinner'
 import { createPin } from '../../features/pinsSlice'
 import FileBase from 'react-file-base64'
 import { grey } from '@mui/material/colors'
+import { createCategory, getCategories } from '../../features/categoriesSlice'
 
 
 interface CreatePinProps {
@@ -19,8 +20,11 @@ interface CreatePinProps {
 
 const CreatePin = ({user}:CreatePinProps) => {
     const [pin, setPin] = useState({ title: '', text: '', category: '', creatorId: user?._id, postedBy: {userId: user?._id, userName: user?.userName, image: null}, image: '', destination: '' })
+    const [category, setCategory] = useState<string>('')
     const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>()
+    const categoriesState = useSelector((state: RootState) => state.categoriesState);
+    const { categories } = categoriesState
 
     const handlePinSave = (e:React.FormEvent) => {
       e.preventDefault()
@@ -31,39 +35,16 @@ const CreatePin = ({user}:CreatePinProps) => {
       navigate('/')
     }
 
-    //Starting Categories
-    const categories = [
-      {
-        name: 'Home Decor',
-      },
-      {
-        name: 'DIY and Crafts',
-      },
-      {
-        name: 'Food and Drink',
-      },
-      {
-        name: 'Women\’s Fashion',
-      },
-      {
-        name: 'Health and Wellness',
-      },
-      {
-        name: 'Sports',
-      },
-      {
-        name: 'Travel',
-      },
-      {
-        name: 'Cars',
-      },
-      {
-        name: 'Gardening',
-      },
-      {
-        name: 'Weddings',
-      },
-    ]
+    useEffect(() => {
+        dispatch(getCategories(null))
+    }, [])
+
+
+    const handleCreateCategory = async (e:React.FormEvent) => {
+      e.preventDefault()
+      await dispatch(createCategory(category))
+    }
+    
 
 
   return (
@@ -108,9 +89,9 @@ const CreatePin = ({user}:CreatePinProps) => {
               className="outline-none w-4/5 text-base border-b-2 border-gray-200 p-2 rounded-md cursor-pointer"
               >
                 <option value="other" className="bg-white">Select Category</option>
-                {categories.map((category, i) => (
-                  <option key={i} className="text-base border-0 outline-none capitalize bg-white text-black" value={category.name}>
-                    {category.name}
+                {categories.map((category:ICategory, i:number) => (
+                  <option key={i} className="text-base border-0 outline-none capitalize bg-white text-black" value={category.category}>
+                    {category.category}
                   </option>
                 ))}
               </select>
@@ -130,7 +111,30 @@ const CreatePin = ({user}:CreatePinProps) => {
         >
             Add Post         
         </Button>
+        
       </form>  
+      <form onSubmit={handleCreateCategory}>
+        <TextField 
+            sx={{backgroundColor: 'white'}}
+            name="tags" 
+            variant="outlined" 
+            label="Add A New Category" 
+            fullWidth 
+            value={category} 
+            onChange={(e:any) => setCategory(e.target.value)}
+          />  
+        <Button
+            type="submit"
+            variant="contained"
+            size="small"
+            sx={{
+              marginLeft: 10,
+              fontFamily: "'Abel', 'sansSerif'",
+            }}
+          >
+              Button       
+          </Button>
+        </form>
     </Box>
     </Box>
   )
