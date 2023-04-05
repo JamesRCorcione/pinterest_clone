@@ -87,11 +87,16 @@ export const getComments = async (req: Request, res: Response) => {
     console.log('check', commentId, userId, replyId)
   
     try {
-      let updatedComment = await Comments.findByIdAndUpdate(commentId,
-        {$push: { 'hearts': userId}}
-      )
-      console.log('user', updatedComment)
-
+      let updatedComment = await Comments.findById(commentId)
+      const c = updatedComment?.replies
+      c?.map((reply, i) => {
+        if (reply._id.toString() === replyId) {          
+          reply.hearts.push(userId)
+          console.log('mapy',i,reply)
+        }
+      })
+      
+      updatedComment?.save()
       res.status(200).json({updatedComment})
     } catch (error) {
       //console.log(error)
