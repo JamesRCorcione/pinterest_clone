@@ -80,8 +80,8 @@ interface IComment {
   }  
   taggedUser: String
   text: String
-  date: Date
   hearts: mongoose.Types.ObjectId[]
+  totalHeart: Number
   replies: mongoose.Types.ObjectId[]
 }
 

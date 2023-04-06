@@ -106,7 +106,7 @@ export const createComment = createAsyncThunk(
 
     async ({pinId, commentId, userId, replyId}: HeartCommentProps, { rejectWithValue }) => {
       try {
-        const response = await axios.post(baseURL + `comments/heartCommentPin/${pinId}`, {commentId, userId, replyId})
+        const response = await axios.put(baseURL + `comments/heartCommentPin/${pinId}`, {commentId, userId, replyId})
         
         return response.data
       } catch (err: any) {
@@ -120,14 +120,51 @@ export const createComment = createAsyncThunk(
     }
   )
 
+  export const unheartCommentPin = createAsyncThunk(
+    'comments/unheartCommentPin',
+
+    async ({pinId, commentId, userId, replyId}: HeartCommentProps, { rejectWithValue }) => {
+      try {
+        const response = await axios.put(baseURL + `comments/unheartCommentPin/${pinId}`, {commentId, userId, replyId})
+        
+        return response.data
+      } catch (err: any) {
+        let error: AxiosError<ValidationErrors> = err // cast the error for access
+        if (!error.response) {
+          throw err
+        }
+        // We got validation errors, let's return those so we can reference in our component and set form errors
+        return rejectWithValue(error.response.data)
+      }
+    }
+  )
 
   export const heartReplyPin = createAsyncThunk(
     'comments/heartReplyPin',
 
     async ({pinId, commentId, userId, replyId}: HeartCommentProps, { rejectWithValue }) => {
       try {
-        const response = await axios.post(baseURL + `comments/heartReplyPin/${pinId}`, {commentId, userId, replyId})
+        const response = await axios.put(baseURL + `comments/heartReplyPin/${pinId}`, {commentId, userId, replyId})
         
+        return response.data
+      } catch (err: any) {
+        let error: AxiosError<ValidationErrors> = err // cast the error for access
+        if (!error.response) {
+          throw err
+        }
+        // We got validation errors, let's return those so we can reference in our component and set form errors
+        return rejectWithValue(error.response.data)
+      }
+    }
+  )
+
+  export const unheartReplyPin = createAsyncThunk(
+    'comments/unheartReplyPin',
+
+    async ({pinId, commentId, userId, replyId}: HeartCommentProps, { rejectWithValue }) => {
+      try {
+        const response = await axios.put(baseURL + `comments/unheartReplyPin/${pinId}`, {commentId, userId, replyId})
+        console.log('res', response.data)
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -222,12 +259,12 @@ const commentsSlice = createSlice({
     builder
       .addCase(createComment.fulfilled, (state, action) => {
         return { ...state, comments: [action.payload, ...state.comments], commentStatus: 'success', commentError: '' }
-      })        
-      .addCase(heartReplyPin.fulfilled, (state, action) => {
-        return { ...state, comments: [action.payload, ...state.comments], commentStatus: 'success', commentError: '' }
-      })   
+      })    
       .addCase(heartCommentPin.fulfilled, (state, action) => {
-        return { ...state, comments: [action.payload, ...state.comments], commentStatus: 'success', commentError: '' }
+        return { ...state, comments: action.payload, commentStatus: 'success', commentError: '' }
+      })
+      .addCase(unheartCommentPin.fulfilled, (state, action) => {
+        return { ...state, comments: action.payload, commentStatus: 'success', commentError: '' }
       })
       .addCase(getComments.fulfilled, (state, action) => {
         return { ...state, comments: action.payload, commentStatus: 'success', commentError: '' }

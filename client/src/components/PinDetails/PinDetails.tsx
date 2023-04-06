@@ -19,8 +19,14 @@ import useStyle from './styles'
 import { SavePin } from '../../features/usersSlice'
 import { fetchUser } from '../../utils/fetchUser'
 import { createComment, getComments } from '../../features/commentsSlice'
+import { Circles } from 'react-loader-spinner'
 
-
+const getTotalComments = (comments:IComment[]) => {
+  let total = comments?.length
+  comments.map((comment, i) => total += comment.replies?.length)
+  console.log(total)
+  return total
+}
 
 const PinDetails = () => {
   const user = fetchUser()
@@ -28,31 +34,34 @@ const PinDetails = () => {
   const commentsState = useSelector((state: RootState) => state.commentsState);
   const { comments } = commentsState
   const [pin, setPin] = useState<IPin>()
+  const [totalComments, setTotalComments] = useState(0)
   const [savingPost, setSavingPost] = useState(false)
-  const [expandComments, setExpandComments] = useState(comments.length > 3)
-  
+  const [expandComments, setExpandComments] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [text, setText] = useState<any>()
   const { pinId } = useParams()
   const classes = useStyle()
   const location = useLocation()
 
-  console.log(comments)
-
   useEffect(() => {
+    setLoading(true)
+    console.log('exec detual location')
     dispatch(getPin(pinId))
       .then((data:any) => setPin(data.payload))
     dispatch(getComments(pinId))
+    setLoading(false)
     window.scrollTo(0, 0)
   }, [location])
 
-
   useEffect(() => {    
+    setLoading(true)
+    console.log('exec detail length', comments.length)
     dispatch(getComments(pinId))
+    setLoading(false)
   }, [comments.length])
   
   let alreadySaved = user?.saves?.filter((save:any) => save?._id === pin?._id)
   alreadySaved = alreadySaved?.length > 0 ? alreadySaved : [];
-
 
   const savePin = async () => {
     if (alreadySaved.length === 0 && pin) {      
@@ -65,7 +74,7 @@ const PinDetails = () => {
     }   
   }
   
-  const handleComment =  (e:any) => {
+  const handleComment = async (e:any) => {
     e.preventDefault()
     if (pinId) {
       const userCommenting = {
@@ -73,7 +82,10 @@ const PinDetails = () => {
         userName: user.userName,
         userImage: user.image
       }
-      dispatch(createComment({pinId, text, userCommenting }))
+      setLoading(true)
+      await dispatch(createComment({pinId, text, userCommenting }))
+      setText('')
+      setLoading(false)
     }
   }
 
@@ -81,8 +93,7 @@ const PinDetails = () => {
     setExpandComments((expand) => !expand)
   }
 
-
-  function detailsRender() {
+  function detailsRender()  {
     return (
       <>
       <Box sx={{display: 'flex', marginLeft: 1, width: 400,}}>
@@ -101,17 +112,27 @@ const PinDetails = () => {
         {pin?.postedBy.userName}
       </Box>
       <Box sx={{display: 'flex'}}>
-                <Typography sx={{marginTop: 1}}>
-                    {comments.length} Comments 
-                  </Typography>
-                <Button onClick={handleExpandComments}
-                sx={{borderRadius: 99, marginTop: 0.5, marginLeft: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>                
-                  <KeyboardArrowDownIcon sx={{color: 'black'}} />
-                </Button>
-              </Box>
+        <Typography sx={{marginTop: 1}}>
+            {comments.length} Comments 
+          </Typography>
+        <Button onClick={handleExpandComments}
+        sx={{borderRadius: 99, marginTop: 0.5, marginLeft: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>                
+          <KeyboardArrowDownIcon sx={{color: 'black'}} />
+        </Button>
+      </Box>
+      {loading &&
+        <Box sx={{position: 'relative', marginLeft: 8, marginTop: 3, marginBottom: 3}}>
+        <Circles 
+            color={grey[400]}
+            height={30}
+            width={150}
+        />
+      </Box>
+      }
       </>
     )
   }
+
 
   return (
     <>

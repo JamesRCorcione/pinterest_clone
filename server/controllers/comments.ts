@@ -15,7 +15,7 @@ import Replies from '../models/replies'
 export const getComments = async (req: Request, res: Response) => {
   const { id } = req.params
     try {
-        const comments = await Comments.find({pinId: id}).sort({ date: -1 })
+        const comments = await Comments.find({pinId: id}).sort({ createdAt: -1 })
   
         res.status(200).send(comments)
       } catch (error) {
@@ -27,7 +27,7 @@ export const getComments = async (req: Request, res: Response) => {
     const { id } = req.params
   
     try {
-        const replies = await Replies.find({parentId: id}).sort({ date: -1 })
+        const replies = await Replies.find({parentId: id}).sort({ createdAt: -1 })
         
 
         res.status(200).json(replies)
@@ -42,7 +42,7 @@ export const getComments = async (req: Request, res: Response) => {
     const { userCommenting, text, commentId} = req.body
 
   
-    let data = { pinId: id, userCommenting, text, date: new Date(), hearts: [], replies: [] }    
+    let data = { pinId: id, userCommenting, text, date: new Date(), hearts: [], totalHearts: 0, replies: [] }    
     const comment = new Comments(data)  
 
     comment.save()
@@ -57,11 +57,10 @@ export const getComments = async (req: Request, res: Response) => {
     const { id } = req.params
     const { commentId, replyId, userCommenting, text} = req.body
     try {
-      console.log()
 
       const prev = await Comments.findById(replyId)
       
-      let data = { pinId: id, parentId: commentId, userCommenting, text, date: new Date(), hearts: [], taggedUser: prev?.userCommenting?.userName}
+      let data = { pinId: id, parentId: commentId, userCommenting, text, date: new Date(), hearts: [], totalHearts: 0, taggedUser: prev?.userCommenting?.userName}
 
       const reply = new Replies(data)
 
@@ -84,17 +83,38 @@ export const getComments = async (req: Request, res: Response) => {
     const { id } = req.params
     const { commentId, userId, replyId } = req.body
 
-  
-    try {
-      let updatedComment = await Comments.findByIdAndUpdate(commentId,
+    console.log(userId)
+
+    try {      
+      await Comments.findByIdAndUpdate(commentId,
           {$push: {'hearts': userId}},  
+          {$inc: {'totalHearts': 1 }}
         )
-      
-      updatedComment?.save()
-      res.status(200).json({updatedComment})
+      //updatedComment?.save()
+      res.status(200).send()
     } catch (error) {
       //console.log(error)
-      //res.status(500).json({ message: error })
+      res.status(500).json({ message: error })
+    }
+  }
+
+ export const unheartCommentPin = async (req: Request, res: Response) => {
+    const { id } = req.params
+    const { commentId, userId, replyId } = req.body
+
+
+    try {      
+      await Comments.findByIdAndUpdate(commentId,
+          {$pull: {'hearts': userId}},  
+          {$inc: {'totalHearts': -1 }}
+        )
+
+      
+      //updatedComment?.save()
+      res.status(200).send()
+    } catch (error) {
+      //console.log(error)
+      res.status(500).json({ message: error })
     }
   }
 
@@ -109,15 +129,41 @@ export const getComments = async (req: Request, res: Response) => {
       c?.map((reply:any, i:number) => {
         if (reply._id.toString() === replyId) {          
           reply.hearts.push(userId)
-          console.log('mapy',i,reply)
+          reply.totalHearts = reply.totalHearts + 1
         }
+      })
+
+      
+      updatedComment?.save()
+      res.status(200).send()
+    } catch (error) {
+      //console.log(error)
+      res.status(500).json({ message: error })
+    }
+  }
+
+  export const unheartReplyPin = async (req: Request, res: Response) => {
+    const { id } = req.params
+    const { commentId, userId, replyId } = req.body
+
+  
+    try {
+      let updatedComment = await Comments.findById(commentId)
+      console.log(updatedComment)
+      const c = updatedComment?.replies
+      c?.map((reply:any, i:number) => {
+        if (reply._id.toString() === replyId) {       
+          reply.hearts.pull(userId)
+          reply.totalHearts = reply.totalHearts - 1
+        }
+        console.log(reply)
       })
       
       updatedComment?.save()
-      res.status(200).json({updatedComment})
+      res.status(200).send()
     } catch (error) {
       //console.log(error)
-      //res.status(500).json({ message: error })
+      res.status(500).json({ message: error })
     }
   }
 
@@ -205,11 +251,10 @@ export const updateReply = async (req: Request, res: Response) => {
     console.log(commentId, replyId, text)
   
     try {    
-      const updatedComment = await Comments.findByIdAndUpdate(commentId, {text})      
+      await Comments.findByIdAndUpdate(commentId, {text})      
       
-      console.log(updatedComment?.text)
   
-      res.send(updatedComment)
+      res.status(200).send()
     } catch (error) {
       res.status(500).json({ message: error })
     }  

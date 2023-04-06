@@ -2,7 +2,7 @@ import { Avatar, Box, Button, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { grey, blue } from '@mui/material/colors';
 import { useDispatch, useSelector } from 'react-redux';
-import {  deleteReply, getComments, heartReplyPin, updateReply } from '../../../features/commentsSlice'
+import {  deleteReply, getComments, heartReplyPin, unheartReplyPin, updateReply } from '../../../features/commentsSlice'
 
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
@@ -10,11 +10,12 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { useNavigate } from 'react-router-dom';
 import Comment from '../Comment';
 import { createReply, heartRepliesPin } from '../../../features/repliesSlice';
+import { Circles } from 'react-loader-spinner';
 
 interface CommentProps {
   user: any, 
   pinId: any, 
-  comment: IComment
+  comment: any
   commentId: any
 }
 
@@ -25,8 +26,17 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
   const [actionBar, setActionBar] = useState(false)
   const [updateComment, setUpdateComment] = useState(false)
   const [text, setText] = useState<any>()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [isLoved, setIsLoved] = useState<boolean>(false)
 
-  console.log(updateComment)
+
+  useEffect(() => {
+    console.log(comment.hearts, user._id)
+     if (comment.hearts?.includes(user._id)) {
+        setIsLoved(true)
+     } 
+  }, [])
+
 
   const handleReplying = () => {
     setReplying((reply:any) => !reply)
@@ -41,9 +51,10 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
         userName: user.userName,
         userImage: user.image
       }
-      
+      setLoading(true)
       await dispatch(createReply({pinId, commentId, replyId: comment._id, text, userCommenting, taggedUser: null }))
       await dispatch(getComments(pinId))
+      setLoading(false)
     }
   }
 
@@ -71,13 +82,38 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
     }
   }
 
-  const handleHeartPin = (e:any) => {
+  const handleHeartPin = async (e:any) => {
     e.preventDefault()
     if (pinId) {
-      dispatch(heartReplyPin({pinId, commentId, userId: comment.userCommenting?.userId, replyId: comment._id }))
+      setLoading(true)
+      await dispatch(heartReplyPin({pinId, commentId, userId: user._id, replyId: comment._id }))
+      
+      setIsLoved(true)
+      await dispatch(getComments(pinId))
+      setLoading(false)
     }
   }
 
+  const handleUnHeartPin = async (e:any) => {
+    e.preventDefault()
+    if (pinId) {      
+      setLoading(true)
+      await dispatch(unheartReplyPin({pinId, commentId, userId: user._id, replyId: comment._id }))
+      await dispatch(getComments(pinId))
+      setIsLoved(false)            
+      setLoading(false)
+    }
+  }
+
+  if (loading) return  (
+    <Box sx={{position: 'relative', height: 60, paddingTop: 3, paddingLeft: 12, marginRight: 7 }}>
+      <Circles 
+          color={grey[400]}
+          height={30}
+          width={150}
+      />
+    </Box>
+  )
   
   return (
     <>
@@ -102,9 +138,9 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
         <Avatar onClick={() => navigate(`/user-profile/${user._id}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{user.userName.charAt(0)}</Avatar> 
         {(comment.taggedUser)
         ?
-          <Typography sx={{wordBreak: 'break-word'}}>{comment._id} {comment.userCommenting?.userName} @{comment.taggedUser} {comment?.text}</Typography>
+          <Typography sx={{wordBreak: 'break-word'}}>{comment.userCommenting?.userName} @{comment.taggedUser} {comment?.text}</Typography>
         :
-          <Typography sx={{wordBreak: 'break-word'}}>{comment._id} {comment.userCommenting?.userName} {comment?.text}</Typography>
+          <Typography sx={{wordBreak: 'break-word'}}>{comment.userCommenting?.userName} {comment?.text}</Typography>
         }
       </Box>
 
@@ -122,19 +158,24 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
             </Button>
           </Box>
           <Box sx={{marginRight: 1}}>
-            {(comment.hearts?.length > 0 )
+          {(isLoved && comment.totalHearts > 0)
             ?
             <Box sx={{display: 'flex'}}>
-              <FavoriteRoundedIcon sx={{color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
-              <Typography>{comment.hearts.length}</Typography>
+              <FavoriteRoundedIcon onClick={(e) => handleUnHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
+              <Typography>{comment.totalHearts}</Typography>
             </Box>
             :
-            <FavoriteBorderRoundedIcon onClick={(e) => handleHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
+            <Box sx={{display: 'flex'}}>
+              <FavoriteBorderRoundedIcon onClick={(e) => handleHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
+              {comment.totalHearts > 0 &&
+                <Typography>{comment.totalHearts}</Typography>
+              }
+            </Box>
             }
             </Box>
           <Box sx={{marginRight: 1}}><MoreHorizIcon onClick={handleOpenActionBar} sx={{ cursor: 'pointer', marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} /></Box>
           {actionBar &&
-            <Box sx={{position: 'relative'}}>
+            <Box sx={{position: 'relative', height: 150}}>
               <Box sx={{position: 'absolute', borderRadius: 2, backgroundColor: 'white', height: 100, width: 150, top: 30, right: -50, boxShadow:2, zIndex:2}}>
                 <Box sx={{display: 'flex', flexDirection: 'column'}}>
                   <Button onClick={() => setUpdateComment((prev) => !prev)}>Edit</Button>

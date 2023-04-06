@@ -1,12 +1,14 @@
-import { createComment, deleteComment, deleteReply, getComments, heartCommentPin, heartReplyPin, updateComment, updateReply } from '../controllers/comments'
+import { createComment, deleteComment, deleteReply, getComments, heartCommentPin, heartReplyPin, unheartCommentPin, unheartReplyPin, updateComment, updateReply } from '../controllers/comments'
 import express from 'express'
 import auth from '../middleware/auth.js'
 
 const router = express.Router()
 router.get('/:id', getComments)
 router.post('/:id', createComment)
-router.post('/heartCommentPin/:id', heartCommentPin)
-router.post('/heartReplyPin/:id', heartReplyPin)
+router.put('/heartCommentPin/:id', heartCommentPin)
+router.put('/unheartCommentPin/:id', unheartCommentPin)
+router.put('/heartReplyPin/:id', heartReplyPin)
+router.put('/unheartReplyPin/:id', unheartReplyPin)
 
 router.delete('/:commentId', deleteComment)
 router.put('/:commentId', updateComment)
