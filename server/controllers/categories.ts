@@ -9,8 +9,6 @@ export const createCategory = async (req: Request, res: Response) => {
     try {    
         const { category } = req.body
 
-        console.log('category',category)
-
         let newCategory = new Categories({ category })
     
         await newCategory.save()

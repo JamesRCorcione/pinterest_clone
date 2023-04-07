@@ -164,7 +164,6 @@ export const createComment = createAsyncThunk(
     async ({pinId, commentId, userId, replyId}: HeartCommentProps, { rejectWithValue }) => {
       try {
         const response = await axios.put(baseURL + `comments/unheartReplyPin/${pinId}`, {commentId, userId, replyId})
-        console.log('res', response.data)
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -180,10 +179,8 @@ export const createComment = createAsyncThunk(
   export const deleteReply = createAsyncThunk(
     'comments/deleteReply',
     async ({pinId, commentId,  replyId}: DeleteReplyProps, { rejectWithValue }) => {
-      console.log('d', pinId)
       try {
         const response = await axios.delete(baseURL + `comments/${commentId}/deleteReply/${replyId}`)
-        console.log('responser', response.data)
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -217,10 +214,8 @@ export const createComment = createAsyncThunk(
   export const deleteComment = createAsyncThunk(
     'comments/deleteComment',
     async ({pinId, commentId,  replyId}: DeleteReplyProps, { rejectWithValue }) => {
-      console.log('d', pinId)
       try {
         const response = await axios.delete(baseURL + `comments/${commentId}`)
-        console.log('responser', response.data)
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access

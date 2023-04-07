@@ -31,7 +31,6 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
 
 
   useEffect(() => {
-    console.log(comment.hearts, user._id)
      if (comment.hearts?.includes(user._id)) {
         setIsLoved(true)
      } 

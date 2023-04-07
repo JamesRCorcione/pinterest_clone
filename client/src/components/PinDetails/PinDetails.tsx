@@ -24,7 +24,6 @@ import { Circles } from 'react-loader-spinner'
 const getTotalComments = (comments:IComment[]) => {
   let total = comments?.length
   comments.map((comment, i) => total += comment.replies?.length)
-  console.log(total)
   return total
 }
 
@@ -44,24 +43,32 @@ const PinDetails = () => {
   const location = useLocation()
 
   useEffect(() => {
-    setLoading(true)
-    console.log('exec detual location')
-    dispatch(getPin(pinId))
-      .then((data:any) => setPin(data.payload))
-    dispatch(getComments(pinId))
-    setLoading(false)
-    window.scrollTo(0, 0)
+    getPinDetails()    
   }, [location])
 
   useEffect(() => {    
-    setLoading(true)
-    console.log('exec detail length', comments.length)
-    dispatch(getComments(pinId))
-    setLoading(false)
+    getNewComment()
   }, [comments.length])
   
   let alreadySaved = user?.saves?.filter((save:any) => save?._id === pin?._id)
   alreadySaved = alreadySaved?.length > 0 ? alreadySaved : [];
+
+
+  const getPinDetails = async () => {
+    window.scrollTo(0, 0) 
+    //Need another loading screen for the whole pin
+    setLoading(true)
+    await dispatch(getPin(pinId))
+      .then((data:any) => setPin(data.payload))  
+    await dispatch(getComments(pinId))
+    setLoading(false)     
+  }
+
+  const getNewComment = async () => {
+    setLoading(true)
+    await dispatch(getComments(pinId))
+    setLoading(false)
+  }
 
   const savePin = async () => {
     if (alreadySaved.length === 0 && pin) {      

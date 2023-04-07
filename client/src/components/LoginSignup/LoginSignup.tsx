@@ -90,12 +90,11 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
         handleExit()
     };
 
-    const handleExit = () => {
+    const handleExit = async () => {
         setOpen((open) => !open)
-        setOpenLogin((openLogin:boolean) => !openLogin)
-        window.location.reload();
-        navigate('/')
-        
+        setOpenLogin((openLogin:boolean) => !openLogin)        
+        navigate('/')  
+        window.location.reload();     
     }
 
     const handleLoginSwitch = () => {

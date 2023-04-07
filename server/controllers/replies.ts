@@ -22,7 +22,6 @@ export const createReply = async (req: Request, res: Response) => {
     const reply = new Replies(data)
     reply.save()
 
-    console.log(reply)
     const updatedComment = await Comments.findByIdAndUpdate(commentId,
       {$push: {'replies': reply}},
       { 'new': true },  

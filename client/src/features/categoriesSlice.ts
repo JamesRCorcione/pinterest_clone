@@ -29,7 +29,6 @@ export const createCategory = createAsyncThunk(
   async (category: string, { rejectWithValue }) => {
     try {
       const response = await axios.post(baseURL + 'categories', { category })
-      console.log('response', response.data)
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access

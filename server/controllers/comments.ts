@@ -83,7 +83,6 @@ export const getComments = async (req: Request, res: Response) => {
     const { id } = req.params
     const { commentId, userId, replyId } = req.body
 
-    console.log(userId)
 
     try {      
       await Comments.findByIdAndUpdate(commentId,
@@ -93,7 +92,6 @@ export const getComments = async (req: Request, res: Response) => {
       //updatedComment?.save()
       res.status(200).send()
     } catch (error) {
-      //console.log(error)
       res.status(500).json({ message: error })
     }
   }
@@ -113,7 +111,6 @@ export const getComments = async (req: Request, res: Response) => {
       //updatedComment?.save()
       res.status(200).send()
     } catch (error) {
-      //console.log(error)
       res.status(500).json({ message: error })
     }
   }
@@ -137,7 +134,6 @@ export const getComments = async (req: Request, res: Response) => {
       updatedComment?.save()
       res.status(200).send()
     } catch (error) {
-      //console.log(error)
       res.status(500).json({ message: error })
     }
   }
@@ -149,20 +145,17 @@ export const getComments = async (req: Request, res: Response) => {
   
     try {
       let updatedComment = await Comments.findById(commentId)
-      console.log(updatedComment)
       const c = updatedComment?.replies
       c?.map((reply:any, i:number) => {
         if (reply._id.toString() === replyId) {       
           reply.hearts.pull(userId)
           reply.totalHearts = reply.totalHearts - 1
         }
-        console.log(reply)
       })
       
       updatedComment?.save()
       res.status(200).send()
     } catch (error) {
-      //console.log(error)
       res.status(500).json({ message: error })
     }
   }
@@ -171,19 +164,15 @@ export const getComments = async (req: Request, res: Response) => {
 export const deleteReply = async (req: Request, res: Response) => {
   const { commentId, replyId } = req.params
 
-  console.log(commentId, replyId)
-
   try {    
     let updatedComment = await Comments.findById(commentId)
     updatedComment?.replies?.map((reply:any, i:number) =>  {
       if (reply._id.toString() === replyId) {
         updatedComment?.replies.splice(i, 1)
-        console.log(updatedComment?.replies)
       }
     })
     
     updatedComment?.save()
-    console.log(updatedComment?.replies.length)
 
     //if (!Comments) return res.status(404).send("Comment not found...")
 
@@ -191,8 +180,7 @@ export const deleteReply = async (req: Request, res: Response) => {
 
     res.send(updatedComment)
   } catch (error) {
-    console.log(error)
-    //res.status(500).json({ message: error })
+    res.status(500).json({ message: error })
   }  
 }
 
@@ -200,8 +188,6 @@ export const deleteReply = async (req: Request, res: Response) => {
 export const updateReply = async (req: Request, res: Response) => {
   const { commentId, replyId } = req.params
   const { text } = req.body
-
-  console.log(commentId, replyId, text)
 
   try {    
     let updatedComment = await Comments.findById(commentId)
@@ -213,12 +199,10 @@ export const updateReply = async (req: Request, res: Response) => {
     })
     
     updatedComment?.save()
-    //console.log(updatedComment?.replies.length)
 
     res.send(updatedComment)
   } catch (error) {
-    console.log(error)
-    //res.status(500).json({ message: error })
+    res.status(500).json({ message: error })
   }  
 }
 
@@ -226,9 +210,7 @@ export const updateReply = async (req: Request, res: Response) => {
   //Delete
   export const deleteComment = async (req: Request, res: Response) => {
     const { commentId, replyId } = req.params
-  
-    console.log(commentId, replyId)
-  
+    
     try {    
       const updatedComment = await Comments.findByIdAndDelete(commentId)
      
@@ -247,9 +229,7 @@ export const updateReply = async (req: Request, res: Response) => {
   export const updateComment = async (req: Request, res: Response) => {
     const { commentId, replyId } = req.params
     const { text } = req.body
-  
-    console.log(commentId, replyId, text)
-  
+    
     try {    
       await Comments.findByIdAndUpdate(commentId, {text})      
       

@@ -116,7 +116,6 @@ const Comment = ({user, pinId, comment}:CommentProps) => {
     }
   }
 
-  console.log(comment.totalHearts, comment.hearts)
 
   //Doesnt allow duplicate rendering of nested comments
   if (comment.parentId) {

@@ -6,14 +6,15 @@ const router = express.Router()
 
 
 
-router.post("/", auth, createPin)
-router.get("/", auth, getPins)
+
+router.get("/", getPins)
 router.get("/:id", getPin)
 router.get("/user-created-pins/:id", getPinsByCreator)
 router.get("/category/:category", getPinsByCategory)
 router.get("/search/:searchTerm", getSearchPins)
 router.put("/:id", updatePin)
-router.delete("/:id", deletePin)
+router.post("/", auth, createPin)
+router.delete("/:id", auth, deletePin)
 
 
 export default router
