@@ -260,12 +260,6 @@ const commentsSlice = createSlice({
       .addCase(createComment.fulfilled, (state, action) => {
         return { ...state, comments: [action.payload, ...state.comments], commentStatus: 'success', commentError: '' }
       })    
-      .addCase(heartCommentPin.fulfilled, (state, action) => {
-        return { ...state, comments: action.payload, commentStatus: 'success', commentError: '' }
-      })
-      .addCase(unheartCommentPin.fulfilled, (state, action) => {
-        return { ...state, comments: action.payload, commentStatus: 'success', commentError: '' }
-      })
       .addCase(getComments.fulfilled, (state, action) => {
         return { ...state, comments: action.payload, commentStatus: 'success', commentError: '' }
       })   

@@ -100,6 +100,7 @@ const Comment = ({user, pinId, comment}:CommentProps) => {
       setLoading(true)
       await dispatch(heartCommentPin({pinId, commentId: comment._id, userId: user._id, replyId: comment._id }))
       setIsLoved(true)
+      await dispatch(getComments(pinId))
       setLoading(false)
     }
   }
@@ -110,6 +111,7 @@ const Comment = ({user, pinId, comment}:CommentProps) => {
       setLoading(true)
       await dispatch(unheartCommentPin({pinId, commentId: comment._id, userId: user._id, replyId: comment._id }))
       setIsLoved(false)
+      await dispatch(getComments(pinId))
       setLoading(false)
     }
   }
