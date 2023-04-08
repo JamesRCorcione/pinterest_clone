@@ -22,13 +22,17 @@ app.use('/api/comments', comments)
 app.use('/api/replies', replies)
 app.use('/api/categories', categories)
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
   res.send('welcome...')
 })
 
 const uri = process.env.ATLAS_URI || ''
 const port = process.env.PORT
 
-mongoose.connect(uri)
-  .then(() => app.listen(port, () => console.log(`⚡️[server]: Server is running at https://pinterestbackendclone.netlify.app/`)))
-  .catch((error) => console.log(`${error} did not connect`))
+const startServer = async () => {
+  mongoose.connect(uri)
+    .then(() => app.listen(port, () => console.log(`⚡️[server]: Server is running at https://pinterestbackendclone.netlify.app/`)))
+    .catch((error) => console.log(`${error} did not connect`))
+}
+
+startServer()
