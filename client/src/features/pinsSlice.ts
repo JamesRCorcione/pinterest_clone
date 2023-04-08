@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios'
 import { NextFunction } from 'express'
 
 
-const baseURL = 'http://localhost:8080/api/'
+const baseURL = 'https://pinterestclone.onrender.com/api/'
 
 const initialState = {
   pins: [],
@@ -24,7 +24,7 @@ function isPendingAction(action: Action) {
 }
 
 
-const API = axios.create({ baseURL: 'http://localhost:8080/api/' })
+const API = axios.create({ baseURL: 'https://pinterestclone.onrender.com//api/' })
 
 API.interceptors.request.use((req) => {
   if (localStorage.getItem('profile')) {

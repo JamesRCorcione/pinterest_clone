@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios'
 import { NextFunction } from 'express'
 
 
-const baseURL = 'http://localhost:8080/api/'
+const baseURL = 'https://pinterestclone.onrender.com/api/'
 
 const initialState = {
   categories: [],

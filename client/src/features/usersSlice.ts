@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, Action } from '@reduxjs/toolkit'
 import axios, { AxiosError } from 'axios'
 
-const baseURL = 'http://localhost:8080/api/'
+const baseURL = 'https://pinterestclone.onrender.com/api/'
 
 const initialState = {
   users: [],
