@@ -22,7 +22,7 @@ app.use('/api/comments', comments)
 app.use('/api/replies', replies)
 app.use('/api/categories', categories)
 
-app.get('/', async (req, res) => {
+app.get('/', async (req:any, res:any) => {
   res.send('welcome...')
 })
 
@@ -32,7 +32,7 @@ const port = process.env.PORT
 const startServer = async () => {
   mongoose.connect(uri)
     .then(() => app.listen(port, () => console.log(`⚡️[server]: Server is running at https://pinterestbackendclone.netlify.app/`)))
-    .catch((error) => console.log(`${error} did not connect`))
+    .catch((error:any) => console.log(`${error} did not connect`))
 }
 
 startServer()
