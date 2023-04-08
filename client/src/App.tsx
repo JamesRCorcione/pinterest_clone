@@ -30,17 +30,17 @@ function App() {
       :      
         <Box sx={{width:'100%'}}>
           <TopNavbar />
-        <Routes>
-          <Route path='/landinPage' index element={<LandingPage />} />
-          <Route path='/' index element={<Feed />} />
-          <Route path='/today' index element={<SuggestedFeeds />} />
-          <Route path='/createPin' index element={<CreatePin user={user} />} />
-          <Route path='/pin-detail/:pinId' element={<PinDetails />} />
-          <Route path='/user-profile/:userId' index element={<Profile  />} />    
+          <Routes>
+            <Route path='/landinPage' index element={<LandingPage />} />
+            <Route path='/' index element={<Feed />} />
+            <Route path='/today' index element={<SuggestedFeeds />} />
+            <Route path='/createPin' index element={<CreatePin user={user} />} />
+            <Route path='/pin-detail/:pinId' element={<PinDetails />} />
+            <Route path='/user-profile/:userId' index element={<Profile  />} />    
 
-          <Route path='/category/:category' element={<Feed />} />
-          <Route path='/search/:searchTerm' element={<Search />} />
-        </Routes>    
+            <Route path='/category/:category' element={<Feed />} />
+            <Route path='/search/:searchTerm' element={<Search />} />
+          </Routes>    
         </Box>
       
       }

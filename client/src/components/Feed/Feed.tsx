@@ -16,15 +16,19 @@ const Feed = () => {
   const { category } = useParams()
   
   useEffect(() => {
+    async function loadPins() {
     setLoading(true)
 
     if(category) {
-      dispatch(getPinsByCategory(category))
+      await dispatch(getPinsByCategory(category))
     } else {
-      dispatch(getPins(null))
+      await dispatch(getPins(null))
     }
 
     setLoading(false)
+  }
+
+  loadPins()
   }, [category])
   
 
