@@ -27,8 +27,8 @@ app.get('/', (req, res) => {
 })
 
 const uri = process.env.ATLAS_URI || ''
-const port = process.env.PORT || 8080
+const port = process.env.PORT
 
 mongoose.connect(uri)
-  .then(() => app.listen(port, () => console.log(`⚡️[server]: Server is running at http://localhost:${port}`)))
+  .then(() => app.listen(port, () => console.log(`⚡️[server]: Server is running at https://pinterestbackendclone.netlify.app/`)))
   .catch((error) => console.log(`${error} did not connect`))
