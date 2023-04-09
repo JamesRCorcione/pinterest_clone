@@ -33,16 +33,16 @@ const Feed = () => {
   }, [category])
   
 
-  console.log(pins)
+  console.log(pins[0])
 
   if (loading) return <Spinner message="We are adding new ideas to your feed!"/>
 
-  if(!pins?.length) return <h2>No Pins Available</h2>
+  if(!pins[0]?.length) return <h2>No Pins Available</h2>
 
 
   return (
     <div>
-      {pins && <MasonryLayout pins={pins} />}
+      {pins[0] && <MasonryLayout pins={pins[0]} />}
     </div>
   )
 }
