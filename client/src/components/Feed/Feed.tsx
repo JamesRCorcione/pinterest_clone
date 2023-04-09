@@ -11,9 +11,10 @@ import Spinner from '../Spinner/Spinner'
 const Feed = () => {
   const [loading, setLoading] = useState(false)
   const pinsState = useSelector((state: RootState) => state.pinsState);
-  const { pins } = pinsState
+  //const { pins } = pinsState
   const dispatch = useDispatch<AppDispatch>()
   const { category } = useParams()
+  let pins: IPin[] = []
   
   useEffect(() => {
     async function loadPins() {
@@ -22,7 +23,7 @@ const Feed = () => {
     if(category) {
       await dispatch(getPinsByCategory(category))
     } else {
-      await dispatch(getPins(null))
+      pins = await dispatch(getPins(null))
     }
 
 
