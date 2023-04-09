@@ -37,9 +37,9 @@ const Pin = ({ pin }:PinProps) => {
 
 
   const savePin = async () => {
-    if (alreadySaved.length === 0) {      
+    if (alreadySaved?.length === 0) {      
       setSavingPost(true)   
-      await dispatch(SavePin({id: user._id, pin: pin}))
+      await dispatch(SavePin({id: user?._id, pin: pin}))
       .then(() => {
         //window.location.reload();
         setSavingPost(false);
@@ -107,10 +107,10 @@ const Pin = ({ pin }:PinProps) => {
                     e.stopPropagation()
                   }}
                 >
-                  {destination.length < 12 ?
+                  {destination?.length < 12 ?
                     <Typography sx={{fontSize: 10, color: 'black'}}>{destination}</Typography>
                   :
-                  <Typography sx={{fontSize: 10, color: 'black'}}>{destination.slice(12,23)}...</Typography>
+                  <Typography sx={{fontSize: 10, color: 'black'}}>{destination?.slice(12,23)}...</Typography>
                   }
                 </Button>
               </Box>
@@ -162,7 +162,7 @@ const Pin = ({ pin }:PinProps) => {
         )}
         </Box>
           <Box sx={{marginLeft: 2}}>
-            <Typography sx={{fontSize: 14}}>{pin.title}</Typography>
+            <Typography sx={{fontSize: 14}}>{pin?.title}</Typography>
           </Box>
 
           
