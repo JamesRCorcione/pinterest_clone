@@ -182,7 +182,7 @@ const Pin = ({ pin }:PinProps) => {
             </>
           :
             <>
-              <Avatar sx={{minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{postedBy?.userName.charAt(0)}</Avatar>
+              <Avatar sx={{minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{postedBy?.userName?.charAt(0)}</Avatar>
             </>
           }
           <Typography sx={{marginLeft:1, fontSize: 12, color: 'black', boxShadow: 'none', textDecoration: 'none'}}>{postedBy?.userName}</Typography>
