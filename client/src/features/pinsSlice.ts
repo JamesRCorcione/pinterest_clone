@@ -189,7 +189,7 @@ const pinSlice = createSlice({
         return { ...state, pins: [action.payload, ...state.pins], pinStatus: 'success', pinError: '' }
       })
       .addCase(getPins.fulfilled, (state, action) => {
-        return { ...state, pins: action.payload, pinStatus: 'success', pinError: '' }
+        return { ...state, pins: [action.payload, ...state.pins], pinStatus: 'success', pinError: '' }
       })
       .addCase(getPin.fulfilled, (state, action) => {
         return { ...state, pin: action.payload, pinStatus: 'success', pinError: '' }
