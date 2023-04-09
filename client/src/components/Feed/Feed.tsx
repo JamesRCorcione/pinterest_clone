@@ -32,7 +32,7 @@ const Feed = () => {
   }
 
   loadPins()
-  }, [])
+  }, [category])
   
 
 

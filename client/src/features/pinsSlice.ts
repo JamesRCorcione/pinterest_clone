@@ -24,7 +24,7 @@ function isPendingAction(action: Action) {
 }
 
 
-const API = axios.create({ baseURL: 'https://pinterestclone.onrender.com//api/' })
+const API = axios.create({ baseURL: 'https://pinterestclone.onrender.com/api/' })
 
 API.interceptors.request.use((req) => {
   if (localStorage.getItem('profile')) {

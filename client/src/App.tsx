@@ -31,7 +31,7 @@ function App() {
         <Box sx={{width:'100%'}}>
           <TopNavbar />
           <Routes>
-            <Route path='/landinPage' index element={<LandingPage />} />
+            <Route path='/landingPage' index element={<LandingPage />} />
             <Route path='/' index element={<Feed />} />
             <Route path='/today' index element={<SuggestedFeeds />} />
             <Route path='/createPin' index element={<CreatePin user={user} />} />

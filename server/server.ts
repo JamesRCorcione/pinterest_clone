@@ -31,7 +31,7 @@ const port = process.env.PORT
 
 const startServer = async () => {
   mongoose.connect(uri)
-    .then(() => app.listen(port, () => console.log(`⚡️[server]: Server is running at https://pinterestbackendclone.netlify.app/`)))
+    .then(() => app.listen(port, () => console.log(`⚡️[server]: Server is running at https://pinterestclone.onrender.com/`)))
     .catch((error:any) => console.log(`${error} did not connect`))
 }
 
