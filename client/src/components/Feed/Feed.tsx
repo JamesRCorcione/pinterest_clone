@@ -22,8 +22,11 @@ const Feed = () => {
     if(category) {
       await dispatch(getPinsByCategory(category))
     } else {
-      await dispatch(getPins(null))
+      const c = await dispatch(getPins(null))
+      console.log(c)
     }
+
+    console.log('Hi')
 
     setLoading(false)
   }
