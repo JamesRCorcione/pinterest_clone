@@ -10,9 +10,8 @@ import Spinner from '../Spinner/Spinner'
 
 const Feed = () => {
   const [loading, setLoading] = useState(false)
-  const [pins, setPins] = useState<IPin[]>()
   const pinsState = useSelector((state: RootState) => state.pinsState);
-  //const { pins } = pinsState
+  const { pins } = pinsState
   const dispatch = useDispatch<AppDispatch>()
   const { category } = useParams()
   
@@ -23,20 +22,18 @@ const Feed = () => {
     if(category) {
       await dispatch(getPinsByCategory(category))
     } else {
-      setPins(await dispatch(getPins(null)))
-      console.log('1',pins)
+      await dispatch(getPins(null))
     }
 
 
     setLoading(false)
   }
 
-  console.log(pins)
-
   loadPins()
   }, [category])
   
 
+  console.log(pins)
 
   if (loading) return <Spinner message="We are adding new ideas to your feed!"/>
 
