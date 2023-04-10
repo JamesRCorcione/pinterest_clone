@@ -80,6 +80,7 @@ const TopNavbar = () => {
     window.location.reload();
   }
 
+  console.log('topnav', user)
 
   return (
     <Box className={classes.navbar}>

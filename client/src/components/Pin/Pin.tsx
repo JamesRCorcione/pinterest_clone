@@ -51,6 +51,8 @@ const Pin = ({ pin }:PinProps) => {
     window.location.reload();
   }  
 
+  console.log('pin', user, postedBy)
+
   return (  
     <Box>      
       <Box
