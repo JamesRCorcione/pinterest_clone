@@ -22,7 +22,7 @@ function isPendingAction(action: Action) {
 }
 
 
-const API = axios.create({ baseURL: 'https://pinterestclone.onrender.com/api/' })
+const API = axios.create({ baseURL })
 
 API.interceptors.request.use((req) => {
   if (localStorage.getItem('profile')) {
@@ -37,6 +37,7 @@ export const createPin = createAsyncThunk(
   'pins/createPin',
   
   async (pin: IPin, { rejectWithValue }) => {
+    console.log('slice')
     try {
       const response = await API.post('pins', pin)
       return response.data
@@ -68,8 +69,8 @@ export const getPins = createAsyncThunk(
   }
 )
 
-export const getPinsByCategory = createAsyncThunk(
-  'pins/category/getPinsByCategory',
+export const getPinsByTags = createAsyncThunk(
+  'pins/tags/getPinsByTags',
   async (category: any = null, { rejectWithValue }) => {
     try {
       const response = await API.get(`pins/category/${category}`)
@@ -187,7 +188,7 @@ const pinSlice = createSlice({
         return { ...state, pins: [action.payload, ...state.pins], pinStatus: 'success', pinError: '' }
       })
       .addCase(getPins.fulfilled, (state, action) => {
-        return { ...state, pins: [action.payload, ...state.pins], pinStatus: 'success', pinError: '' }
+        return { ...state, pins: action.payload, pinStatus: 'success', pinError: '' }
       })
       .addCase(getPin.fulfilled, (state, action) => {
         return { ...state, pin: action.payload, pinStatus: 'success', pinError: '' }
@@ -207,7 +208,7 @@ const pinSlice = createSlice({
       .addCase(getPinsByCreator.fulfilled, (state, action) => {
         return { ...state, pins: action.payload, pinStatus: 'success', pinError: '' }
       })
-      .addCase(getPinsByCategory.fulfilled, (state, action) => {
+      .addCase(getPinsByTags.fulfilled, (state, action) => {
         return { ...state, pins: action.payload, pinStatus: 'success', pinError: '' }
       })
       .addCase(searchPins.fulfilled, (state, action) => {

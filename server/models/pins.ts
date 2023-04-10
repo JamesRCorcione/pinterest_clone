@@ -2,15 +2,15 @@ import mongoose from 'mongoose'
 
 const pinSchema = new mongoose.Schema({
     creatorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    postedBy: { 
+    postedBy: {
         userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         userName: { type: String },
-        image: { type: String },        
+        image: { type: String },
     },
     title: { type: String },
     text: { type: String },
-    category: { type: String },
-    image: { type: String, required: true},  
+    tags: { type: [String] },
+    image: { type: String, required: true},
     destination: { type: String },
 })
 

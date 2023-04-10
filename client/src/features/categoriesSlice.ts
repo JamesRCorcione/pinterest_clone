@@ -92,11 +92,11 @@ export const deleteCategories = createAsyncThunk(
 )
 
 
-export const searchCategories = createAsyncThunk(
-  'categories/searchCategories',
+export const searchTags = createAsyncThunk(
+  'tags/searchTags',
   async (searchTerm: any, { rejectWithValue }) => {
     try {
-      const response = await axios.get(baseURL + 'categories/search/'+ searchTerm)
+      const response = await axios.get(baseURL + 'tags/'+ searchTerm)
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -134,7 +134,7 @@ const categoriesSlice = createSlice({
         )
         return { ...state, categories: currentPins, categoryStatus: 'success', categoryError: '' }
       })
-      .addCase(searchCategories.fulfilled, (state, action) => {
+      .addCase(searchTags.fulfilled, (state, action) => {
         return { ...state, categories: action.payload, categoryStatus: 'success', categoryError: '' }
       })
       .addMatcher(

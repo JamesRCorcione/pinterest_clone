@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from '@mui/material'
+import { Box, Button, Chip, TextField } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { AiOutlineCloudUpload } from 'react-icons/ai'
 import { MdDelete } from 'react-icons/md'
@@ -19,33 +19,39 @@ interface CreatePinProps {
 
 
 const CreatePin = ({user}:CreatePinProps) => {
-    const [pin, setPin] = useState({ title: '', text: '', category: '', creatorId: user?._id, postedBy: {userId: user?._id, userName: user?.userName, image: null}, image: '', destination: '' })
-    const [category, setCategory] = useState<string>('')
+    const temp : string[] = []
+    const [pin, setPin] = useState({ title: '', text: '', tags: temp, creatorId: user?._id, postedBy: {userId: user?._id, userName: user?.userName, image: null}, image: '', destination: '' })
+    const [tag, setTag] = useState<string>('')
+    const [chips, setChips] = useState<string[]>([])
     const navigate = useNavigate()
-    const dispatch = useDispatch<AppDispatch>()
-    const categoriesState = useSelector((state: RootState) => state.categoriesState);
-    const { categories } = categoriesState
-
-    const handlePinSave = (e:React.FormEvent) => {
-      e.preventDefault()
-
-      
-      dispatch(createPin(pin))
-      setPin({ title: '', text: '', category: '', creatorId: user?._id, postedBy: {userId: '', userName: '', image: null}, image: '', destination: '' })
-      navigate('/')
-    }
+    const dispatch = useDispatch<AppDispatch>()    
 
     useEffect(() => {
         dispatch(getCategories(null))
     }, [])
 
-
-    const handleCreateCategory = async (e:React.FormEvent) => {
+    const handlePinSave = async (e:React.FormEvent) => {
       e.preventDefault()
-      await dispatch(createCategory(category))
+      pin.tags = chips
+      await dispatch(createPin(pin))
+      setPin({ title: '', text: '', tags: [], creatorId: user?._id, postedBy: {userId: '', userName: '', image: null}, image: '', destination: '' })
+      navigate('/')
     }
+
+    const setTags = async () => {
+      
+    }
+
+    const handleDeleteTag = (chipDelete:string) => {
+      const updatedChips = chips.filter((chip) => chip !== chipDelete)
+      setChips(updatedChips)
+      console.log(chips,chipDelete)
+    } 
     
 
+    const handlePin = () => {
+      setChips([...chips, tag])     
+    }
 
   return (
     <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', height: '94vh', backgroundColor: grey[300]}}>
@@ -84,17 +90,7 @@ const CreatePin = ({user}:CreatePinProps) => {
         <div className="flex flex-col">
           <div>
             <p className="mb-2 font-semibold text-lg sm:text-xl">Choose Pin Category</p>
-            <select
-              onChange={(e) => setPin({ ...pin, category: e.target.value })}
-              className="outline-none w-4/5 text-base border-b-2 border-gray-200 p-2 rounded-md cursor-pointer"
-              >
-                <option value="other" className="bg-white">Select Category</option>
-                {categories.map((category:ICategory, i:number) => (
-                  <option key={i} className="text-base border-0 outline-none capitalize bg-white text-black" value={category.category}>
-                    {category.category}
-                  </option>
-                ))}
-              </select>
+
           </div>
         </div>
 
@@ -113,17 +109,18 @@ const CreatePin = ({user}:CreatePinProps) => {
         </Button>
         
       </form>  
-      <form onSubmit={handleCreateCategory}>
+      <Box>
         <TextField 
             sx={{backgroundColor: 'white'}}
             name="tags" 
             variant="outlined" 
-            label="Add A New Category" 
+            label="Add A New Tag" 
             fullWidth 
-            value={category} 
-            onChange={(e:any) => setCategory(e.target.value)}
+            value={tag} 
+            onChange={(e:any) => setTag(e.target.value)}
           />  
         <Button
+            onClick={handlePin}
             type="submit"
             variant="contained"
             size="small"
@@ -132,9 +129,14 @@ const CreatePin = ({user}:CreatePinProps) => {
               fontFamily: "'Abel', 'sansSerif'",
             }}
           >
-              Button       
+              Add Tag       
           </Button>
-        </form>
+        </Box>
+        {chips &&
+          chips?.map((chip:any, i:number) => (
+            <Chip key={i} label={chip} onDelete={() => handleDeleteTag(chip)} />
+          ))
+        }
     </Box>
     </Box>
   )

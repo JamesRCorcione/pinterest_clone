@@ -46,7 +46,7 @@ const PinDetails = () => {
     getPinDetails()    
   }, [location])
 
-  useEffect(() => {    
+  useEffect(() => {
     getNewComment()
   }, [comments.length])
   
@@ -100,6 +100,8 @@ const PinDetails = () => {
     setExpandComments((expand) => !expand)
   }
 
+  console.log(pin)
+
   function detailsRender()  {
     return (
       <>
@@ -117,6 +119,7 @@ const PinDetails = () => {
       <Box sx={{display: 'flex',width: 400}}>
         {pin?.postedBy.image}
         {pin?.postedBy.userName}
+        {pin?.tags}
       </Box>
       <Box sx={{display: 'flex'}}>
         <Typography sx={{marginTop: 1}}>
@@ -221,9 +224,6 @@ const PinDetails = () => {
       
     </Box>
 
-
-
-    
 
       <Box sx={{position: 'absolute', left: '50%'}}>
         <Box sx={{position: 'relative', left: '-50%'}}>

@@ -36,15 +36,18 @@ export const createPin = async (req: Request, res: Response) => {
     
         //if (error) return res.status(400).send(error.details[0].message)
     
-        const { title, text, category, creatorId, postedBy, image, destination } = req.body
+        const { title, text, tags, creatorId, postedBy, image, destination } = req.body
         const selectedFileURL = await cloudinary.uploader.upload(image)
 
+        console.log(tags)
 
         //let initComments = new Comments()         
         //initComments = await initComments.save()
     
-        let pin = new Pin({ title, text, category, creatorId, postedBy, image: selectedFileURL.secure_url, destination })
-    
+        let pin = new Pin({ title, text, tags, creatorId, postedBy, image: selectedFileURL.secure_url, destination })
+
+        console.log(pin)
+
         pin = await pin.save()
         res.send(pin)
       } catch (error) {
@@ -56,7 +59,7 @@ export const createPin = async (req: Request, res: Response) => {
 export const getPins = async (req: Request, res: Response) => {
     try {
         //Need to use .limit() on find to reduce load in...
-        const pins = await Pin.find().sort({ date: -1 })
+        const pins = await Pin.find().sort({ timestamp: -1 })
         res.send(pins)
       } catch (error) {
         res.status(500).send("Error: " + error)
@@ -79,16 +82,16 @@ export const getPinsByCreator = async (req: Request, res: Response) => {
   }
 }
 
-export const getPinsByCategory = async (req: Request, res: Response) => {
-  const { category } = req.params
+export const getPinsByTags = async (req: Request, res: Response) => {
+  const { tags } = req.params
 
   try {
-      const categoryPins = await Pin.aggregate([
-        {'$match': { 'category': category}}
+      const taggedPins = await Pin.aggregate([
+        {'$match': { 'tags': tags}}
       ]).exec()      
 
 
-      res.status(200).json(categoryPins)
+      res.status(200).json(taggedPins)
   } catch (error) {
       res.status(404).json({ message: error })
   }
@@ -113,7 +116,7 @@ export const getSearchPins = async (req: Request, res: Response) => {
         $or:[
           {title: { "$regex": searchTerm, "$options": "i" }},
           {text: { "$regex": searchTerm, "$options": "i" }},
-          {category: { "$regex": searchTerm, "$options": "i" }},
+          {tags: { "$regex": searchTerm, "$options": "i" }},
           {destination: { "$regex": searchTerm, "$options": "i" }},
           {'postedBy.userName': { "$regex": searchTerm, "$options": "i" }},
       ]})

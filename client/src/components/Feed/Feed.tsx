@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useParams } from 'react-router-dom'
-import { getPin, getPins, getPinsByCategory } from '../../features/pinsSlice'
+import { Link, useLocation, useParams } from 'react-router-dom'
+import { getPin, getPins, getPinsByTags } from '../../features/pinsSlice'
 
 import MasonryLayout from '../MasonryLayout/MasonryLayout'
 import Spinner from '../Spinner/Spinner'
@@ -15,31 +15,32 @@ const Feed = () => {
   const pinsState = useSelector((state: RootState) => state.pinsState);
   const { pins } = pinsState
   const dispatch = useDispatch<AppDispatch>()
+  const location = useLocation()
   const { category } = useParams()
 
 
   useEffect(() => {
+    console.log('in effect')
     async function loadPins() {
-    setLoading(true)
+      setLoading(true)
 
-    if(category) {
-      await dispatch(getPinsByCategory(category))
-    } else {
-      await dispatch(getPins(null))
+      if(category) {
+        await dispatch(getPinsByTags(category))
+      } else {
+        await dispatch(getPins(null))
+      }
+      setLoading(false)
     }
-    setLoading(false)
-  }
-  loadPins()
-  }, [category])
+    loadPins()
+  }, [location, category])
   
 
-
   if (loading) return <Spinner message="We are adding new ideas to your feed!"/>
-  if(!pins[0]?.length) return <h2>No Pins Available</h2>
+  if(!pins?.length) return <h2>No Pins Available</h2>
 
   return (
     <div>
-      {pins[0] && <MasonryLayout pins={pins[0]} />}
+      {pins && <MasonryLayout pins={pins} />}
     </div>
   )
 }

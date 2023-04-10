@@ -52,6 +52,7 @@ interface IPin {
   },
   title: String,
   text: String
+  tags: String[]
   image: string,  
   destination: String,
 }

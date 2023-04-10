@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.post("/", createCategory)
 router.get("/", getCategories)
-router.get("/search/:searchTerm", getSearchCategories)
+router.get("/:searchTerm", getSearchCategories)
 router.put("/:id", updateCategory)
 router.delete("/:id", deleteCategory)
 
