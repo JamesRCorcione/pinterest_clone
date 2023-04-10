@@ -3,6 +3,7 @@ import axios, { AxiosError } from 'axios'
 import { convertCompilerOptionsFromJson } from 'typescript'
 
 const baseURL = 'https://pinterestclone.onrender.com/api/'
+//const baseURL = 'http://localhost:8080/api/'
 
 const initialState = {
   replies: [],

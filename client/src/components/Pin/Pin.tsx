@@ -10,13 +10,12 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import UploadIcon from '@mui/icons-material/Upload';
 
 import useStyles from './styles'
-
 import { getImageDimensions } from '../../utils/getImageHeight'
 import { useDispatch, useSelector } from 'react-redux'
 import { SavePin } from '../../features/usersSlice'
 import userEvent from '@testing-library/user-event'
 import { grey } from '@mui/material/colors'
-
+import TopNavbar from '../TopNavbar/TopNavbar'
 
 interface PinProps {
     pin: IPin
@@ -30,7 +29,7 @@ const Pin = ({ pin }:PinProps) => {
   const dispatch = useDispatch<AppDispatch>()  
   const classes = useStyles()
   const { postedBy, image, _id, destination } = pin
-  
+ 
 
   let alreadySaved = user?.saves?.filter((save:any) => save?._id === pin?._id)
   alreadySaved = alreadySaved?.length > 0 ? alreadySaved : [];
@@ -50,11 +49,10 @@ const Pin = ({ pin }:PinProps) => {
   const handleGoToProfile = () => {
     navigate(`/user-profile/${postedBy?.userId}`)
     window.location.reload();
-  }
-  
+  }  
 
   return (  
-    <Box>
+    <Box>      
       <Box
         onMouseEnter={() => setPostHovered(true)}
         onMouseLeave={() => setPostHovered(false)}

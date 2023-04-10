@@ -11,7 +11,9 @@ import pinsReducer from './features/pinsSlice';
 import commentsReducer from './features/commentsSlice';
 import repliesReducer from './features/repliesSlice';
 import categoriesReducer from './features/categoriesSlice';
+import usersReducer from './features/usersSlice';
 import pinSlice  from '../src/features/pinsSlice'
+import { BrowserRouter } from 'react-router-dom';
 
   export const store = configureStore({
     reducer: {
@@ -34,7 +36,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </Provider>
   </React.StrictMode>
 );

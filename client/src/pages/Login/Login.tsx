@@ -15,7 +15,7 @@ interface MyToken {
   exp: number;
 }
 
-const LandingPage = () => {
+const Login = () => {
   const classes = useStyles()
   const navigate = useNavigate()
   let user = fetchUser()
@@ -84,4 +84,4 @@ const LandingPage = () => {
   )
 }
 
-export default LandingPage
+export default Login

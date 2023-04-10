@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, Action } from '@reduxjs/toolkit'
 import axios, { AxiosError } from 'axios'
 
 const baseURL = 'https://pinterestclone.onrender.com/api/'
+//const baseURL = 'http://localhost:8080/api/'
 
 const initialState = {
   users: [],
@@ -65,8 +66,11 @@ export const GoogleSignUp = createAsyncThunk(
   'users',
   async (user: any, { rejectWithValue }) => {
     try {      
+      console.log(user)
       const response = await axios.post(baseURL + 'users/googleSignup', user)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
+      console.log('response', response.data)
+      console.log('storage',localStorage.getItem('profile'))
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -85,6 +89,8 @@ export const GoogleSignIn = createAsyncThunk(
     try {
       const response = await axios.post(baseURL + 'users/googleSignin', user)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
+      console.log('response', response.data)
+      console.log('storage',localStorage.getItem('profile'))
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access

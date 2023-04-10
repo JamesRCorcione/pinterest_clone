@@ -40,7 +40,7 @@ const TopNavbar = () => {
     dispatch(Logout())
     setUser(null)
     window.location.reload();
-    navigate('/landingPage')
+    navigate('/login')
     
   }
 

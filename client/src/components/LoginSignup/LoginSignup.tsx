@@ -67,7 +67,6 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
           const user = userInfo.data
           //const token = response.access_token.split('.')[1]
 
-    
           try {
             if (!switchLogin) {
               await dispatch(GoogleSignUp(user))
@@ -94,7 +93,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
         setOpen((open) => !open)
         setOpenLogin((openLogin:boolean) => !openLogin)        
         navigate('/')  
-        window.location.reload();     
+        //window.location.reload();     
     }
 
     const handleLoginSwitch = () => {

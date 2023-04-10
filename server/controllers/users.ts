@@ -87,6 +87,7 @@ export const googleSignup = async (req: Request, res: Response) => {
   const { email, given_name, family_name, picture, sub } = req.body
   const password = 'terst'
 
+  console.log('controller')
 
   try {
     const oldUser = await User.findOne({ email })

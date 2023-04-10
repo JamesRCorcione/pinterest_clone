@@ -4,6 +4,7 @@ import { NextFunction } from 'express'
 
 
 const baseURL = 'https://pinterestclone.onrender.com/api/'
+//const baseURL = 'http://localhost:8080/api/'
 
 const initialState = {
   pins: [],
