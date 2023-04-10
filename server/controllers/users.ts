@@ -75,7 +75,7 @@ export const signin = async (req: Request, res: Response) => {
     if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" })
 
     const secret = process.env.SECRET as string
-    const token = jwt.sign({ userName: oldUser.userName, id: oldUser._id }, secret, { expiresIn: "1h" })
+    const token = jwt.sign({ userName: oldUser?.userName, id: oldUser?._id }, secret, { expiresIn: "1h" })
 
     res.status(200).json({ result: oldUser, token, authType: 'Custom' })
   } catch (err) {

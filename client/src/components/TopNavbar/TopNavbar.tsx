@@ -39,7 +39,6 @@ const TopNavbar = () => {
   const logoutUser = () => {
     dispatch(Logout())
     setUser(null)
-    window.location.reload();
     navigate('/login')
     
   }

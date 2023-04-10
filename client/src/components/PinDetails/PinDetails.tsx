@@ -86,8 +86,8 @@ const PinDetails = () => {
     if (pinId) {
       const userCommenting = {
         userId: user._id,
-        userName: user.userName,
-        userImage: user.image
+        userName: user?.userName,
+        userImage: user?.image
       }
       setLoading(true)
       await dispatch(createComment({pinId, text, userCommenting }))

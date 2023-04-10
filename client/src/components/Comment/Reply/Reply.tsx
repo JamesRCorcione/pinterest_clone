@@ -134,7 +134,7 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
     <>
     <Box sx={{paddingLeft: 7, marginRight: 7}}>
       <Box sx={{display: 'flex'}}>
-        <Avatar onClick={() => navigate(`/user-profile/${user._id}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{user.userName.charAt(0)}</Avatar> 
+        <Avatar onClick={() => navigate(`/user-profile/${user._id}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{user?.userName?.charAt(0)}</Avatar> 
         {(comment.taggedUser)
         ?
           <Typography sx={{wordBreak: 'break-word'}}>{comment.userCommenting?.userName} @{comment.taggedUser} {comment?.text}</Typography>

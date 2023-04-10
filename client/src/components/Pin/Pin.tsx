@@ -23,21 +23,20 @@ interface PinProps {
 
 const Pin = ({ pin }:PinProps) => {
   const user = fetchUser()
-  const [postHovered, setPostHovered] = useState(false)  
+  const [postHovered, setPostHovered] = useState(false)
   const [savingPost, setSavingPost] = useState(false)
-  const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>()  
+  const navigate = useNavigate()
   const classes = useStyles()
+  const dispatch = useDispatch<AppDispatch>()
   const { postedBy, image, _id, destination } = pin
  
 
   let alreadySaved = user?.saves?.filter((save:any) => save?._id === pin?._id)
-  alreadySaved = alreadySaved?.length > 0 ? alreadySaved : [];
-
+  alreadySaved = alreadySaved?.length > 0 ? alreadySaved : []
 
   const savePin = async () => {
-    if (alreadySaved?.length === 0) {      
-      setSavingPost(true)   
+    if (alreadySaved?.length === 0) {
+      setSavingPost(true)
       await dispatch(SavePin({id: user?._id, pin: pin}))
       .then(() => {
         //window.location.reload();
@@ -53,7 +52,7 @@ const Pin = ({ pin }:PinProps) => {
 
 
   return (  
-    <Box>      
+    <Box>
       <Box
         onMouseEnter={() => setPostHovered(true)}
         onMouseLeave={() => setPostHovered(false)}
