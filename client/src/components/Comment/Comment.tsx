@@ -144,8 +144,8 @@ const Comment = ({user, pinId, comment}:CommentProps) => {
     :
     <>
       <Box sx={{display: 'flex'}}>
-        <Avatar onClick={() => navigate(`/user-profile/${user._id}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{user.userName.charAt(0)}</Avatar>
-        <Typography onClick={() => navigate(`/user-profile/${comment._id}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}> {comment.userCommenting?.userName}</Typography>
+        <Avatar onClick={() => navigate(`/user-profile/${user.userCommenting.userId}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{comment.commentingUser.userName.charAt(0)}</Avatar>
+        <Typography onClick={() => navigate(`/user-profile/${comment.userCommenting.userId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}> {comment.userCommenting?.userName}</Typography>
         <Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5 }}>{comment?.text}</Typography>
         
       </Box>

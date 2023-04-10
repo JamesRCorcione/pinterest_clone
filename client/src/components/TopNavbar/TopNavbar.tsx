@@ -76,7 +76,6 @@ const TopNavbar = () => {
     navigate(`/search/${searchTerm}`)
   }
 
-  console.log('topnav', user)
 
   return (
     <Box className={classes.navbar}>

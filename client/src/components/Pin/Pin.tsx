@@ -51,7 +51,6 @@ const Pin = ({ pin }:PinProps) => {
     window.location.reload();
   }  
 
-  console.log('pin', user, postedBy)
 
   return (  
     <Box>      
@@ -169,7 +168,7 @@ const Pin = ({ pin }:PinProps) => {
       <Box sx={{display: 'flex'}}>
         <Button 
           style={{ backgroundColor: 'transparent' }} 
-          onClick={handleGoToProfile}
+          onClick={() => navigate(`/user-profile/${postedBy?.userId}`)}
           sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
         >
           {postedBy?.image 
