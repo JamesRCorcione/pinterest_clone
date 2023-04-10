@@ -16,7 +16,6 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.headers.authorization?.split(' ')[1] as string
         const authType = req.headers.authorizationtype
-        const isCustomAuth = token.length > 25
 
         let decodedData
         if (authType === 'Custom') {
