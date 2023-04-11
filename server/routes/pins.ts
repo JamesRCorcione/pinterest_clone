@@ -12,7 +12,7 @@ router.get("/:id", getPin)
 router.get("/user-created-pins/:id", getPinsByCreator)
 router.get("/tags/:tags", getPinsByTags)
 router.get("/search/:searchTerm", getSearchPins)
-router.put("/:id", updatePin)
+router.put("/:id", auth, updatePin)
 router.post("/", auth, createPin)
 router.delete("/:id", auth, deletePin)
 

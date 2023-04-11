@@ -15,12 +15,16 @@ export const createReply = async (req: Request, res: Response) => {
 
 
   try {        
-    const prev = await Replies.findById(replyId)     
+    const prev = await Replies.findById(replyId)
+
+    console.log(prev)
     
-    let data = { pinId: id, parentId: commentId, userCommenting, text, hearts: [], taggedUser: prev?.userCommenting?.userName}
+    let data = { pinId: id, parentId: commentId, userCommenting, text, hearts: [], taggedUser: { _id: prev?.userCommenting?.userId, userName: prev?.userCommenting?.userName } }
 
     const reply = new Replies(data)
     reply.save()
+
+    console.log(reply)
 
     const updatedComment = await Comments.findByIdAndUpdate(commentId,
       {$push: {'replies': reply}},

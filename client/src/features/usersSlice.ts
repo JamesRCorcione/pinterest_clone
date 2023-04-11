@@ -101,7 +101,6 @@ export const FacebookSignUp = createAsyncThunk(
   async (user: any, { rejectWithValue }) => {
     try {      
       const response = await axios.post(baseURL + 'users/facebookSignup', user)
-      console.log(response.data)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {
@@ -120,7 +119,6 @@ export const FacebookSignIn = createAsyncThunk(
   async (user:any, { rejectWithValue }) => {
     try {
       const response = await axios.post(baseURL + 'users/facebookSignin', user)
-      console.log(response.data)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {

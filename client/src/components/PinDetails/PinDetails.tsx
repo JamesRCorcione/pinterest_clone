@@ -73,7 +73,7 @@ const PinDetails = () => {
   const savePin = async () => {
     if (alreadySaved.length === 0 && pin) {      
       setSavingPost(true)   
-      await dispatch(SavePin({id: user.result._id, pin: pin}))
+      await dispatch(SavePin({id: user.result.result._id, pin: pin}))
       .then(() => {
         //window.location.reload();
         setSavingPost(false);
@@ -86,8 +86,8 @@ const PinDetails = () => {
     if (pinId) {
       const userCommenting = {
         userId: user.result._id,
-        userName: user?.userName,
-        userImage: user?.image
+        userName: user?.result.userName,
+        userImage: user?.result.image
       }
       setLoading(true)
       await dispatch(createComment({pinId, text, userCommenting }))

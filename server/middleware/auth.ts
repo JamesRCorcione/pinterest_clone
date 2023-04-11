@@ -15,14 +15,11 @@ const secret = process.env.SECRET as string
 
 //non-custom auth is just googleauth
 const auth = async (req: Request, res: Response, next: NextFunction) => {
-    console.log('middleware')
     try {
         const token = req.headers.authorization?.split(' ')[1] as string
         const authType = req.headers.authorizationtype
 
-        console.log(req.headers)
-        console.log(req.body)
-
+ 
         let decodedData
         if (authType === 'Custom') {            
             decodedData = jwt.verify(token, secret) as JwtPayload

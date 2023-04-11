@@ -11,7 +11,6 @@ import TopNavbar from './components/TopNavbar/TopNavbar';
 import CreatePin from './pages/CreatePin/CreatePin';
 import Feed from './components/Feed/Feed';
 import Profile from './pages/Profile/Profile';
-import SuggestedFeeds from './pages/SuggestedFeeds/SuggestedFeeds';
 import PinDetails from './components/PinDetails/PinDetails';
 import Search from './components/Search/Search';
 import { fetchUser } from './utils/fetchUser';
@@ -20,7 +19,6 @@ import { useSelector } from 'react-redux';
 
 function App() {
   const navigate = useNavigate()
-  //const user = JSON.parse(localStorage.getItem('profile') || 'false')
   let user = fetchUser()
 
 
@@ -29,7 +27,7 @@ function App() {
   }, [])
 
 
-
+  console.log('app',user)
 
 
   return (     

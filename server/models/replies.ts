@@ -9,7 +9,10 @@ const repliesSchema = new mongoose.Schema({
                 userName: { type: String, default: null},
                 userImage: { type: String, default: null},
         },
-        taggedUser: { type: String, default: null},
+        taggedUser: { 
+                _id: { type: mongoose.Schema.Types.ObjectId, default: null },
+                userName: { type: String, default: null },
+        },
         text: { type: String, default: '' },
         hearts: { type: [mongoose.Schema.Types.ObjectId], default: [] },
 }, {timestamps: true})

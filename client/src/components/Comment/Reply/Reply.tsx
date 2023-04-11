@@ -7,7 +7,7 @@ import {  deleteReply, getComments, heartReplyPin, unheartReplyPin, updateReply 
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Comment from '../Comment';
 import { createReply, heartRepliesPin } from '../../../features/repliesSlice';
 import { Circles } from 'react-loader-spinner';
@@ -25,13 +25,15 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
   const [replying, setReplying] = useState(false)
   const [actionBar, setActionBar] = useState(false)
   const [updateComment, setUpdateComment] = useState(false)
-  const [text, setText] = useState<any>()
+  const [text, setText] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const [isLoved, setIsLoved] = useState<boolean>(false)
+  const u = []
 
+  console.log(text)
 
   useEffect(() => {
-     if (comment.hearts?.includes(user._id)) {
+     if (comment.hearts?.includes(user.result._id)) {
         setIsLoved(true)
      } 
   }, [])
@@ -46,9 +48,9 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
     setReplying(false)
     if (pinId) {
       const userCommenting = {
-        userId: user._id,
-        userName: user.userName,
-        userImage: user.image
+        userId: user.result._id,
+        userName: user.result.userName,
+        userImage: user.result.image
       }
       setLoading(true)
       await dispatch(createReply({pinId, commentId, replyId: comment._id, text, userCommenting, taggedUser: null }))
@@ -85,7 +87,7 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
     e.preventDefault()
     if (pinId) {
       setLoading(true)
-      await dispatch(heartReplyPin({pinId, commentId, userId: user._id, replyId: comment._id }))
+      await dispatch(heartReplyPin({pinId, commentId, userId: user.result._id, replyId: comment._id }))
       
       setIsLoved(true)
       await dispatch(getComments(pinId))
@@ -97,7 +99,7 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
     e.preventDefault()
     if (pinId) {      
       setLoading(true)
-      await dispatch(unheartReplyPin({pinId, commentId, userId: user._id, replyId: comment._id }))
+      await dispatch(unheartReplyPin({pinId, commentId, userId: user.result._id, replyId: comment._id }))
       await dispatch(getComments(pinId))
       setIsLoved(false)            
       setLoading(false)
@@ -113,9 +115,13 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
       />
     </Box>
   )
-  
+
+  //console.log('reply',comment.userCommenting, comment.userCommenting.userName)
+  //<Link to={`/user-profile/${comment.taggedUser._id}`}>{`@${comment.taggedUser.userName}`}</Link>
+
   return (
     <>
+    
     {updateComment
     ?
     <Box>
@@ -128,18 +134,18 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
           >
         </TextField>        
       </form>  
-      <Button onClick={() => setUpdateComment((prev) => !prev)}>Cancle</Button>
+      <Button onClick={() => setUpdateComment((prev) => !prev)}>Cancel</Button>
       </Box>
     :
     <>
     <Box sx={{paddingLeft: 7, marginRight: 7}}>
       <Box sx={{display: 'flex'}}>
-        <Avatar onClick={() => navigate(`/user-profile/${user._id}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{user?.userName?.charAt(0)}</Avatar> 
+        <Avatar onClick={() => navigate(`/user-profile/${user.result._id}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{user?.userName?.charAt(0)}</Avatar> 
         {(comment.taggedUser)
         ?
-          <Typography sx={{wordBreak: 'break-word'}}>{comment.userCommenting?.userName} @{comment.taggedUser} {comment?.text}</Typography>
+          <Typography sx={{wordBreak: 'break-word'}}>{comment.userCommenting.userName} {comment?.text}</Typography>
         :
-          <Typography sx={{wordBreak: 'break-word'}}>{comment.userCommenting?.userName} {comment?.text}</Typography>
+          <Typography sx={{wordBreak: 'break-word'}}>{comment.userCommenting.userName} {comment?.text}</Typography>
         }
       </Box>
 
@@ -188,9 +194,9 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
       </Box>
       {replying && 
             <form onSubmit={handleReplySubmit}>
-              <TextField      
+              <TextField
                 onChange={(e:any) => setText(e.target.value)}             
-                placeholder='Reply'
+                defaultValue={`@${comment.taggedUser.userName}`}
                 rows={2} 
                 sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
               >

@@ -67,7 +67,6 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
           { headers: { Authorization: `Bearer ${response.access_token}` } }
           )
 
-          console.log('response',response)          
           const user = userInfo.data
 
           try {

@@ -41,7 +41,7 @@ const Comment = ({user, pinId, comment}:CommentProps) => {
 
 
   useEffect(() => {
-    if (comment.hearts?.includes(user._id)) {
+    if (comment.hearts?.includes(user.result._id)) {
        setIsLoved(true)
     } 
  }, [dispatch])
@@ -82,9 +82,9 @@ const Comment = ({user, pinId, comment}:CommentProps) => {
     e.preventDefault()
     if (pinId) {
       const userCommenting = {
-        userId: user._id,
-        userName: user?.userName,
-        userImage: user?.image
+        userId: user.result._id,
+        userName: user?.result.userName,
+        userImage: user?.result.image
       }      
       setLoading(true)
       await dispatch(createReply({pinId, commentId: comment._id, replyId: null, text, userCommenting, taggedUser: 'anon'}))
@@ -98,7 +98,7 @@ const Comment = ({user, pinId, comment}:CommentProps) => {
     e.preventDefault()
     if (pinId) {      
       setLoading(true)
-      await dispatch(heartCommentPin({pinId, commentId: comment._id, userId: user._id, replyId: comment._id }))
+      await dispatch(heartCommentPin({pinId, commentId: comment._id, userId: user.result._id, replyId: comment._id }))
       setIsLoved(true)
       await dispatch(getComments(pinId))
       setLoading(false)
@@ -109,7 +109,7 @@ const Comment = ({user, pinId, comment}:CommentProps) => {
     e.preventDefault()
     if (pinId) {      
       setLoading(true)
-      await dispatch(unheartCommentPin({pinId, commentId: comment._id, userId: user._id, replyId: comment._id }))
+      await dispatch(unheartCommentPin({pinId, commentId: comment._id, userId: user.result._id, replyId: comment._id }))
       setIsLoved(false)
       await dispatch(getComments(pinId))
       setLoading(false)
