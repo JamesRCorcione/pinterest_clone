@@ -39,14 +39,12 @@ export const createPin = async (req: Request, res: Response) => {
         const { title, text, tags, creatorId, postedBy, image, destination } = req.body
         const selectedFileURL = await cloudinary.uploader.upload(image)
 
-        console.log(tags)
 
         //let initComments = new Comments()         
         //initComments = await initComments.save()
     
         let pin = new Pin({ title, text, tags, creatorId, postedBy, image: selectedFileURL.secure_url, destination })
 
-        console.log(pin)
 
         pin = await pin.save()
         res.send(pin)

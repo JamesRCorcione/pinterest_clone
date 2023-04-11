@@ -37,7 +37,6 @@ export const createPin = createAsyncThunk(
   'pins/createPin',
   
   async (pin: IPin, { rejectWithValue }) => {
-    console.log('slice')
     try {
       const response = await API.post('pins', pin)
       return response.data

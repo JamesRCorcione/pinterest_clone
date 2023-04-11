@@ -13,6 +13,7 @@ import { fetchUser } from '../../utils/fetchUser';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { BorderAll, Height } from '@mui/icons-material';
+import Spinner from '../Spinner/Spinner';
 
 
 
@@ -22,8 +23,9 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
     const navigate = useNavigate()
     const [form, setForm] = useState<IUser>({ userName: '', email: '', password: '', image: '', birthday: null, saves: [] })
     const [open, setOpen] = useState<boolean>(true)
+    const [loading, setLoading] = useState(false)
     const [switchLogin, setSwitchLogin] = useState<boolean>(isSignUp)
-    const [swithSignup, setSwithSignup] = useState<boolean>(true)
+    const [switchSignup, setswitchSignup] = useState<boolean>(true)
 
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -45,6 +47,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
     const handleSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        setLoading(true)
         await dispatch(SignIn(form));   
 
         setForm({
@@ -63,14 +66,16 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
           const userInfo = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo' ,
           { headers: { Authorization: `Bearer ${response.access_token}` } }
           )
-          
+
+          console.log('response',response)          
           const user = userInfo.data
-          //const token = response.access_token.split('.')[1]
 
           try {
             if (!switchLogin) {
+                setLoading(true)
               await dispatch(GoogleSignUp(user))
             } else {
+                setLoading(true)
               await dispatch(GoogleSignIn(user))
             }
             handleExit()
@@ -81,17 +86,20 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
         onError: () => console.log("Login Failed")
     })
     const loginWithFacebook = async (response: any) => {
+        setLoading(true)
         await dispatch(FacebookSignIn(response));
         handleExit() 
     };
     const signupWithFacebook = async (response: any) => {
+        setLoading(true)
         await dispatch(FacebookSignUp(response)); 
         handleExit()
     };
 
-    const handleExit = async () => {
+    const handleExit = () => {
         setOpen((open) => !open)
         setOpenLogin((openLogin:boolean) => !openLogin)        
+        setLoading(false)
         navigate('/')  
         //window.location.reload();     
     }
@@ -101,8 +109,10 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
     }
 
     const handleSignupSwitch = () => {
-        setSwithSignup((swithSignup) => !swithSignup)
+        setswitchSignup((switchSignup) => !switchSignup)
     }
+
+    if (loading) return ( <Spinner message={'Siging in!'} />)
 
   return (
     <Dialog className={classes.dialog} open={open} >     
@@ -190,7 +200,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
         </>
         :
         <>
-           {swithSignup ?
+           {switchSignup ?
             <>
                 <Box className={classes.signup}>
                     <Typography className={classes.popupTitle} sx={{marginBottom: 0.5}}>Sign Up</Typography>
@@ -269,7 +279,8 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                         <TextField className={classes.inputTextSignupFinal} name="username" variant="outlined" label="Username" fullWidth onChange={(e) => setForm({ ...form, userName: e.target.value })} />
                         <TextField className={classes.inputTextSignupFinal} name="password" variant="outlined" label="Password" fullWidth onChange={(e) => setForm({ ...form, password: e.target.value })} />
 
-                        <Button className={classes.buttonSubmit} sx={{marginTop: 0}} variant="contained" color="primary" size="large" type="submit" fullWidth>
+                        <Button  sx={{borderRadius: 10, height: 40, marginTop: 0}} variant="contained" color="primary" size="large" type="submit" fullWidth>
+                            <Typography>Sign Up</Typography>
                         </Button>                            
                     </form>
                 </Box>      

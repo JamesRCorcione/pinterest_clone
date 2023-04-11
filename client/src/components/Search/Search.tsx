@@ -28,7 +28,6 @@ const Search = () => {
     }
   }, [searchTerm])
 
-  console.log(pins)
 
   return (
     <div>

@@ -20,7 +20,6 @@ const Feed = () => {
 
 
   useEffect(() => {
-    console.log('in effect')
     async function loadPins() {
       setLoading(true)
 

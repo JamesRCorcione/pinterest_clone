@@ -45,7 +45,6 @@ const CreatePin = ({user}:CreatePinProps) => {
     const handleDeleteTag = (chipDelete:string) => {
       const updatedChips = chips.filter((chip) => chip !== chipDelete)
       setChips(updatedChips)
-      console.log(chips,chipDelete)
     } 
     
 

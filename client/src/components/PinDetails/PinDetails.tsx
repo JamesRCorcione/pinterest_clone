@@ -73,7 +73,7 @@ const PinDetails = () => {
   const savePin = async () => {
     if (alreadySaved.length === 0 && pin) {      
       setSavingPost(true)   
-      await dispatch(SavePin({id: user._id, pin: pin}))
+      await dispatch(SavePin({id: user.result._id, pin: pin}))
       .then(() => {
         //window.location.reload();
         setSavingPost(false);
@@ -85,7 +85,7 @@ const PinDetails = () => {
     e.preventDefault()
     if (pinId) {
       const userCommenting = {
-        userId: user._id,
+        userId: user.result._id,
         userName: user?.userName,
         userImage: user?.image
       }
@@ -100,7 +100,6 @@ const PinDetails = () => {
     setExpandComments((expand) => !expand)
   }
 
-  console.log(pin)
 
   function detailsRender()  {
     return (
@@ -205,7 +204,7 @@ const PinDetails = () => {
             <Box sx={{display: 'flex', height: 70, flexDirection: 'column', justifyContent: 'end', alignContent: 'end'}}>
               <Divider /> 
             <Box sx={{marginBottom: 1, display: 'flex', justifyContent: 'end', alignItems: 'end'}}>              
-                <Avatar sx={{marginBottom: 1, marginLeft: 2, marginRight: 2}}>{user.userName.charAt(0)}</Avatar>
+                <Avatar sx={{marginBottom: 1, marginLeft: 2, marginRight: 2}}>{user.result.userName.charAt(0)}</Avatar>
                 <Box sx={{marginTop: 1, marginRight: 5}} className={classes.searchBar}>
                   <form onSubmit={handleComment}>
                     <Input      

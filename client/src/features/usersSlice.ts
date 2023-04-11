@@ -64,11 +64,8 @@ export const GoogleSignUp = createAsyncThunk(
   'users',
   async (user: any, { rejectWithValue }) => {
     try {      
-      console.log(user)
       const response = await axios.post(baseURL + 'users/googleSignup', user)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
-      console.log('response', response.data)
-      console.log('storage',localStorage.getItem('profile'))
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -87,8 +84,6 @@ export const GoogleSignIn = createAsyncThunk(
     try {
       const response = await axios.post(baseURL + 'users/googleSignin', user)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
-      console.log('response', response.data)
-      console.log('storage',localStorage.getItem('profile'))
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -106,6 +101,7 @@ export const FacebookSignUp = createAsyncThunk(
   async (user: any, { rejectWithValue }) => {
     try {      
       const response = await axios.post(baseURL + 'users/facebookSignup', user)
+      console.log(response.data)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {
@@ -124,7 +120,7 @@ export const FacebookSignIn = createAsyncThunk(
   async (user:any, { rejectWithValue }) => {
     try {
       const response = await axios.post(baseURL + 'users/facebookSignin', user)
-
+      console.log(response.data)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {
