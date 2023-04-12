@@ -28,9 +28,7 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
   const [text, setText] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const [isLoved, setIsLoved] = useState<boolean>(false)
-  const u = []
 
-  console.log(text)
 
   useEffect(() => {
      if (comment.hearts?.includes(user.result._id)) {
@@ -119,6 +117,7 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
   //console.log('reply',comment.userCommenting, comment.userCommenting.userName)
   //<Link to={`/user-profile/${comment.taggedUser._id}`}>{`@${comment.taggedUser.userName}`}</Link>
 
+
   return (
     <>
     
@@ -140,10 +139,13 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
     <>
     <Box sx={{paddingLeft: 7, marginRight: 7}}>
       <Box sx={{display: 'flex'}}>
-        <Avatar onClick={() => navigate(`/user-profile/${user.result._id}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{user?.userName?.charAt(0)}</Avatar> 
+        <Avatar onClick={() => navigate(`/user-profile/${user.result._id}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{user?.result.userName?.charAt(0)}</Avatar> 
         {(comment.taggedUser)
         ?
-          <Typography sx={{wordBreak: 'break-word'}}>{comment.userCommenting.userName} {comment?.text}</Typography>
+          <>
+          <Typography onClick={() => navigate(`/user-profile/${comment?.userCommenting?.userId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}>{comment.userCommenting.userName}</Typography>
+          <Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5 }}>{comment?.text}</Typography>
+          </>
         :
           <Typography sx={{wordBreak: 'break-word'}}>{comment.userCommenting.userName} {comment?.text}</Typography>
         }
@@ -196,7 +198,7 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
             <form onSubmit={handleReplySubmit}>
               <TextField
                 onChange={(e:any) => setText(e.target.value)}             
-                defaultValue={`@${comment.taggedUser.userName}`}
+                defaultValue={`@${comment.taggedUser?.userName}`}
                 rows={2} 
                 sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
               >

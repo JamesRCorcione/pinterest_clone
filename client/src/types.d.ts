@@ -66,7 +66,9 @@ interface PinProps {
 }
 
 interface SavePinProps {
-  id: mongoose.Types.ObjectId,
+  user: {
+    result: IUser  
+  }
   pin: IPin
 }
 

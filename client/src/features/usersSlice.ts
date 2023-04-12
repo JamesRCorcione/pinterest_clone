@@ -148,10 +148,10 @@ export const GetUserById = createAsyncThunk (
 )
 
 export const SavePin = createAsyncThunk (
-  'users',
-  async ({id, pin}:SavePinProps, { rejectWithValue }) => {
+  'users/savePin',
+  async ({user, pin}:SavePinProps, { rejectWithValue }) => {
     try {
-      const response = await axios.put(baseURL + `users/${id}`, pin)
+      const response = await axios.put(baseURL + `users/savePin/${user.result._id}`, {user, pin})
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data.saves
     } catch (err: any) {
@@ -160,6 +160,22 @@ export const SavePin = createAsyncThunk (
     }
   }
 )
+
+export const updateSaves = createAsyncThunk (
+  'users/updateSaves',
+  async ({user, updatedSaves}:any, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(baseURL + `users/updateSaves/${user.result._id}`, {user, updatedSaves})
+      localStorage.setItem('profile', JSON.stringify({ ...response.data }))
+      return response.data.saves
+    } catch (err: any) {
+      let error: AxiosError<ValidationErrors> = err // cast the error for access
+        throw error 
+    }
+  }
+)
+
+
 
 export const Logout = createAsyncThunk(
   'users',
@@ -201,8 +217,14 @@ export const Logout = createAsyncThunk(
           const updatedUser = state.users.map((user) =>
           user._id === action.payload._id ? action.payload : user
           )
-        return { ...state, user: updatedUser, pinStatus: 'success', pinError: '' }
-        }) 
+          return { ...state, user: updatedUser, pinStatus: 'success', pinError: '' }
+          }) 
+        .addCase(updateSaves.fulfilled, (state, action) => {
+          const updatedUser = state.users.map((user) =>
+          user._id === action.payload._id ? action.payload : user
+          )
+          return { ...state, user: updatedUser, pinStatus: 'success', pinError: '' }
+          }) 
         .addMatcher(
           isRejectedAction,
           // `action` will be inferred as a RejectedAction due to isRejectedAction being defined as a type guard

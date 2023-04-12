@@ -16,6 +16,7 @@ import { SavePin } from '../../features/usersSlice'
 import userEvent from '@testing-library/user-event'
 import { grey } from '@mui/material/colors'
 import TopNavbar from '../TopNavbar/TopNavbar'
+import { deletePin } from '../../features/pinsSlice'
 
 interface PinProps {
     pin: IPin
@@ -25,33 +26,43 @@ const Pin = ({ pin }:PinProps) => {
   const user = fetchUser()
   const [postHovered, setPostHovered] = useState(false)
   const [savingPost, setSavingPost] = useState(false)
+  const [openPinMenu, setOpenPinMenu] = useState(false)
   const navigate = useNavigate()
   const classes = useStyles()
   const dispatch = useDispatch<AppDispatch>()
   const { postedBy, image, _id, destination } = pin
+
  
 
-  let alreadySaved = user?.saves?.filter((save:any) => save?._id === pin?._id)
+  let alreadySaved = user?.result?.saves?.filter((save:any) => save?._id === pin?._id)
   alreadySaved = alreadySaved?.length > 0 ? alreadySaved : []
 
-  const savePin = async () => {
+
+  const savePin = async (e:any) => {
+    
     if (alreadySaved?.length === 0) {
       setSavingPost(true)
-      await dispatch(SavePin({id: user?._id, pin: pin}))
+      console.log('save pin', user.result)
+      await dispatch(SavePin({user, pin}))
       .then(() => {
-        //window.location.reload();
-        setSavingPost(false);
-      })      
+        window.location.reload();
+        setSavingPost(false);      
+      })
+      .catch((error:any) => console.log(error))
     }   
   }
   
   const handleGoToProfile = () => {
     navigate(`/user-profile/${postedBy?.userId}`)
     window.location.reload();
-  }  
+  }
 
+  const handleDeletePin = async (e:any) => {
+    await dispatch(deletePin(pin._id))
+  }
 
   return (  
+    <>
     <Box>
       <Box
         onMouseEnter={() => setPostHovered(true)}
@@ -75,7 +86,8 @@ const Pin = ({ pin }:PinProps) => {
                   variant="contained" 
                   onClick={(e) => {
                     e.stopPropagation()
-                    savePin()
+                    e.preventDefault()
+                    savePin(e)
                   }}
                   >
                     Saved
@@ -85,7 +97,8 @@ const Pin = ({ pin }:PinProps) => {
                   variant="contained" 
                   onClick={(e) => {
                     e.stopPropagation()
-                    savePin()
+                    e.preventDefault()
+                    savePin(e)
                   }}
                   type="button" 
                   >
@@ -134,12 +147,14 @@ const Pin = ({ pin }:PinProps) => {
                   download
                   onClick={(e) => {
                     e.stopPropagation()
+                    e.preventDefault()                    
+                    setOpenPinMenu((prev) => !prev)
                   }}
                 >
                   <MoreHorizIcon />
                 </Button>
             </Box>
-
+            
             <Box>
                  
                   {(false) && (                    
@@ -187,6 +202,27 @@ const Pin = ({ pin }:PinProps) => {
         </Button>
       </Box>          
     </Box>
+    {openPinMenu &&
+      <Box sx={{position: 'relative', left: 175, bottom: 75}}>
+        <Box sx={{height: 'auto', width: 120, borderRadius: 2, boxShadow: 5, backgroundColor: 'white'}}>
+          <Button
+              style={{ backgroundColor: 'transparent' }} 
+              onClick={() => {}}
+              sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
+          >
+              <Typography sx={{marginLeft: 2}}>Edit Pin</Typography>
+          </Button>
+          <Button
+            style={{ backgroundColor: 'transparent' }} 
+            onClick={(e) => handleDeletePin(e)}
+            sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
+          >
+            <Typography sx={{marginLeft: 2}}>Delete Pin</Typography>
+          </Button>
+        </Box>
+      </Box>
+    }
+    </>
   )
 }
 

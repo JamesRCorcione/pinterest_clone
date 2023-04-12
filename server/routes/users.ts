@@ -1,4 +1,4 @@
-import { signup, signin, getUser, savePin, googleSignin, googleSignup, facebookSignin, facebookSignup } from '../controllers/users'
+import { signup, signin, getUser, savePin, googleSignin, googleSignup, facebookSignin, facebookSignup, updateSaves } from '../controllers/users'
 import express from 'express'
 import auth from '../middleware/auth'
 
@@ -10,7 +10,8 @@ router.post("/googleSignup", googleSignup)
 router.post("/googleSignin", googleSignin)
 router.post("/facebookSignup", facebookSignup)
 router.post("/facebookSignin", facebookSignin)
-router.put("/:id", auth, savePin)
+router.put("/savePin/:id", auth, savePin)
+router.put("/updateSaves/:id", auth, updateSaves)
 router.get("/:id", getUser)
 
 export default router

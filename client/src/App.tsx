@@ -14,21 +14,22 @@ import Profile from './pages/Profile/Profile';
 import PinDetails from './components/PinDetails/PinDetails';
 import Search from './components/Search/Search';
 import { fetchUser } from './utils/fetchUser';
-import { GetUserById } from './features/usersSlice';
-import { useSelector } from 'react-redux';
+import { GetUserById, updateSaves } from './features/usersSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { deletePin } from './features/pinsSlice';
 
 function App() {
   const navigate = useNavigate()
   let user = fetchUser()
 
-
   useEffect(() => {
     if(!user) navigate('/login') 
   }, [])
 
+  
+ 
 
-  console.log('app',user)
-
+  //console.log(user)
 
   return (     
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_API_TOKEN!}>

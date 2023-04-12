@@ -26,15 +26,28 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const savePin = async (req: Request, res: Response) => { 
   const { id } = req.params
-  const pin = req.body
+  const {user, pin} = req.body
 
   try {
       const updatedUser = await User.findByIdAndUpdate(id,
           {$push: {'saves': pin}},
-          { 'new': true },  
+          { new: true }
         )
 
-      res.status(200).json(updatedUser)
+      res.status(200).json({ result: updatedUser, token: user.token, authType: user.authType })
+  } catch (error) {
+      res.status(404).json({ message: error })
+  }
+}
+
+export const updateSaves = async (req: Request, res: Response) => { 
+  const { id } = req.params
+  const {user, updatedSaves} = req.body
+
+  try {
+      const updatedUser = await User.findByIdAndUpdate(id, {'saves': updatedSaves})
+
+      res.status(200).json({ result: updatedUser, token: user.token, authType: user.authType })
   } catch (error) {
       res.status(404).json({ message: error })
   }

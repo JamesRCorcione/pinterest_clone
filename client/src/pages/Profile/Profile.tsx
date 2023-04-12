@@ -25,6 +25,7 @@ const Profile = () => {
       .then((jsonData:any) => setCreatedPins(jsonData.payload))
   }, [])
 
+  
 
   return (
     <Box>

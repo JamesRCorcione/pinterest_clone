@@ -43,14 +43,14 @@ const PinDetails = () => {
   const location = useLocation()
 
   useEffect(() => {
-    getPinDetails()    
+    getPinDetails()
   }, [location])
 
   useEffect(() => {
     getNewComment()
   }, [comments.length])
   
-  let alreadySaved = user?.saves?.filter((save:any) => save?._id === pin?._id)
+  let alreadySaved = user?.result?.saves?.filter((save:any) => save?._id === pin?._id)
   alreadySaved = alreadySaved?.length > 0 ? alreadySaved : [];
 
 
@@ -73,7 +73,7 @@ const PinDetails = () => {
   const savePin = async () => {
     if (alreadySaved.length === 0 && pin) {      
       setSavingPost(true)   
-      await dispatch(SavePin({id: user.result.result._id, pin: pin}))
+      await dispatch(SavePin({user, pin}))
       .then(() => {
         //window.location.reload();
         setSavingPost(false);

@@ -1,16 +1,17 @@
 import React, { useState, useEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useLocation, useParams } from 'react-router-dom'
-import { getPin, getPins, getPinsByTags } from '../../features/pinsSlice'
+import { deletePin, getPin, getPins, getPinsByTags } from '../../features/pinsSlice'
 
 import MasonryLayout from '../MasonryLayout/MasonryLayout'
 import Spinner from '../Spinner/Spinner'
 import { fetchUser } from '../../utils/fetchUser'
 import TopNavbar from '../TopNavbar/TopNavbar'
+import { updateSaves } from '../../features/usersSlice'
 
 
 const Feed = () => {
-  const user = fetchUser()
+  let user = fetchUser()
   const [loading, setLoading] = useState(false)
   const pinsState = useSelector((state: RootState) => state.pinsState);
   const { pins } = pinsState
@@ -18,6 +19,17 @@ const Feed = () => {
   const location = useLocation()
   const { category } = useParams()
 
+  //useEffect(() => {
+  //  async function updateUserSaves() {
+  //    user = fetchUser()
+  //    const ids = pins.map((pin:any) => pin._id)
+  //    const updatedSaves = user?.result.saves?.filter((save:any) => ids.includes(save._id))
+//
+  //    console.log(updatedSaves)
+  //    await dispatch(updateSaves({user, updatedSaves}))
+  //  }
+  //  updateUserSaves()
+  //}, [deletePin])
 
   useEffect(() => {
     async function loadPins() {

@@ -16,7 +16,7 @@ const breakpointObj = {
 const MasonryLayout = ({ pins }:any) => {
   const classes = useStyles()
 
-
+  console.log(pins)
   return (
     <div>
       <Masonry className={classes.pin} breakpointCols={breakpointObj}>

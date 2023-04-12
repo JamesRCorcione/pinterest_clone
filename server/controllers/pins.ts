@@ -80,6 +80,7 @@ export const getPinsByCreator = async (req: Request, res: Response) => {
   }
 }
 
+
 export const getPinsByTags = async (req: Request, res: Response) => {
   const { tags } = req.params
 

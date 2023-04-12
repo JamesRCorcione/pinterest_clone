@@ -114,7 +114,7 @@ const TopNavbar = () => {
       </Box>
 
       <Box sx={{display:'flex', justifyContent:'end', height: '100%'}}>
-        <Button onClick={() => navigate(`/user-profile/${user.result.result._id}`)} sx={{top: 12, borderRadius: 99, maxWidth: '50px', maxHeight: '50px', minWidth: '50px', minHeight: '50px'}}>
+        <Button onClick={() => navigate(`/user-profile/${user.result._id}`)} sx={{top: 12, borderRadius: 99, maxWidth: '50px', maxHeight: '50px', minWidth: '50px', minHeight: '50px'}}>
           <Avatar sx={{maxWidth: '25px', maxHeight: '25px', minWidth: '25px', minHeight: '25px'}} />
         </Button>
 
@@ -127,7 +127,7 @@ const TopNavbar = () => {
         {openMenu && 
           <Box sx={{position: 'absolute', top: 55, right: 10}}>
             <Box id='menu' sx={{height: 250, width: 200, borderRadius: 3, backgroundColor: 'white', boxShadow: 5}}>
-              <Button onClick={() => navigate(`/user-profile/${user.result.result._id}`)} sx={{paddingRight: 10, marginTop: 2, height: 50, width: '100%'}}>Profile</Button>
+              <Button onClick={() => navigate(`/user-profile/${user.result._id}`)} sx={{paddingRight: 10, marginTop: 2, height: 50, width: '100%'}}>Profile</Button>
               <Button onClick={logoutUser} sx={{paddingRight: 10, height: 50, width: '100%'}}>Logout</Button>
             </Box>
           </Box>
