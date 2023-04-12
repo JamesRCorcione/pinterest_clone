@@ -14,7 +14,6 @@ import Profile from './pages/Profile/Profile';
 import PinDetails from './components/PinDetails/PinDetails';
 import Search from './components/Search/Search';
 import { fetchUser } from './utils/fetchUser';
-import { GetUserById, updateSaves } from './features/usersSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { deletePin } from './features/pinsSlice';
 

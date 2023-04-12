@@ -47,8 +47,10 @@ export const updateSaves = async (req: Request, res: Response) => {
   try {
       const updatedUser = await User.findByIdAndUpdate(id, {'saves': updatedSaves})
 
-      res.status(200).json({ result: updatedUser, token: user.token, authType: user.authType })
+      console.log('updated user', updatedUser, updatedSaves)
+      res.status(200).json({ result: updatedUser, token: user.result.token, authType: user.result.authType })
   } catch (error) {
+    console.log('failed')
       res.status(404).json({ message: error })
   }
 }

@@ -10,7 +10,6 @@ import Spinner from '../../components/Spinner/Spinner'
 import { createPin } from '../../features/pinsSlice'
 import FileBase from 'react-file-base64'
 import { grey } from '@mui/material/colors'
-import { createCategory, getCategories } from '../../features/categoriesSlice'
 
 
 interface CreatePinProps {
@@ -27,10 +26,6 @@ const CreatePin = ({user}:CreatePinProps) => {
     const [chips, setChips] = useState<string[]>([])
     const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>()    
-
-    useEffect(() => {
-        dispatch(getCategories(null))
-    }, [])
 
     const handlePinSave = async (e:React.FormEvent) => {
       e.preventDefault()

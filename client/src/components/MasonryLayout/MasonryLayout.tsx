@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Masonry from 'react-masonry-css'
 import Pin from '../Pin/Pin'
 
 import useStyles from './styles'
+import { useDispatch } from 'react-redux'
+import { useLocation, useParams } from 'react-router-dom'
+import { deletePin, getPins, getPinsByTags } from '../../features/pinsSlice'
+import Spinner from '../Spinner/Spinner'
 
 const breakpointObj = {
   default: 3,
@@ -15,8 +19,30 @@ const breakpointObj = {
 
 const MasonryLayout = ({ pins }:any) => {
   const classes = useStyles()
+  const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch<AppDispatch>()
+  const location = useLocation()
+  const { category } = useParams()
 
-  console.log(pins)
+
+  useEffect(() => {
+    async function loadPins() {
+      setLoading(true)
+
+      if(category) {
+        await dispatch(getPinsByTags(category))
+      } else {
+        await dispatch(getPins(null))
+      }
+      setLoading(false)
+    }
+    loadPins()
+  }, [])
+  
+
+  if (loading) return <Spinner message="We are adding new ideas to your feed!"/>
+  if(!pins?.length) return <h2>No Pins Available</h2>
+
   return (
     <div>
       <Masonry className={classes.pin} breakpointCols={breakpointObj}>

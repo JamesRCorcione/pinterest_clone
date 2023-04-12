@@ -19,17 +19,6 @@ const Feed = () => {
   const location = useLocation()
   const { category } = useParams()
 
-  //useEffect(() => {
-  //  async function updateUserSaves() {
-  //    user = fetchUser()
-  //    const ids = pins.map((pin:any) => pin._id)
-  //    const updatedSaves = user?.result.saves?.filter((save:any) => ids.includes(save._id))
-//
-  //    console.log(updatedSaves)
-  //    await dispatch(updateSaves({user, updatedSaves}))
-  //  }
-  //  updateUserSaves()
-  //}, [deletePin])
 
   useEffect(() => {
     async function loadPins() {
