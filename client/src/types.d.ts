@@ -9,6 +9,7 @@ type TypedThunk<ReturnType = void> = ThunkAction<
 >
 
 declare module 'react-file-base64'
+declare module '*.mp4'
 
 declare global {
   namespace Express {

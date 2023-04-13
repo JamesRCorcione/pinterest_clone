@@ -29,6 +29,7 @@
     "react-dom": "^18.2.0",
     "react-facebook-login": "^4.1.1",
     "react-file-base64": "^1.0.3",
+    "react-google-button": "^0.7.2",
     "react-icons": "^4.8.0",
     "react-loader-spinner": "^5.3.4",
     "react-masonry-css": "^1.0.16",

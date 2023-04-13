@@ -2339,7 +2339,7 @@
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-3.0.1.tgz#5f8f2bca0a5863cb69bc0b0acd88c96cb1d4ae10"
   integrity sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==
 
-"@types/node@*", "@types/node@^18.15.11":
+"@types/node@*":
   version "18.15.11"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.15.11.tgz#b3b790f09cb1696cffcec605de025b088fa4225f"
   integrity sha512-E5Kwq2n4SbMzQOn6wnmBjuK9ouqlURrcZDVfbo9ftDDTFt3nk7ZKK4GMOzoYgnpQJKcxwQw+lGaBvvlMo0qN/Q==
@@ -8323,6 +8323,13 @@ react-file-base64@^1.0.3:
   integrity sha512-itGMFH6IkJUZF2p0YXQnUBqzUHFaMYcs+ssD9e4j1XJGHRibGe8kiLr6y46oAIw1JknX/bJUUogDJOk/o91TMg==
   dependencies:
     react "^15.6.1"
+
+react-google-button@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/react-google-button/-/react-google-button-0.7.2.tgz#5bb2bcb0d54e36da3cd3b712a6fac4f9209b764c"
+  integrity sha512-LPIqU2hIlc212kqks8MtKjRstquVkP3SIjxlK5B1nIfg2R7YqSusJAxZUkJA5dv/z6QeSuGyI9ujwV/VWMTyAA==
+  dependencies:
+    prop-types "^15.7.2"
 
 react-icons@^4.8.0:
   version "4.8.0"

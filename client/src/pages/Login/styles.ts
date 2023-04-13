@@ -1,52 +1,20 @@
 import { makeStyles  } from '@material-ui/core'
+import CssBaseline from '@mui/material/CssBaseline';
 import { grey } from '@mui/material/colors';
 
 export default makeStyles((theme) => ({
   container: {
-    scrollSnapType: 'y mandatory',
-    scrollSnapStop: 'always',
-    overflowY: 'scroll',
-    height: '100vh'
+    backgroundColor: grey[100],
+    overflowX: 'hidden',
   },
-  one: {
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    //justifyContent: 'center',
-    //alignItems: 'center',
-    scrollSnapAlign: 'start'
-  },
-  two: {
-    height: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'orange',
-    scrollSnapAlign: 'start'
-  },
-  three: {
-    height: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'pink',
-    scrollSnapAlign: 'start'
-  },
-  four: {
-    height: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'yellow',
-    scrollSnapAlign: 'start'
-  },
-  five: {
-    height: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'purple',
-    scrollSnapAlign: 'start'
-  },
-
+  video: {
+    backgroundColor: 'black',
+    background: 'black',
+    position: 'absolute',
+    overflowX: 'hidden',
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  }
 }))

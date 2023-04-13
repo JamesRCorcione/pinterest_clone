@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core'
+import { red } from '@mui/material/colors'
 
 export default makeStyles((theme) => ({
   // Defines the popup box and exit button; It doesn't change between menues
@@ -14,8 +15,8 @@ export default makeStyles((theme) => ({
       }, 
       exitButton: {
         position: 'absolute',
-        top: 5,
-        right: 5,
+        top: 15,
+        left: 15,
         borderRadius: 0,
         '&:hover': {
           backgroundColor: 'grey'
@@ -23,8 +24,8 @@ export default makeStyles((theme) => ({
       },
       backButton: {
         position: 'absolute',
-        top: 22,
-        left: 50,
+        top: 50,
+        left: 20,
         borderRadius: 0,
         '&:hover': {
           backgroundColor: 'grey'
@@ -95,11 +96,15 @@ export default makeStyles((theme) => ({
         margin: '10px 0',        
       },
       buttonSubmit: {
+        backgroundColor: red[700],
         marginBottom: 10,
         borderRadius: 99,
-        height: 40
+        height: 40,
+        
       },
-      
+      googleButton: {
+        marginBottom: 10,        
+      },      
       
       signup: {
         color: 'black',
