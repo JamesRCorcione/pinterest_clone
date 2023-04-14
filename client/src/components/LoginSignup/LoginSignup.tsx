@@ -16,6 +16,8 @@ import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
 import axios from 'axios';
 import Spinner from '../Spinner/Spinner';
+import { ProgressBar } from 'react-loader-spinner';
+import { Circles } from 'react-loader-spinner';
 
 
 
@@ -25,7 +27,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate()
     const [form, setForm] = useState<IUser>({ userName: '', email: '', password: '', image: '', birthday: null, saves: [] })
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState<boolean>(false)
     const [switchLogin, setSwitchLogin] = useState<boolean>(isSignUp)
     const [switchSignup, setSwitchSignup] = useState<boolean>(true)
 
@@ -94,10 +96,9 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
           )
 
           const user = userInfo.data
-
+          setLoading(true)
           try {
-            if (!switchLogin) {
-                setLoading(true)
+            if (!switchLogin) {                
                 try {
                     await dispatch(GoogleSignUp(user)).unwrap()
                     handleSuccessfulExit()
@@ -106,7 +107,6 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                     handleUnsuccessfulExit()
                 }
             } else {
-                setLoading(true)
                 try {
                     await dispatch(GoogleSignIn(user)).unwrap()
                     handleSuccessfulExit()
@@ -117,10 +117,9 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
             }            
           } catch (error:any) {
             alert(error.message)
-            console.log(error)
           }
         },
-        onError: () => console.log("Login Failed")
+        onError: () => alert('Login Failed')
     })
 
     const loginWithFacebook = async (response: any) => {
@@ -146,7 +145,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
     }
 
     const handleSuccessfulExit = async () => {
-        setOpenLogin((openLogin:boolean) => !openLogin)        
+        setOpenLogin((openLogin:boolean) => !openLogin)       
         setLoading(false)
         navigate('/')  
     }
@@ -169,9 +168,15 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
         setOpenLogin(false)
     }
 
-    if (loading) return ( <Spinner message={'Siging in!'} />)
 
   return (
+    <>
+    {loading ?
+    
+    <Dialog open={true}>
+        <Circles color="#00BFFF" height={100} width={100}></Circles>
+    </Dialog>     
+    :
     <Dialog className={classes.dialog} onClose={handleClose} open={true} >     
         <Box className={classes.popup}>   
         <IconButton className={classes.exitButton} size='small' onClick={() => handleClose()} ><CloseIcon /></IconButton>
@@ -368,6 +373,8 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
         }        
         </Box>            
     </Dialog>
+    }
+    </>
   )
 }
 

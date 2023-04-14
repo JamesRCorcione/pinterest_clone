@@ -13,6 +13,8 @@ import repliesReducer from './features/repliesSlice';
 import usersReducer from './features/usersSlice';
 import pinSlice  from '../src/features/pinsSlice'
 import { BrowserRouter } from 'react-router-dom';
+import { ThemeProvider } from '@mui/material/styles';
+
 
   export const store = configureStore({
     reducer: {
@@ -27,6 +29,8 @@ import { BrowserRouter } from 'react-router-dom';
       }}),
   })
 
+  
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -34,9 +38,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
     </Provider>
   </React.StrictMode>
 );

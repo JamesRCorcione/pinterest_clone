@@ -1,23 +1,17 @@
-import { Avatar, Box, Button, IconButton, Input, Menu, MenuItem, Typography } from '@mui/material'
+import { Avatar, Box, Button, IconButton, Input, Typography } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search';
-import { grey, blue } from '@mui/material/colors';
-import React, { useEffect, useState } from 'react'
+import { grey } from '@mui/material/colors';
+import { useEffect, useState } from 'react'
 
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import SmsRoundedIcon from '@mui/icons-material/SmsRounded';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import decode from 'jwt-decode'
-import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state'
 import pinterestLogo from '../../media/pinterest-logo.png'
 import useStyles from './styles'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AccountCircle } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { Logout } from '../../features/usersSlice';
 import { fetchUser } from '../../utils/fetchUser';
-import Search from '../Search/Search';
-
 
 interface MyToken {
   name: string
@@ -25,24 +19,14 @@ interface MyToken {
 }
 
 const TopNavbar = () => {
-  const classes = useStyles()
+  const { classes } = useStyles()
   const navigate = useNavigate()
   const location = useLocation()
   const dispatch = useDispatch<AppDispatch>()
   const [user, setUser] = useState<any>(fetchUser())
   const [searchTerm, setSearchTerm] = useState<string>('')
-
   const [openMenu, setOpenMenu] = useState<boolean>()
-  const [openChat, setOpenChat] = useState<boolean>()
-  const [openNotifications, setOpenNotifications] = useState<boolean>()
 
-
-  const logoutUser = () => {
-    dispatch(Logout())
-    setUser(null)
-    navigate('/login')
-    
-  }
 
   useEffect(() => {
     const token = user?.token
@@ -55,23 +39,16 @@ const TopNavbar = () => {
     setUser(fetchUser())
   }, [location])
 
+  const logoutUser = () => {
+    dispatch(Logout())
+    setUser(null)
+    navigate('/login')    
+  }
 
   const handleOpenMenu = () => {
     setOpenMenu((openMenu) => !openMenu)
-    setOpenNotifications(false)    
-    setOpenChat(false)
   }
-  const handleOpenChat = () => {
-    setOpenChat((openChat) => !openChat)
-    setOpenNotifications(false)
-    setOpenMenu(false)    
-  }
-  const handleOpenNotifcations = () => {
-    setOpenNotifications((openNotifications) => !openNotifications)
-    setOpenMenu(false)
-    setOpenChat(false)
-    
-  }
+
   const handleSearch = (e:any) => {
     e.preventDefault();
     navigate(`/search/${searchTerm}`)
@@ -80,13 +57,12 @@ const TopNavbar = () => {
 
   return (
     <Box className={classes.navbar}>
-
-      <Box sx={{display: 'flex', flexDirection: 'row', height: '100%' }}>
+      <Box className={classes.leftSideContainer}>
         <IconButton onClick={() => navigate('/')} sx={{marginTop: 1.8, marginLeft: 2, borderRadius: 99, maxWidth: '40px', maxHeight: '40px', minWidth: '40px', minHeight: '40px'}}>
           <img src={pinterestLogo} alt='website icon' height='25px' />
         </IconButton>
         <Box className={classes.boxList}>
-        <Button onClick={() => navigate('/')} sx={{top: 10, marginLeft: 1, borderRadius: 99, maxWidth: '70px', maxHeight: '50px', minWidth: '70px', minHeight: '50px'}}>
+        <Button className={classes.homeButton} onClick={() => navigate('/')}>
           <Typography sx={{fontFamily: 'sans-serif'}} color='black'>
             Home
           </Typography>

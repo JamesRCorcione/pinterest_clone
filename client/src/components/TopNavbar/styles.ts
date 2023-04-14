@@ -1,7 +1,8 @@
-import { makeStyles  } from '@material-ui/core'
+import { makeStyles } from 'tss-react/mui'
 import { grey } from '@mui/material/colors';
 
-export default makeStyles((theme) => ({
+export default makeStyles()((theme) => {
+  return {
   navbar: {
     [theme.breakpoints.up(0)]: {    
       position: 'sticky',
@@ -14,6 +15,22 @@ export default makeStyles((theme) => ({
       alignItems: 'start', 
       backgroundColor: 'white', 
     },      
+  },
+  leftSideContainer: {
+    display: 'flex', flexDirection: 'row', height: '100%'
+  },
+  logoButton: {
+    position: 'relative', top: 14, left: 10, borderRadius: 99, maxWidth: '40px', maxHeight: '40px', minWidth: '40px', minHeight: '40px'
+  },
+  homeButton: {
+    position: 'relative', 
+    top: 10, 
+    left: 10, 
+    borderRadius: 99, 
+    maxWidth: '70px', 
+    maxHeight: '50px', 
+    minWidth: '70px', 
+    minHeight: '50px'
   },
   searchBar: {
     width: '100%',
@@ -40,4 +57,5 @@ export default makeStyles((theme) => ({
     radius: 100,
     height: '100%',
   }
-}))
+}
+})

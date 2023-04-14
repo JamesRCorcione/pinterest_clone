@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Masonry from 'react-masonry-css'
 import Pin from '../Pin/Pin'
 
 import useStyles from './styles'
 import { useDispatch } from 'react-redux'
-import { useLocation, useParams } from 'react-router-dom'
-import { deletePin, getPins, getPinsByTags } from '../../features/pinsSlice'
+import { useParams } from 'react-router-dom'
+import { getPins, getPinsByTags } from '../../features/pinsSlice'
 import Spinner from '../Spinner/Spinner'
 
 const breakpointObj = {
@@ -21,7 +21,6 @@ const MasonryLayout = ({ pins }:any) => {
   const classes = useStyles()
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch<AppDispatch>()
-  const location = useLocation()
   const { category } = useParams()
 
 
