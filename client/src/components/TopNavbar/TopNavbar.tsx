@@ -58,7 +58,7 @@ const TopNavbar = () => {
   return (
     <Box className={classes.navbar}>
       <Box className={classes.leftSideContainer}>
-        <IconButton onClick={() => navigate('/')} sx={{marginTop: 1.8, marginLeft: 2, borderRadius: 99, maxWidth: '40px', maxHeight: '40px', minWidth: '40px', minHeight: '40px'}}>
+        <IconButton  className={classes.logoButton} onClick={() => navigate('/')}>
           <img src={pinterestLogo} alt='website icon' height='25px' />
         </IconButton>
         <Box className={classes.boxList}>
@@ -71,7 +71,7 @@ const TopNavbar = () => {
         <Box onClick={() => navigate(`/today`)} className={classes.boxList}>
         </Box>
         <Box className={classes.boxList}>
-        <Button onClick={() => navigate('/createPin')} sx={{top: 10, marginRight: 2, borderRadius: 99, maxWidth: '500px', maxHeight: '50px', minWidth: '100px', minHeight: '50px'}}>
+        <Button className={classes.createButton} onClick={() => navigate('/createPin')}>
           <Typography sx={{fontFamily: 'sans-serif'}} color='black'>
             Create            
           </Typography>

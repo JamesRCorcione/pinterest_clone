@@ -32,6 +32,9 @@ export default makeStyles()((theme) => {
     minWidth: '70px', 
     minHeight: '50px'
   },
+  createButton: {
+    top: 10, marginRight: 2, borderRadius: 99, maxWidth: '500px', maxHeight: '50px', minWidth: '100px', minHeight: '50px'
+  },
   searchBar: {
     width: '100%',
     height: '65%',

@@ -56,7 +56,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                 birthday: null,
                 saves: []
               })
-            handleUnsuccessfulExit()
+              handleSuccessfulExit()
         }  
     }
 
@@ -85,7 +85,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                 birthday: null,
                 saves: []
               })
-            handleUnsuccessfulExit()
+              handleSuccessfulExit()
         }  
     }
 
@@ -104,7 +104,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                     handleSuccessfulExit()
                 } catch (error:any) {
                     alert(error.message)
-                    handleUnsuccessfulExit()
+                    handleSuccessfulExit()
                 }
             } else {
                 try {
@@ -112,7 +112,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                     handleSuccessfulExit()
                 } catch (error:any) {
                     alert(error.message)
-                    handleUnsuccessfulExit()
+                    handleSuccessfulExit()
                 }
             }            
           } catch (error:any) {
@@ -129,7 +129,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
             handleSuccessfulExit() 
         } catch (error:any) {
             alert(error.message)
-            handleUnsuccessfulExit()        
+            handleSuccessfulExit()        
         }
     }
 
@@ -140,7 +140,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
             handleSuccessfulExit()
         } catch (error:any) {
             alert(error.message)
-            handleUnsuccessfulExit()
+            handleSuccessfulExit()
         }
     }
 
