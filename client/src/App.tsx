@@ -41,7 +41,7 @@ function App() {
       }
       <Routes>     
       <Route path='/' index element={<Feed /> } />               
-        <Route path='/login' index element={<Login />} />          
+        <Route path='/login' index element={!user ?<Login /> : <Login />} />          
         <Route path='/createPin' index element={<CreatePin user={user} /> } />
         <Route path='/category/:category' element={<Feed />} />
         <Route path='/pin-detail/:pinId' element={<PinDetails />} />
