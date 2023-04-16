@@ -7,11 +7,15 @@ export default makeStyles((theme) => ({
         position: 'absolute',
         '& .MuiDialog-paper': {
           borderRadius: 12
-        }              
+        },
       },   
       popup: {
         width: 400,
         height: 640,        
+        [theme.breakpoints.down(800)]: { 
+          width: 300,
+          height: 640,     
+        },
       }, 
       exitButton: {
         position: 'absolute',

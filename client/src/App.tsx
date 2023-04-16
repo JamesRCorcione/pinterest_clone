@@ -26,14 +26,8 @@ function App() {
     if(!user) {
      navigate('/login') 
     }
-
   }, [user])
-
-  
  
-
-  //console.log(user)
-
   return (     
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_API_TOKEN!}>
       {user &&
@@ -46,7 +40,7 @@ function App() {
         <Route path='/category/:category' element={<Feed />} />
         <Route path='/pin-detail/:pinId' element={<PinDetails />} />
         <Route path='/user-profile/:userId' index element={<Profile  />} />    
-        <Route path='/search/:searchTerm' element={<Search />} />  
+        <Route path='/search' element={<Feed />} />  
       </Routes>        
     </GoogleOAuthProvider>
     

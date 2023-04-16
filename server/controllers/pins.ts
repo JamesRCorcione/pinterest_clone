@@ -109,7 +109,9 @@ export const getPin = async (req: Request, res: Response) => {
 }
 
 export const getSearchPins = async (req: Request, res: Response) => {
-  const { searchTerm } = req.params
+  //const { searchTerm } = req.query
+  const searchTerm = ''
+  console.log('controller',req)
   try {
       const pins = await Pin.find({
         $or:[
@@ -122,7 +124,8 @@ export const getSearchPins = async (req: Request, res: Response) => {
       
       res.status(200).json(pins)
   } catch (error) {
-      res.status(404).json({ message: error })
+    console.log('failed controller')
+      //res.status(404).json({ message: error })
   }
 }
 

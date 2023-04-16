@@ -7,7 +7,6 @@ import MasonryLayout from '../MasonryLayout/MasonryLayout'
 import Spinner from '../Spinner/Spinner'
 
 
-
 const Feed = () => {
   const [loading, setLoading] = useState(false)
   const pinsState = useSelector((state: RootState) => state.pinsState);

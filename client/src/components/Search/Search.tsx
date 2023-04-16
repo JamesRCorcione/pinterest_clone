@@ -1,32 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { searchPins } from '../../features/pinsSlice'
 
 import MasonryLayout from '../MasonryLayout/MasonryLayout'
 import Spinner from '../Spinner/Spinner'
+
 
 const Search = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [pins, setPins] = useState<IPin[]>()
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
-  const { searchTerm } = useParams()
-  
-  
 
-  useEffect(() => {
-    if (searchTerm !== '') {
-      setLoading(true)
-      dispatch(searchPins(searchTerm))
-              .then((data:any) => {
-                setPins(data.payload)
-                setLoading(false)
-              })
-      
-    } else {      
-    }
-  }, [searchTerm])
+  const [searchTerm, setSearchTerm] = useState<string>('') 
 
 
   return (

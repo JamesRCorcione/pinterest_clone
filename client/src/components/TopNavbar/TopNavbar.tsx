@@ -12,10 +12,15 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Logout } from '../../features/usersSlice';
 import { fetchUser } from '../../utils/fetchUser';
+import { searchPins } from '../../features/pinsSlice';
 
 interface MyToken {
   name: string
   exp: number
+}
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search)
 }
 
 const TopNavbar = () => {
@@ -27,6 +32,9 @@ const TopNavbar = () => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [openMenu, setOpenMenu] = useState<boolean>()
 
+  const [pins, setPins] = useState<IPin[]>()
+  const query = useQuery()
+  const searchQuery = query.get('query')  
 
   useEffect(() => {
     const token = user?.token
@@ -39,6 +47,21 @@ const TopNavbar = () => {
     setUser(fetchUser())
   }, [location])
 
+  async function search() {
+    const data = await dispatch(searchPins(searchTerm))
+    //navigate(`/search?query=${searchTerm || 'none'}`)        
+    //console.log('searchQuery',data)
+  }
+
+  const handleSearch = (e:any) => {
+    e.preventDefault();    
+    if (searchTerm === '') {
+      navigate(`/`)
+    } else {      
+      search()
+    }
+  }
+
   const logoutUser = () => {
     dispatch(Logout())
     setUser(null)
@@ -48,12 +71,6 @@ const TopNavbar = () => {
   const handleOpenMenu = () => {
     setOpenMenu((openMenu) => !openMenu)
   }
-
-  const handleSearch = (e:any) => {
-    e.preventDefault();
-    navigate(`/search/${searchTerm}`)
-  }
-
 
   return (
     <Box className={classes.navbar}>

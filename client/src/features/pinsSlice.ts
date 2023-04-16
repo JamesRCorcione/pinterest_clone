@@ -161,9 +161,10 @@ export const deletePin = createAsyncThunk(
 
 export const searchPins = createAsyncThunk(
   'pins/searchPins',
-  async (searchTerm: any, { rejectWithValue }) => {
+  async (query: any, { rejectWithValue }) => {
     try {
-      const response = await API.get('pins/search/'+ searchTerm)
+      const response = await API.get(`pins/search?query=${query || 'none'}`)
+      console.log('response', response)
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -171,7 +172,7 @@ export const searchPins = createAsyncThunk(
         throw err
       }
       // We got validation errors, let's return those so we can reference in our component and set form errors
-      return rejectWithValue(error.response.data)
+      console.log(error.response.data)
     }
   }
 )

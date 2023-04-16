@@ -4,17 +4,18 @@ import { grey } from '@mui/material/colors';
 export default makeStyles()((theme) => {
   return {
   navbar: {
-    [theme.breakpoints.up(0)]: {    
-      position: 'sticky',
-      top: 0,
-      height: 70,
-      zIndex: 2000,
-      display: 'flex', 
-      flexDirection: 'row', 
-      justifyContent: 'center', 
-      alignItems: 'start', 
-      backgroundColor: 'white', 
-    },      
+    position: 'sticky',
+    top: 0,
+    height: 70,
+    zIndex: 2000,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'start',
+    backgroundColor: 'white', 
+    [theme.breakpoints.down(800)]: { 
+    
+    }, 
   },
   leftSideContainer: {
     display: 'flex', flexDirection: 'row', height: '100%'
@@ -23,17 +24,29 @@ export default makeStyles()((theme) => {
     position: 'relative', top: 14, left: 10, borderRadius: 99, maxWidth: '40px', maxHeight: '40px', minWidth: '40px', minHeight: '40px'
   },
   homeButton: {
-    position: 'relative', 
-    top: 10, 
-    left: 10, 
-    borderRadius: 99, 
-    maxWidth: '70px', 
-    maxHeight: '50px', 
-    minWidth: '70px', 
-    minHeight: '50px'
+    position: 'relative',
+    top: 10,
+    left: 10,
+    borderRadius: 99,
+    maxWidth: '70px',
+    maxHeight: '50px',
+    minWidth: '70px',
+    minHeight: '50px',
+    [theme.breakpoints.down(800)]: { 
+      display: 'none'
+    }, 
   },
   createButton: {
-    top: 10, marginRight: 2, borderRadius: 99, maxWidth: '500px', maxHeight: '50px', minWidth: '100px', minHeight: '50px'
+    top: 10, 
+    marginRight: 2, 
+    borderRadius: 99, 
+    maxWidth: '500px', 
+    maxHeight: '50px', 
+    minWidth: '100px', 
+    minHeight: '50px',
+    [theme.breakpoints.down(800)]: { 
+      display: 'none'
+    }, 
   },
   searchBar: {
     width: '100%',
@@ -44,7 +57,9 @@ export default makeStyles()((theme) => {
     borderRadius: 100, 
     border: '1px solid #D3D3D3', 
     backgroundColor: grey[100],
-
+    [theme.breakpoints.down(800)]: { 
+      width: '50%'
+    }, 
   },
   buttonTypography: {
     variant: 'h6'
