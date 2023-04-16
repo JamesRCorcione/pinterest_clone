@@ -163,7 +163,7 @@ export const searchPins = createAsyncThunk(
   'pins/searchPins',
   async (query: any, { rejectWithValue }) => {
     try {
-      const response = await API.get(`pins/search?query=${query || 'none'}`)
+      const response = await API.get(`pins/search/search?query=${query || 'none'}`)
       console.log('response', response)
       return response.data
     } catch (err: any) {
