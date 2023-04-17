@@ -16,6 +16,7 @@ import Search from './components/Search/Search';
 import { fetchUser } from './utils/fetchUser';
 import { useDispatch, useSelector } from 'react-redux';
 import { deletePin } from './features/pinsSlice';
+import NotFound from './pages/NotFound';
 
 function App() {
   const navigate = useNavigate()
@@ -53,7 +54,9 @@ function App() {
         <TopNavbar />
       }
       <Routes>     
-      <Route path='/' index element={<Feed /> } />               
+        <Route path='*' element={<NotFound />} />
+        <Route path='/*' element={<Feed /> } />
+        <Route path='/' index element={<Feed /> } />               
         <Route path='/login' index element={!user ?<Login /> : <Login />} />          
         <Route path='/createPin' index element={<CreatePin user={user} /> } />
         <Route path='/category/:category' element={<Feed />} />
