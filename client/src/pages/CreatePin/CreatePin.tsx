@@ -10,6 +10,7 @@ import Spinner from '../../components/Spinner/Spinner'
 import { createPin } from '../../features/pinsSlice'
 import FileBase from 'react-file-base64'
 import { grey } from '@mui/material/colors'
+import TopNavbar from '../../components/TopNavbar/TopNavbar'
 
 
 interface CreatePinProps {
@@ -50,6 +51,7 @@ const CreatePin = ({user}:CreatePinProps) => {
     }
 
   return (
+    <>
     <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', height: '94vh', backgroundColor: grey[300]}}>
     <Box sx={{ marginTop: 5, marginBottom: 10, display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: 5, height: 650, width: 800, backgroundColor: 'white'}}>
       <form onSubmit={handlePinSave}>
@@ -105,6 +107,7 @@ const CreatePin = ({user}:CreatePinProps) => {
         </Button>
         
       </form>  
+      
       <Box>
         <TextField 
             sx={{backgroundColor: 'white'}}
@@ -133,8 +136,12 @@ const CreatePin = ({user}:CreatePinProps) => {
             <Chip key={i} label={chip} onDelete={() => handleDeleteTag(chip)} />
           ))
         }
+        
     </Box>
+    
     </Box>
+    <TopNavbar />
+    </>
   )
 }
 

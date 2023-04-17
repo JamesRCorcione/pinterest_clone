@@ -1,21 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { v4 as uuidv4 } from 'uuid'
-import { MdDownloadForOffline } from 'react-icons/md'
+import  { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AiTwotoneDelete } from 'react-icons/ai'
-import { BsFillArrowUpRightCircleFill } from 'react-icons/bs'
 import { fetchUser } from '../../utils/fetchUser'
 import { Avatar, Box, Button, Typography } from '@mui/material'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import UploadIcon from '@mui/icons-material/Upload';
 
 import useStyles from './styles'
-import { getImageDimensions } from '../../utils/getImageHeight'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { SavePin } from '../../features/usersSlice'
-import userEvent from '@testing-library/user-event'
 import { grey } from '@mui/material/colors'
-import TopNavbar from '../TopNavbar/TopNavbar'
 import { deletePin } from '../../features/pinsSlice'
 
 interface PinProps {

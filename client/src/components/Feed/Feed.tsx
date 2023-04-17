@@ -5,6 +5,7 @@ import { getPins, getPinsByTags } from '../../features/pinsSlice'
 
 import MasonryLayout from '../MasonryLayout/MasonryLayout'
 import Spinner from '../Spinner/Spinner'
+import TopNavbar from '../TopNavbar/TopNavbar'
 
 
 const Feed = () => {
@@ -35,7 +36,7 @@ const Feed = () => {
   if(!pins?.length) return <h2>No Pins Available</h2>
 
   return (
-    <div>
+    <div>      
       {pins && <MasonryLayout pins={pins} />}
     </div>
   )

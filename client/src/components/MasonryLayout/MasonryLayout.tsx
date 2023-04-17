@@ -7,6 +7,8 @@ import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { getPins, getPinsByTags } from '../../features/pinsSlice'
 import Spinner from '../Spinner/Spinner'
+import TopNavbar from '../TopNavbar/TopNavbar'
+import { Box } from '@mui/material'
 
 const breakpointObj = {
   default: 3,
@@ -40,13 +42,28 @@ const MasonryLayout = ({ pins }:any) => {
   
 
   if (loading) return <Spinner message="We are adding new ideas to your feed!"/>
-  if(!pins?.length) return <h2>No Pins Available</h2>
 
   return (
     <div>
+      {!pins?.length 
+      ?
+        <Box >
+          <Box sx={{marginLeft: 3}}>
+            <h2>No Saved Pins!</h2>
+            <h5>Save a pin to see more!</h5>
+          </Box>
+          <Box sx={{position: 'absolute', width: '100%', bottom: 0}}>
+            <TopNavbar /> 
+          </Box>
+        </Box>
+      :
+      <>
       <Masonry className={classes.pin} breakpointCols={breakpointObj}>
-        {pins?.map((pin:IPin, i:number) => <Pin key={i} pin={pin} />)}
-      </Masonry>
+        {pins?.map((pin:IPin, i:number) => <Pin key={i} pin={pin} />)}        
+      </Masonry>      
+      <TopNavbar /> 
+      </>
+    }     
     </div>
   )
 }

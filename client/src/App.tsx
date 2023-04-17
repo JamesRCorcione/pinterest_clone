@@ -28,9 +28,28 @@ function App() {
     }
   }, [user])
  
+  function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {
+      width,
+      height
+    };
+  }
+  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions());
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+
   return (     
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_API_TOKEN!}>
-      {user &&
+      {(user && windowDimensions.width > 750) &&
         <TopNavbar />
       }
       <Routes>     
@@ -41,7 +60,7 @@ function App() {
         <Route path='/pin-detail/:pinId' element={<PinDetails />} />
         <Route path='/user-profile/:userId' index element={<Profile  />} />    
         <Route path='/search' element={<Feed />} />  
-      </Routes>        
+      </Routes>   
     </GoogleOAuthProvider>
     
   );

@@ -1,9 +1,12 @@
 import { Avatar, Box, Button, IconButton, Input, Typography } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search';
 import { grey } from '@mui/material/colors';
 import { useEffect, useState } from 'react'
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import HomeIcon from '@mui/icons-material/Home';
+import SearchIcon from '@mui/icons-material/Search';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import PersonIcon from '@mui/icons-material/Person';
 
 import decode from 'jwt-decode'
 import pinterestLogo from '../../media/pinterest-logo.png'
@@ -49,8 +52,8 @@ const TopNavbar = () => {
 
   async function search() {
     const data = await dispatch(searchPins(searchTerm))
-    //navigate(`/search?query=${searchTerm || 'none'}`)        
-    //console.log('searchQuery',data)
+    navigate(`/search?query=${searchTerm || 'none'}`)        
+    console.log('searchQuery',data)
   }
 
   const handleSearch = (e:any) => {
@@ -72,63 +75,101 @@ const TopNavbar = () => {
     setOpenMenu((openMenu) => !openMenu)
   }
 
+  const openSearch = () => {
+    console.log('search')
+    return (
+      <Box sx={{zIndex: 3000, position: 'absolute', top: 0}}>
+        <h1>Hi</h1>  
+      </Box>
+    )
+  }
+
   return (
-    <Box className={classes.navbar}>
-      <Box className={classes.leftSideContainer}>
-        <IconButton  className={classes.logoButton} onClick={() => navigate('/')}>
-          <img src={pinterestLogo} alt='website icon' height='25px' />
-        </IconButton>
-        <Box className={classes.boxList}>
-        <Button className={classes.homeButton} onClick={() => navigate('/')}>
-          <Typography sx={{fontFamily: 'sans-serif'}} color='black'>
-            Home
-          </Typography>
-        </Button>
-        </Box>
-        <Box onClick={() => navigate(`/today`)} className={classes.boxList}>
-        </Box>
-        <Box className={classes.boxList}>
-        <Button className={classes.createButton} onClick={() => navigate('/createPin')}>
-          <Typography sx={{fontFamily: 'sans-serif'}} color='black'>
-            Create            
-          </Typography>
-        </Button>
-        </Box>
-      </Box>
+      <Box className={classes.navbar}>
 
-      <Box className={classes.searchBar}>
-        <form onSubmit={(e) => handleSearch(e)}>
-          <SearchIcon sx={{paddingTop: 1.5, marginLeft: 2, color: grey[600]}} /> 
-          <Input 
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder='Search Pinterest' disableUnderline={true} sx={{position: 'abolute', bottom: 30, left: 40, typography: 'subtitle2', width: '100%', marginLeft: 1, color: grey[600]}} 
-          />
-        </form>
-      </Box>
-
-      <Box sx={{display:'flex', justifyContent:'end', height: '100%'}}>
-        <Button onClick={() => navigate(`/user-profile/${user.result._id}`)} sx={{top: 12, borderRadius: 99, maxWidth: '50px', maxHeight: '50px', minWidth: '50px', minHeight: '50px'}}>
-          <Avatar sx={{maxWidth: '25px', maxHeight: '25px', minWidth: '25px', minHeight: '25px'}} />
+        <Button className={classes.mobileHomeButton} onClick={() => navigate('/')}>
+          <HomeIcon className={classes.mobileIconSize}/>
+          <Typography className={classes.mobileButtonText}>Home</Typography>
+        </Button>
+        <Button className={classes.mobileHomeButton} onClick={openSearch}>
+          <SearchIcon className={classes.mobileIconSize}/>
+          <Typography className={classes.mobileButtonText}>Search</Typography>
+        </Button>
+        <Button className={classes.mobileHomeButton} onClick={() => navigate('/createPin')}>
+          <AddCircleIcon className={classes.mobileIconSize}/>
+          <Typography className={classes.mobileButtonText}>Create</Typography>
+        </Button>
+        <Button className={classes.mobileHomeButton} onClick={() => navigate(`/user-profile/${user.result._id}`)}>
+          <PersonIcon className={classes.mobileIconSize}/>
+          <Typography className={classes.mobileButtonText}>Profile</Typography>
         </Button>
 
-        <Button     
-          sx={{top: 22, marginRight: 3, borderRadius: 99, maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px'}}
-          onClick={handleOpenMenu}
-        >
-          <KeyboardArrowDownIcon sx={{color: grey[500]}} />
-        </Button>
-        {openMenu && 
-          <Box sx={{position: 'absolute', top: 55, right: 10}}>
-            <Box id='menu' sx={{height: 250, width: 200, borderRadius: 3, backgroundColor: 'white', boxShadow: 5}}>
-              <Button onClick={() => navigate(`/user-profile/${user.result._id}`)} sx={{paddingRight: 10, marginTop: 2, height: 50, width: '100%'}}>Profile</Button>
-              <Button onClick={logoutUser} sx={{paddingRight: 10, height: 50, width: '100%'}}>Logout</Button>
-            </Box>
+        <Box className={classes.leftSideContainer}>
+          <IconButton  className={classes.logoButton} onClick={() => navigate('/')}>
+            <img src={pinterestLogo} alt='website icon' height='25px' />
+          </IconButton>
+          <Box className={classes.boxList}>
+          <Button className={classes.homeButton} onClick={() => navigate('/')}>
+            <Typography sx={{fontFamily: 'sans-serif'}} color='black'>
+              Home
+            </Typography>
+          </Button>
+          
           </Box>
-        }
-                
+          <Box className={classes.boxList}>
+            <Button className={classes.createButton} onClick={() => navigate('/createPin')}>
+              <Typography sx={{fontFamily: 'sans-serif'}} color='black'>
+                Create            
+              </Typography>          
+            </Button>
+            
+          </Box>
+        </Box>
+        <Box className={classes.searchBar}>
+          <form onSubmit={(e) => handleSearch(e)}>
+            <SearchIcon sx={{paddingTop: 1.5, marginLeft: 2, color: grey[600]}} /> 
+            <Input 
+              className={classes.searchInput}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder='Search Pinterest' 
+              disableUnderline={true} 
+            />
+          </form>
+        </Box>
+        <Box sx={{display:'flex', justifyContent:'end', height: '100%'}}>
+          <Button 
+            className={classes.profileButton} 
+            onClick={() => navigate(`/user-profile/${user.result._id}`)}
+          >
+            <Avatar sx={{maxWidth: '25px', maxHeight: '25px', minWidth: '25px', minHeight: '25px'}} />
+          </Button>
+          <Button     
+            className={classes.dropDownButton}
+            onClick={handleOpenMenu}
+          >
+            <KeyboardArrowDownIcon sx={{color: grey[500]}} />
+          </Button>
+          
+          {openMenu && 
+            <Box sx={{position: 'absolute', top: 55, right: 10}}>
+              <Box className={classes.dropDownMenu}>
+                <Button 
+                  sx={{paddingRight: 10, marginTop: 2, height: 50, width: '100%'}}
+                  onClick={() => navigate(`/user-profile/${user.result._id}`)} 
+                >
+                  Profile
+                </Button>
+                <Button 
+                  sx={{paddingRight: 10, height: 50, width: '100%'}}
+                  onClick={logoutUser}
+                >
+                  Logout
+                </Button>
+              </Box>
+            </Box>
+          }                
+        </Box>
       </Box>
-
-    </Box>
   )
 }
 

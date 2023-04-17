@@ -10,7 +10,9 @@ import Feed from '../../components/Feed/Feed'
 import MasonryLayout from '../../components/MasonryLayout/MasonryLayout'
 import { deletePin, getPins, getPinsByCreator, getPinsByTags } from '../../features/pinsSlice'
 import { fetchUser } from '../../utils/fetchUser'
+import useStyles from './styles'
 import Spinner from '../../components/Spinner/Spinner'
+import TopNavbar from '../../components/TopNavbar/TopNavbar'
 
 const Profile = () => {
   const { userId } = useParams()
@@ -24,6 +26,7 @@ const Profile = () => {
   const [isSavedTab, setIsSavedTab] = useState<boolean>(true)
   const [loading, setLoading] = useState(false)
   const { category } = useParams()
+  const { classes } = useStyles()
 
 
   useEffect(() => {
@@ -54,44 +57,35 @@ const Profile = () => {
   }, [location, category])
   
 
-
-
-
   return (
-    <Box>
-      <Box sx={{display: 'flex', backgroundColor: 'pink'}}>
-
+    <>
+      <Box sx={{display: 'flex'}}>
         <Box sx={{position: 'absolute', left: '50%'}}>
           <Box sx={{position: 'relative', left: '-50%'}}>
-            <Avatar sx={{marginTop: 2, minHeight: 120, maxHeight: 120, minWidth: 120, maxWidth: 120}}>
-              <Typography sx={{fontSize: 48, textTransform: 'capitalize', color: 'black'}}>{user?.result.userName.charAt(0)}</Typography>
+            <Avatar className={classes.profileImage}>
+              <Typography className={classes.userNameInitial}>{user?.result.userName.charAt(0)}</Typography>
             </Avatar>          
+            <Typography className={classes.userName}>@{user?.result.userName.split(' ').join('')}</Typography>
           </Box>
         </Box>
-        </Box>
+        </Box>        
 
-        <Typography sx={{ marginTop: 0.5, fontSize: 32, fontWeight: 400, textAlign:'center', paddingTop: 18}}>{user?.userName}</Typography>
-        <Typography sx={{marginTop: 0.5, fontSize: 12, textAlign:'center', textTransform: 'nospace' }}>@{user?.result.userName.split(' ').join('')}</Typography>
-        <Typography sx={{marginTop: 0.5, fontSize: 16, textAlign:'center', }}>0 following</Typography>
-
-        <Box sx={{display: 'flex', justifyContent: 'center', marginTop: 2}} >
-            <Button sx={{marginX: 1, height: 40, borderRadius: 10, backgroundColor: grey[300]}} variant='outlined'>
+        <Box className={classes.buttonContainer} >
+            <Button className={classes.shareButton} variant='outlined'>
               <Typography sx={{fontSize: 14, color: 'black'}}>Share</Typography>
               </Button>
-            <Button sx={{marginX: 1, height: 40,borderRadius: 10, backgroundColor: grey[300]}} variant='outlined'>
+            <Button className={classes.editProfileButton} variant='outlined'>
             <Typography sx={{fontSize: 14, color: 'black'}}>Edit Profile</Typography>
             </Button>
         </Box>
-
       
 
-      <Box sx={{display: 'flex', justifyContent: 'center', paddingTop: 8}}>
+      <Box sx={{display: 'flex', justifyContent: 'center', paddingTop: 30}}>
             <Button onClick={() => setIsSavedTab(false)}>Created</Button>
             <Button onClick={() => setIsSavedTab(true)}>Saved</Button>
       </Box>
 
-      <Box sx={{position: 'absolute', left: '50%'}}>
-        <Box sx={{position: 'relative', left: '-50%'}}>
+      <Box sx={{display: 'flex', justifyContent: 'center'}}>
           {isSavedTab 
           ?
             <>
@@ -99,20 +93,19 @@ const Profile = () => {
             ?
               <h2>No Pins Available</h2>
             :
-              <Box sx={{width: '98vw', paddingTop: 8}}>
+              <Box sx={{width: '100%', paddingTop: 8}}>
                 <MasonryLayout pins={user?.result.saves} />
               </Box>
             } 
             </>
           :
-          <Box sx={{width: '98vw', paddingTop: 8}}>
-            <MasonryLayout pins={createdPins} />
+          <Box sx={{width: '100vw', paddingTop: 8}}>
+            <MasonryLayout pins={createdPins} />                       
           </Box>
-          }
-
-        </Box>
-      </Box>
-    </Box>
+          }      
+              
+        </Box>         
+    </>
   )
 }
 
