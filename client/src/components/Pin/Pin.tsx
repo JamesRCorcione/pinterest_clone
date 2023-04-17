@@ -36,7 +36,6 @@ const Pin = ({ pin }:PinProps) => {
     
     if (alreadySaved?.length === 0) {
       setSavingPost(true)
-      console.log('save pin', user.result)
       await dispatch(SavePin({user, pin}))
       .then(() => {
         window.location.reload();

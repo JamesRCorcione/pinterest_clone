@@ -166,7 +166,6 @@ export const updateSaves = createAsyncThunk (
   async ({user, updatedSaves}:any, { rejectWithValue }) => {
     try {
       const response = await axios.put(baseURL + `users/updateSaves/${user.result._id}`, {user, updatedSaves})
-      console.log('response',response)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {

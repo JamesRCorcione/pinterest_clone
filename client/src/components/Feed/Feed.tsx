@@ -5,7 +5,6 @@ import { getPins, getPinsByTags } from '../../features/pinsSlice'
 
 import MasonryLayout from '../MasonryLayout/MasonryLayout'
 import Spinner from '../Spinner/Spinner'
-import TopNavbar from '../TopNavbar/TopNavbar'
 
 
 const Feed = () => {
@@ -18,26 +17,27 @@ const Feed = () => {
 
 
   useEffect(() => {
-    async function loadPins() {
-      setLoading(true)
-
-      if(category) {
-        await dispatch(getPinsByTags(category))
-      } else {
-        await dispatch(getPins(null))
-      }
-      setLoading(false)
+    async function loadPins() {      
+      await dispatch(getPins(null))  
     }
+    setLoading(true)
     loadPins()
-  }, [location, category])
+    setLoading(false)
+  }, [])
   
 
   if (loading) return <Spinner message="We are adding new ideas to your feed!"/>
-  if(!pins?.length) return <h2>No Pins Available</h2>
 
   return (
-    <div>      
-      {pins && <MasonryLayout pins={pins} />}
+    <div>     
+      {!pins?.length 
+      ?
+        <h2>No Pins Available</h2>
+      : 
+        <>
+          {pins && <MasonryLayout pins={pins} />}
+        </>
+      }
     </div>
   )
 }

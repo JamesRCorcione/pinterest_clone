@@ -53,7 +53,6 @@ const TopNavbar = () => {
   async function search() {
     const data = await dispatch(searchPins(searchTerm))
     navigate(`/search?query=${searchTerm || 'none'}`)        
-    console.log('searchQuery',data)
   }
 
   const handleSearch = (e:any) => {
@@ -76,7 +75,6 @@ const TopNavbar = () => {
   }
 
   const openSearch = () => {
-    console.log('search')
     return (
       <Box sx={{zIndex: 3000, position: 'absolute', top: 0}}>
         <h1>Hi</h1>  

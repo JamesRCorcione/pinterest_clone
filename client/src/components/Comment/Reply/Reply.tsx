@@ -114,7 +114,6 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
     </Box>
   )
 
-  //console.log('reply',comment.userCommenting, comment.userCommenting.userName)
   //<Link to={`/user-profile/${comment.taggedUser._id}`}>{`@${comment.taggedUser.userName}`}</Link>
 
 

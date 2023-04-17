@@ -23,23 +23,34 @@ const MasonryLayout = ({ pins }:any) => {
   const classes = useStyles()
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch<AppDispatch>()
-  const { category } = useParams()
 
 
   useEffect(() => {
     async function loadPins() {
       setLoading(true)
-
-      if(category) {
-        await dispatch(getPinsByTags(category))
-      } else {
-        await dispatch(getPins(null))
-      }
+      await dispatch(getPins(null))      
       setLoading(false)
     }
     loadPins()
   }, [])
   
+  function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {
+      width,
+      height
+    };
+  }
+  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions());
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   if (loading) return <Spinner message="We are adding new ideas to your feed!"/>
 
@@ -53,15 +64,19 @@ const MasonryLayout = ({ pins }:any) => {
             <h5>Save a pin to see more!</h5>
           </Box>
           <Box sx={{position: 'absolute', width: '100%', bottom: 0}}>
+          {windowDimensions.width <= 750  && 
             <TopNavbar /> 
+          }
           </Box>
         </Box>
       :
       <>
       <Masonry className={classes.pin} breakpointCols={breakpointObj}>
         {pins?.map((pin:IPin, i:number) => <Pin key={i} pin={pin} />)}        
-      </Masonry>      
-      <TopNavbar /> 
+      </Masonry>   
+      {windowDimensions.width <= 750  && 
+        <TopNavbar /> 
+      }
       </>
     }     
     </div>

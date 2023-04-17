@@ -164,7 +164,6 @@ export const searchPins = createAsyncThunk(
   async (query: any, { rejectWithValue }) => {
     try {
       const response = await API.get(`pins/search/search?query=${query || 'none'}`)
-      console.log('response', response)
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
