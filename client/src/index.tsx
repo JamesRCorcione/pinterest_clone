@@ -12,7 +12,7 @@ import commentsReducer from './features/commentsSlice';
 import repliesReducer from './features/repliesSlice';
 import usersReducer from './features/usersSlice';
 import pinSlice  from '../src/features/pinsSlice'
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter  } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 
 
@@ -38,9 +38,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-        <BrowserRouter>
+        <HashRouter>
           <App />
-        </BrowserRouter>
+        </HashRouter>
     </Provider>
   </React.StrictMode>
 );
