@@ -23,7 +23,7 @@ const Feed = () => {
     }
     setLoading(true)
     loadPins()
-    navigate('/')
+    //navigate('/')
     setLoading(false)
   }, [])
   

@@ -41,15 +41,15 @@ const PinDetails = () => {
   const [loading, setLoading] = useState(false)
   const [text, setText] = useState<any>()
   const { pinId } = useParams()
-  const classes = useStyle()
+  const { classes } = useStyle()
   const location = useLocation()
 
   useEffect(() => {
-    //getPinDetails()
+    getPinDetails()
   }, [])
 
   useEffect(() => {
-    //getNewComment()
+    getNewComment()
   }, [comments.length])
   
   let alreadySaved = user?.result?.saves?.filter((save:any) => save?._id === pin?._id)
@@ -145,54 +145,57 @@ const PinDetails = () => {
 
   return (
     <>
-    <Box>  
-      <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginY: 2}}>
-        <Box sx={{display: 'flex', borderRadius: 10, boxShadow: 10, width: 800, height: 'auto'}}>
+      <Box className={classes.pinContainer}>
+        <Box className={classes.imageContainer}>
           
           <img className={classes.image} src={pin?.image}></img>
 
-          <Box sx={{display: 'flex', flexDirection: 'column', flex: 'wrap', maxHeight: '92vh', height: 'auto', width: 400}}>  
+          <Box className={classes.commentSectionContainer}>  
 
-            <Box sx={{display: 'flex', width: 400}}>
+            <Box className={classes.topButtonsContainer}>
                 <MoreHorizIcon sx={{position: 'relative', left: 30, top: 40}} />
                 <UploadIcon sx={{position: 'relative', left: 50, top: 40}}/>
                 <ContentCopyIcon sx={{position: 'relative', left: 70, top: 40}} />
-                <Box sx={{position: 'relative', top: 30, left: 225}}>
+
+              <Box className={classes.saveButtonContainer}>
                 {alreadySaved?.length !== 0 ? (
-                  <Button sx={{ borderRadius: 99, minHeight: 40, maxHeight: 40, minWidth: 70, maxWidth: 70, backgroundColor: 'red'}}
+                  <Button 
+                    className={classes.savedButton}
                     variant="contained" 
                     onClick={(e) => {
                       e.stopPropagation()
                       savePin()
                     }}
-                    >
-                      Saved
+                  >
+                    Saved
                   </Button>
                 ) : (
-                  <Button sx={{borderRadius: 99, minHeight: 40, maxHeight: 40, minWidth: 70, maxWidth: 70, backgroundColor: 'red'}}
+                  <Button 
+                    className={classes.saveButton}
                     variant="contained" 
                     onClick={(e) => {
                       e.stopPropagation()
                       savePin()
                     }}
                     type="button" 
-                    >
-                      {savingPost ? 'Saving...' : 'Save'}
-                  </Button>
-                  
+                  >
+                    {savingPost ? 'Saving...' : 'Save'}
+                  </Button>                  
                 )}
               </Box>
             </Box>
 
+            <img className={classes.mobileImage} src={pin?.image}></img>
+              
             {expandComments
             ?
-            <Box sx={{flex: 'wrap',overflowY: 'auto', overflowX: 'hidden', height: '100%', marginTop: 5,  marginRight: 2, marginLeft: 2}}>
+            <Box className={classes.openCommentsContainer}>
               {detailsRender()}              
             </Box>
             :
-            <Box sx={{flex: 'wrap', overflowY: 'auto', overflowX: 'hidden', height: '100%', marginTop: 5, marginRight: 2, marginLeft: 2}}>
+            <Box className={classes.openCommentsContainer}>
               {detailsRender()}
-              <Box sx={{display: 'flex', flexDirection: 'column',  overflowY: 'auto',  height: 'auto', width: 400}}>
+              <Box className={classes.commentSection}>
                 {comments &&
                   comments.map((comment:IComment, i:number) => (
                     <Comment key={i} pinId={pinId} user={user} comment={comment} />
@@ -201,33 +204,33 @@ const PinDetails = () => {
               </Box>
             </Box>
             }
-            <Box sx={{display: 'flex', height: 70, flexDirection: 'column', justifyContent: 'end', alignContent: 'end'}}>
+
+            <Box className={classes.commentInputContainer}>
               <Divider />
-            <Box sx={{marginBottom: 1, display: 'flex', justifyContent: 'end', alignItems: 'end'}}>
-                <Avatar sx={{marginBottom: 1, marginLeft: 2, marginRight: 2}}>{user.result.userName.charAt(0)}</Avatar>
+            <Box className={classes.profileImage}>
+                <Avatar sx={{marginBottom: 1, marginLeft: 2, marginRight: 2}}>
+                  {user.result.userName.charAt(0)}
+                </Avatar>
                 <Box sx={{marginTop: 1, marginRight: 5}} className={classes.searchBar}>
                   <form onSubmit={handleComment}>
                     <Input
+                      className={classes.input}
                       onChange={(e:any) => setText(e.target.value)}
                       placeholder='Add a comment'
                       disableUnderline={true}
-                      sx={{ typography: 'subtitle2', width: '100%', marginTop: 1.5, marginLeft: 2, color: grey[600]}}
                     />
                   </form>
                 </Box>
               </Box>
             </Box>
+
           </Box>
         </Box>
-      </Box>
-      
-    </Box>
+      </Box>      
 
 
-      <Box sx={{position: 'absolute', left: '50%'}}>
-        <Box sx={{position: 'relative', left: '-50%'}}>
-          <Typography>More like this</Typography>
-        </Box>
+      <Box sx={{display: 'flex', justifyContent: 'center', paddingTop: 5}}>
+        <Typography>More like this</Typography>
       </Box>
 
       <Box sx={{paddingTop: 5}}>
