@@ -74,9 +74,7 @@ const MasonryLayout = ({ pins }:any) => {
       <Masonry className={classes.pin} breakpointCols={breakpointObj}>
         {pins?.map((pin:IPin, i:number) => <Pin key={i} pin={pin} />)}        
       </Masonry>   
-      {windowDimensions.width <= 750  && 
-        <TopNavbar /> 
-      }
+      
       </>
     }     
     </div>

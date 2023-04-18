@@ -64,6 +64,9 @@ function App() {
         <Route path='/user-profile/:userId' index element={<Profile  />} />    
         <Route path='/search' element={<Feed />} />
       </Routes>   
+      {windowDimensions.width <= 750  && 
+        <TopNavbar /> 
+      }
     </GoogleOAuthProvider>
     
   );
