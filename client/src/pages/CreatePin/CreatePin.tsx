@@ -137,10 +137,8 @@ const CreatePin = ({user}:CreatePinProps) => {
           ))
         }
         
+    </Box>    
     </Box>
-    
-    </Box>
-    <TopNavbar />
     </>
   )
 }
