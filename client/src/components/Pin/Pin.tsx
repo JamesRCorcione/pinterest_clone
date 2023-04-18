@@ -1,4 +1,4 @@
-import  { useState } from 'react'
+import  { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AiTwotoneDelete } from 'react-icons/ai'
 import { fetchUser } from '../../utils/fetchUser'
@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux'
 import { SavePin } from '../../features/usersSlice'
 import { grey } from '@mui/material/colors'
 import { deletePin } from '../../features/pinsSlice'
+import { Divider } from '@material-ui/core'
 
 interface PinProps {
     pin: IPin
@@ -21,19 +22,21 @@ const Pin = ({ pin }:PinProps) => {
   const [postHovered, setPostHovered] = useState(false)
   const [savingPost, setSavingPost] = useState(false)
   const [openPinMenu, setOpenPinMenu] = useState(false)
+  const [openMobileMenu, setOpenMobileMenu] = useState(false)
   const navigate = useNavigate()
-  const classes = useStyles()
+  const { classes } = useStyles()
   const dispatch = useDispatch<AppDispatch>()
   const { postedBy, image, _id, destination } = pin
 
- 
+ useEffect(() => {
+  setOpenMobileMenu(false)
+ }, [])
 
-  let alreadySaved = user?.result?.saves?.filter((save:any) => save?._id === pin?._id)
+  let alreadySaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
   alreadySaved = alreadySaved?.length > 0 ? alreadySaved : []
 
 
-  const savePin = async (e:any) => {
-    
+  const savePin = async (e:any) => {    
     if (alreadySaved?.length === 0) {
       setSavingPost(true)
       await dispatch(SavePin({user, pin}))
@@ -57,36 +60,43 @@ const Pin = ({ pin }:PinProps) => {
   return (  
     <>
     <Box>
+
+      {/* Handles on hover image -> Buttons display */}
       <Box
+        className={classes.container} 
         onMouseEnter={() => setPostHovered(true)}
         onMouseLeave={() => setPostHovered(false)}
-        onClick={() => navigate(`/pin-detail/${_id}`)}
-        className={classes.container}        
-        >
-        
-        {!postHovered ?
-         ( <img className={classes.imageOp} alt="user-post" src={image}  /> )
-        : (
+        onClick={() => {
+          navigate(`/pin-detail/${_id}`)
+        }}
+      >
+
+        {/* Switches rendering for if post is hovered with mouse */}
+        {!postHovered 
+          ?
+           <img className={classes.imageOp} alt="user-post" src={image}  /> 
+          : 
           <>
-          <img className={classes.image} alt="user-post" src={image}  />
-          <Box 
-            sx={{position: 'absolute', top:0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', height: '100%'}}
-            >
-            <Box sx={{display: 'flex', alignItems: 'center', justifyItems: 'justify-between'}}>
-              
+            <img className={classes.image} alt="user-post" src={image}  />
+            <Box className={classes.onHoverImageContainer}>
+
+            {/* Save button logic and buttons */}
+            <Box className={classes.saveButtonContainer}>              
               {alreadySaved?.length !== 0 ? (
-                <Button sx={{position: 'absolute', top: 10, right: 10, borderRadius: 99, minHeight: 40, maxHeight: 40, minWidth: 70, maxWidth: 70, backgroundColor: 'red'}}
+                <Button 
+                  className={classes.savedButton}
                   variant="contained" 
                   onClick={(e) => {
                     e.stopPropagation()
                     e.preventDefault()
                     savePin(e)
                   }}
-                  >
+                >
                     Saved
                 </Button>
               ) : (
-                <Button sx={{position: 'absolute', top: 10, right: 10, borderRadius: 99, minHeight: 40, maxHeight: 40, minWidth: 70, maxWidth: 70, backgroundColor: 'red'}}
+                <Button 
+                  className={classes.saveButton}
                   variant="contained" 
                   onClick={(e) => {
                     e.stopPropagation()
@@ -96,15 +106,14 @@ const Pin = ({ pin }:PinProps) => {
                   type="button" 
                   >
                     {savingPost ? 'Saving...' : 'Save'}
-                </Button>
-                
+                </Button>                
               )}
             </Box>
 
-
+            {/* Button for html link */}
             <Box>
-                <Button
-                  sx={{'&:hover': { backgroundColor: grey[100], opacity: 1}, minHeight: 30, maxHeight: 30, minWidth: 90, maxWidth: 120, borderRadius: 99, position: 'absolute', bottom: 15, left: 10, backgroundColor: grey[200], opacity: 0.9}}
+              <Button
+                  className={classes.htmlLinkButton}
                   href={`${destination}`}
                   variant='contained'
                   onClick={(e) => {
@@ -116,26 +125,27 @@ const Pin = ({ pin }:PinProps) => {
                   :
                   <Typography sx={{fontSize: 10, color: 'black'}}>{destination?.slice(12,23)}...</Typography>
                   }
-                </Button>
-              </Box>
-
-              <Box>
-                <Button 
-                  sx={{'&:hover': { backgroundColor: grey[100], opacity: 1}, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30, backgroundColor: grey[200], borderRadius: 99, position: 'absolute', bottom: 15, right: 60, opacity: 0.9 }}
-                  href={`${image}?dl=`}
-                  download
-                  onClick={(e) => {
-                    e.stopPropagation()
-                  }}
-                >
-                  <UploadIcon />
-                </Button>
+              </Button>
             </Box>
 
+            {/* Button for sharing */}
+            <Box>
+              <Button 
+                className={classes.shareImageButton}
+                href={`${image}?dl=`}
+                download
+                onClick={(e) => {
+                  e.stopPropagation()
+                }}
+              >
+                <UploadIcon />
+              </Button>
+            </Box>
+
+            {/* Button for more action menu to open */}
             <Box>
                 <Button 
-                  className={classes.bottomButtons}
-                  sx={{'&:hover': { backgroundColor: grey[100], opacity: 1}, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30, backgroundColor: grey[200], borderRadius: 99, position: 'absolute', bottom: 15, right: 15, opacity: 0.9}}
+                  className={classes.moreActionsButton}
                   href={`${image}?dl=`}
                   download
                   onClick={(e) => {
@@ -146,32 +156,19 @@ const Pin = ({ pin }:PinProps) => {
                 >
                   <MoreHorizIcon />
                 </Button>
-            </Box>
-            
-            <Box>
-                 
-                  {(false) && (                    
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        //deletePin(_id)
-                      }}
-                    >
+            </Box>  
 
-                    <AiTwotoneDelete />
-                    </button>
-                  )}
-            </Box>
           </Box>
           </>
-        )}
-        </Box>
-          <Box sx={{marginLeft: 2}}>
-            <Typography sx={{fontSize: 14}}>{pin?.title}</Typography>
-          </Box>
+        }
+      </Box>
 
+      {/* Pin title */}
+      <Box sx={{marginLeft: 2}}>
+        <Typography sx={{fontSize: 14}}>{pin?.title}</Typography>
+      </Box>
           
+      {/* Pin Username and image */}
       <Box sx={{display: 'flex'}}>
         <Button 
           style={{ backgroundColor: 'transparent' }} 
@@ -180,24 +177,36 @@ const Pin = ({ pin }:PinProps) => {
         >
           {postedBy?.image 
           ?
-            <>
-              <img  
-                src={postedBy?.image}
-                alt="user-profile"
-              />
-            </>
+            <img  
+              src={postedBy?.image}
+              alt="user-profile"
+            />
           :
-            <>
-              <Avatar sx={{minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{postedBy?.userName?.charAt(0)}</Avatar>
-            </>
+            <Avatar sx={{minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{postedBy?.userName?.charAt(0)}</Avatar>
           }
           <Typography sx={{marginLeft:1, fontSize: 12, color: 'black', boxShadow: 'none', textDecoration: 'none'}}>{postedBy?.userName}</Typography>
         </Button>
-      </Box>          
-    </Box>
+      </Box> 
+
+      <Box className={classes.mobileButtonContainer}>
+        <Button 
+          className={classes.mobileActionMoreButton}
+          onClick={(e) => {
+            e.stopPropagation()
+            e.preventDefault()                    
+            setOpenMobileMenu((prev) => !prev)
+          }}
+        >
+          <MoreHorizIcon />
+        </Button>
+        <Divider />
+      </Box>
+
+        
+        {/* ... Menu Opening */}
     {openPinMenu &&
       <Box sx={{position: 'relative', left: 175, bottom: 75}}>
-        <Box sx={{height: 'auto', width: 120, borderRadius: 2, boxShadow: 5, backgroundColor: 'white'}}>
+        <Box sx={{position: 'absolute', height: 'auto', width: 120, borderRadius: 2, boxShadow: 5, backgroundColor: 'white'}}>
           <Button
               style={{ backgroundColor: 'transparent' }} 
               onClick={() => {}}
@@ -215,6 +224,21 @@ const Pin = ({ pin }:PinProps) => {
         </Box>
       </Box>
     }
+    {openMobileMenu &&
+      <Box sx={{position: 'relative'}}>
+        <Box className={classes.mobileActionMenu}>
+          <Button
+              style={{ backgroundColor: 'transparent' }} 
+              onClick={(e) => savePin(e)}
+              sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
+          >
+              <Typography sx={{marginLeft: 2}}>Save Pin</Typography>
+          </Button>
+
+        </Box>
+    </Box>
+    }
+    </Box>    
     </>
   )
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation, useParams } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { getPins, getPinsByTags } from '../../features/pinsSlice'
 
 import MasonryLayout from '../MasonryLayout/MasonryLayout'
@@ -12,6 +12,7 @@ const Feed = () => {
   const pinsState = useSelector((state: RootState) => state.pinsState);
   const { pins } = pinsState
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
   const location = useLocation()
   const { category } = useParams()
 
@@ -22,6 +23,7 @@ const Feed = () => {
     }
     setLoading(true)
     loadPins()
+    navigate('/')
     setLoading(false)
   }, [])
   

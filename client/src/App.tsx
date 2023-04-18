@@ -57,12 +57,12 @@ function App() {
         <Route path='*' element={<NotFound />} />
         <Route path='/*' element={<Feed /> } />
         <Route path='/' index element={<Feed /> } />               
-        <Route path='/login' index element={!user ?<Login /> : <Login />} />          
+        <Route path='/login' index element={!user && <Login />} />          
         <Route path='/createPin' index element={<CreatePin user={user} /> } />
         <Route path='/category/:category' element={<Feed />} />
         <Route path='/pin-detail/:pinId' element={<PinDetails />} />
         <Route path='/user-profile/:userId' index element={<Profile  />} />    
-        <Route path='/search' element={<Feed />} />  
+        <Route path='/search' element={<Feed />} />
       </Routes>   
     </GoogleOAuthProvider>
     

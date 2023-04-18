@@ -27,6 +27,8 @@ const getTotalComments = (comments:IComment[]) => {
   return total
 }
 
+
+
 const PinDetails = () => {
   const user = fetchUser()
   const dispatch = useDispatch<AppDispatch>()
@@ -43,11 +45,11 @@ const PinDetails = () => {
   const location = useLocation()
 
   useEffect(() => {
-    getPinDetails()
-  }, [location])
+    //getPinDetails()
+  }, [])
 
   useEffect(() => {
-    getNewComment()
+    //getNewComment()
   }, [comments.length])
   
   let alreadySaved = user?.result?.saves?.filter((save:any) => save?._id === pin?._id)
@@ -100,7 +102,6 @@ const PinDetails = () => {
     setExpandComments((expand) => !expand)
   }
 
-
   function detailsRender()  {
     return (
       <>
@@ -141,7 +142,6 @@ const PinDetails = () => {
       </>
     )
   }
-
 
   return (
     <>
@@ -198,28 +198,28 @@ const PinDetails = () => {
                     <Comment key={i} pinId={pinId} user={user} comment={comment} />
                   ))
                 }
-              </Box>              
-            </Box>   
-            }         
+              </Box>
+            </Box>
+            }
             <Box sx={{display: 'flex', height: 70, flexDirection: 'column', justifyContent: 'end', alignContent: 'end'}}>
-              <Divider /> 
-            <Box sx={{marginBottom: 1, display: 'flex', justifyContent: 'end', alignItems: 'end'}}>              
+              <Divider />
+            <Box sx={{marginBottom: 1, display: 'flex', justifyContent: 'end', alignItems: 'end'}}>
                 <Avatar sx={{marginBottom: 1, marginLeft: 2, marginRight: 2}}>{user.result.userName.charAt(0)}</Avatar>
                 <Box sx={{marginTop: 1, marginRight: 5}} className={classes.searchBar}>
                   <form onSubmit={handleComment}>
-                    <Input      
-                      onChange={(e:any) => setText(e.target.value)}             
+                    <Input
+                      onChange={(e:any) => setText(e.target.value)}
                       placeholder='Add a comment'
-                      disableUnderline={true} 
-                      sx={{ typography: 'subtitle2', width: '100%', marginTop: 1.5, marginLeft: 2, color: grey[600]}} 
-                    />        
-                  </form>                        
+                      disableUnderline={true}
+                      sx={{ typography: 'subtitle2', width: '100%', marginTop: 1.5, marginLeft: 2, color: grey[600]}}
+                    />
+                  </form>
                 </Box>
               </Box>
             </Box>
-          </Box>   
+          </Box>
         </Box>
-      </Box>      
+      </Box>
       
     </Box>
 
