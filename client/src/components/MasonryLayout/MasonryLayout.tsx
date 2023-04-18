@@ -64,9 +64,7 @@ const MasonryLayout = ({ pins }:any) => {
             <h5>Save a pin to see more!</h5>
           </Box>
           <Box sx={{position: 'absolute', width: '100%', bottom: 0}}>
-          {windowDimensions.width <= 750  && 
-            <TopNavbar /> 
-          }
+          
           </Box>
         </Box>
       :
