@@ -50,7 +50,9 @@ function App() {
 
   return (     
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_API_TOKEN!}>
-      <TopNavbar />
+      {user &&
+        <TopNavbar />
+      }
       
       <Routes>     
         <Route path='*' element={<NotFound />} />
