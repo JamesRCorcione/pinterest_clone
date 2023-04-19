@@ -84,8 +84,7 @@ const PinDetails = () => {
         setSavingPost(false);
       })      
     }   
-  }
-  
+  }  
 
   const handleComment = async (e:any) => {
     e.preventDefault()
@@ -104,47 +103,6 @@ const PinDetails = () => {
 
   const handleExpandComments = () => {
     setExpandComments((expand) => !expand)
-  }
-
-  function detailsRender()  {
-    return (
-      <>
-      <Box sx={{display: 'flex', marginLeft: 1, width: 400,}}>
-        <Link>{pin?.destination}</Link>
-      </Box>
-      <Box sx={{display: 'flex', flexDirection: 'column', marginLeft: 1, width: 400,}}>
-        <Box sx={{display: 'flex',}}>
-          {pin?.title}
-        </Box>
-        <Box sx={{display: 'flex',}}>
-          {pin?.text}
-        </Box>
-      </Box>
-      <Box sx={{display: 'flex',width: 400}}>
-        {pin?.postedBy.image}
-        {pin?.postedBy.userName}
-        {pin?.tags}
-      </Box>
-      <Box sx={{display: 'flex'}}>
-        <Typography sx={{marginTop: 1}}>
-            {totalComments} Comments 
-          </Typography>
-        <Button onClick={handleExpandComments}
-        sx={{borderRadius: 99, marginTop: 0.5, marginLeft: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>
-          <KeyboardArrowDownIcon sx={{color: 'black'}} />
-        </Button>
-      </Box>
-      {loading &&
-        <Box sx={{position: 'relative', marginLeft: 8, marginTop: 3, marginBottom: 3}}>
-        <Circles 
-            color={grey[400]}
-            height={30}
-            width={150}
-        />
-      </Box>
-      }
-      </>
-    )
   }
 
   return (
@@ -220,7 +178,43 @@ const PinDetails = () => {
               </Box>
             </Box>              
 
-            {detailsRender()} 
+              
+            <Box>
+              <Box sx={{display: 'flex', marginLeft: 1, width: 'auto',}}>
+                <Link>{pin?.destination}</Link>
+              </Box>
+              <Box sx={{display: 'flex', flexDirection: 'column', marginLeft: 1, width: 'auto',}}>
+                <Box sx={{display: 'flex',}}>
+                  {pin?.title}
+                </Box>
+                <Box sx={{display: 'flex',}}>
+                  {pin?.text}
+                </Box>
+              </Box>
+              <Box sx={{display: 'flex',width: 'auto'}}>
+                {pin?.postedBy.image}
+                {pin?.postedBy.userName}
+                {pin?.tags}
+              </Box>
+              <Box sx={{display: 'flex'}}>
+                <Typography sx={{marginTop: 1}}>
+                    {totalComments} Comments 
+                  </Typography>
+                <Button onClick={handleExpandComments}
+                sx={{borderRadius: 99, marginTop: 0.5, marginLeft: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>
+                  <KeyboardArrowDownIcon sx={{color: 'black'}} />
+                </Button>
+              </Box>
+              {loading &&
+                <Box sx={{position: 'relative', marginLeft: 8, marginTop: 3, marginBottom: 3}}>
+                <Circles 
+                    color={grey[400]}
+                    height={30}
+                    width={150}
+                />
+              </Box>
+              }
+            </Box> 
 
             {expandComments &&
               <Box className={classes.openCommentsContainer}>
