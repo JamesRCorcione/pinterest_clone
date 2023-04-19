@@ -130,7 +130,7 @@ const PinDetails = () => {
             {totalComments} Comments 
           </Typography>
         <Button onClick={handleExpandComments}
-        sx={{borderRadius: 99, marginTop: 0.5, marginLeft: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>                
+        sx={{borderRadius: 99, marginTop: 0.5, marginLeft: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>
           <KeyboardArrowDownIcon sx={{color: 'black'}} />
         </Button>
       </Box>
@@ -183,7 +183,7 @@ const PinDetails = () => {
                 )}
               </Box>
           </Box>      
-          <img className={classes.mobileImage} src={pin?.image}></img>  
+          <img className={classes.mobileImage} src={pin?.image}></img>
           <img className={classes.image} src={pin?.image}></img>
           <Box className={classes.commentSectionContainer}>  
 
@@ -220,9 +220,14 @@ const PinDetails = () => {
               </Box>
             </Box>              
 
-            {detailsRender()}
-
-            {expandComments &&
+            <img className={classes.mobileImage} src={pin?.image}></img>
+              
+            {expandComments
+            ?
+            <Box className={classes.openCommentsContainer}>
+              {detailsRender()}              
+            </Box>
+            :
             <Box className={classes.openCommentsContainer}>
               <Box className={classes.commentSection}>
                 {comments &&
