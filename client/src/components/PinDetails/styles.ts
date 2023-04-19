@@ -11,7 +11,6 @@ export default makeStyles()((theme) => {
       [theme.breakpoints.down(750)]: { 
         width: '100%',
         paddingTop: 10,
-        backgroundColor: 'pink'
       }
     },
     pinContainer: {
@@ -51,7 +50,7 @@ export default makeStyles()((theme) => {
     topButtonsContainer: {
       display: 'flex', width: '100%', paddingBottom: 50,
       [theme.breakpoints.down(750)]: { 
-        display: 'none'
+        display: 'none',
         
       }
     },
@@ -61,8 +60,7 @@ export default makeStyles()((theme) => {
         display: 'block',
         position: 'relative', 
         width: '100%',
-        paddingBottom: 40
-        
+        paddingBottom: 40        
       }
     },
     saveButtonContainer: {

@@ -147,7 +147,39 @@ const PinDetails = () => {
     <>
       <Box className={classes.pageContainer}>
         <Box className={classes.pinContainer}>
-          
+          <Box className={classes.topButtonsMobileContainer}>
+                <MoreHorizIcon sx={{position: 'relative', left: 30, top: 25}} />
+                <UploadIcon sx={{position: 'relative', left: 50, top: 25}}/>
+                <ContentCopyIcon sx={{position: 'relative', left: 70, top: 25}} />
+
+              <Box className={classes.saveButtonContainer}>
+                {alreadySaved?.length !== 0 ? (
+                  <Button 
+                    className={classes.savedButton}
+                    variant="contained" 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      savePin()
+                    }}
+                  >
+                    Saved
+                  </Button>
+                ) : (
+                  <Button 
+                    className={classes.saveButton}
+                    variant="contained" 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      savePin()
+                    }}
+                    type="button" 
+                  >
+                    {savingPost ? 'Saving...' : 'Save'}
+                  </Button>                  
+                )}
+              </Box>
+          </Box>      
+          <img className={classes.mobileImage} src={pin?.image}></img>
           <img className={classes.image} src={pin?.image}></img>
 
           <Box className={classes.commentSectionContainer}>  
@@ -185,7 +217,7 @@ const PinDetails = () => {
               </Box>
             </Box>
 
-            <img className={classes.mobileImage} src={pin?.image}></img>
+            
               
             {expandComments
             ?
