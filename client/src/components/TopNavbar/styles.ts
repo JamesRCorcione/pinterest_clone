@@ -4,8 +4,10 @@ import { grey } from '@mui/material/colors';
 export default makeStyles()((theme) => {
   return {
     navbar: {
-      position: 'sticky',
+      [theme.breakpoints.up(750)]: { 
+      position: 'fixed',
       top: 0,
+      width: '100%',
       height: 70,
       zIndex: 2000,
       display: 'flex',
@@ -13,13 +15,19 @@ export default makeStyles()((theme) => {
       justifyContent: 'center',
       alignItems: 'start',
       backgroundColor: 'white', 
+      boxShadow: '0px -3px 20px rgba(0, 0, 0, 0.1)',
+      },
       [theme.breakpoints.down(750)]: { 
-        position: 'sticky',
+        position: 'fixed',
         bottom: 0,
-        left: 0,
-        height: 70,
         width: '100%',
-        backgroundColor: 'white',
+        height: 70,
+        zIndex: 2000,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'start',
+        backgroundColor: 'white', 
         boxShadow: '0px -3px 20px rgba(0, 0, 0, 0.1)',
       }, 
     },

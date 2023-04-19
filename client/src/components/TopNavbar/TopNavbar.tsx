@@ -166,7 +166,7 @@ const TopNavbar = () => {
             </Box>
           }                
         </Box>
-      </Box>
+    </Box>
   )
 }
 
