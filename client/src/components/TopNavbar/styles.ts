@@ -15,8 +15,9 @@ export default makeStyles()((theme) => {
       backgroundColor: 'white', 
       [theme.breakpoints.down(750)]: { 
         position: 'sticky',
-        bottom: -2,
+        bottom: 0,
         left: 0,
+        height: 70,
         width: '100%',
         backgroundColor: 'white',
         boxShadow: '0px -3px 20px rgba(0, 0, 0, 0.1)',

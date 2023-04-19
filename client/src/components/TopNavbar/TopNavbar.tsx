@@ -84,7 +84,6 @@ const TopNavbar = () => {
 
   return (
       <Box className={classes.navbar}>
-
         <Button className={classes.mobileHomeButton} onClick={() => navigate('/')}>
           <HomeIcon className={classes.mobileIconSize}/>
           <Typography className={classes.mobileButtonText}>Home</Typography>

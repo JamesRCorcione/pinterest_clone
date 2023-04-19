@@ -50,7 +50,7 @@ function App() {
 
   return (     
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_API_TOKEN!}>
-      {(user && windowDimensions.width > 750) &&
+      {windowDimensions.width > 750 &&
         <TopNavbar />
       }
       <Routes>     
@@ -64,8 +64,8 @@ function App() {
         <Route path='/user-profile/:userId' index element={<Profile  />} />    
         <Route path='/search' element={<Feed />} />
       </Routes>   
-      {windowDimensions.width <= 750  && 
-        <TopNavbar /> 
+      {windowDimensions.width <= 750 &&
+        <TopNavbar />
       }
     </GoogleOAuthProvider>
     

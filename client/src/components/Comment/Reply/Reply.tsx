@@ -139,14 +139,15 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
     <Box sx={{paddingLeft: 7, marginRight: 7}}>
       <Box sx={{display: 'flex'}}>
         <Avatar onClick={() => navigate(`/user-profile/${user.result._id}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{user?.result.userName?.charAt(0)}</Avatar> 
-        {(comment.taggedUser)
-        ?
-          <>
           <Typography onClick={() => navigate(`/user-profile/${comment?.userCommenting?.userId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}>{comment.userCommenting.userName}</Typography>
-          <Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5 }}>{comment?.text}</Typography>
-          </>
+      </Box>
+
+      <Box sx={{display: 'flex'}}>
+        {(comment.taggedUser)
+        ?          
+          <Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5,  marginX: 2 }}>{comment?.text}</Typography>
         :
-          <Typography sx={{wordBreak: 'break-word'}}>{comment.userCommenting.userName} {comment?.text}</Typography>
+          <Typography sx={{wordBreak: 'break-word', fontSize: 14, marginTop: 0.5,  marginX: 2}}>{comment.userCommenting.userName} {comment?.text}</Typography>
         }
       </Box>
 
