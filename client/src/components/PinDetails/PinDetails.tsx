@@ -220,23 +220,18 @@ const PinDetails = () => {
               </Box>
             </Box>              
 
-            <img className={classes.mobileImage} src={pin?.image}></img>
-              
-            {expandComments
-            ?
-            <Box className={classes.openCommentsContainer}>
-              {detailsRender()}              
-            </Box>
-            :
-            <Box className={classes.openCommentsContainer}>
-              <Box className={classes.commentSection}>
-                {comments &&
-                  comments.map((comment:IComment, i:number) => (
-                    <Comment key={i} pinId={pinId} user={user} comment={comment} />
-                  ))
-                }
+            {detailsRender()} 
+
+            {expandComments &&
+              <Box className={classes.openCommentsContainer}>
+                <Box className={classes.commentSection}>
+                  {comments &&
+                    comments.map((comment:IComment, i:number) => (
+                      <Comment key={i} pinId={pinId} user={user} comment={comment} />
+                    ))
+                  }
+                </Box>
               </Box>
-            </Box>
             }
 
             <Box className={classes.commentInputContainer}>

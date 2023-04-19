@@ -24,7 +24,6 @@ export default makeStyles()((theme) => {
         flexDirection: 'column',
         width: '90%',
         height: 'auto',
-        backgroundColor: 'pink'
       }
     },
     image: {
@@ -34,7 +33,7 @@ export default makeStyles()((theme) => {
       borderBottomLeftRadius: 40,
       objectFit: 'cover',
       [theme.breakpoints.down(750)]: { 
-        display: 'none'
+        display: 'none',
       }
     },
     mobileImage: {
@@ -131,7 +130,10 @@ export default makeStyles()((theme) => {
 
     },
     profileImage: {
-      paddingBottom: 5, display: 'flex', justifyContent: 'end', alignItems: 'end'
+      paddingBottom: 5, 
+      display: 'flex', 
+      justifyContent: 'end', 
+      alignItems: 'end'
     },
     input: {
       typography: 'subtitle2',
