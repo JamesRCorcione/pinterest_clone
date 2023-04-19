@@ -3,7 +3,8 @@ import { grey } from '@mui/material/colors';
 
 export default makeStyles((theme) => ({
   pin: {
-    display: 'flex',   
+    display: 'flex',  
+    //marginTop: 80, 
     marginX: 'auto', 
     '&:hover': {
       transition: 1,

@@ -5,6 +5,7 @@ import { getPins, getPinsByTags } from '../../features/pinsSlice'
 
 import MasonryLayout from '../MasonryLayout/MasonryLayout'
 import Spinner from '../Spinner/Spinner'
+import { Box } from '@mui/material'
 
 
 const Feed = () => {
@@ -31,7 +32,7 @@ const Feed = () => {
   if (loading) return <Spinner message="We are adding new ideas to your feed!"/>
 
   return (
-    <div>     
+    <Box>     
       {!pins?.length 
       ?
         <h2>No Pins Available</h2>
@@ -40,7 +41,7 @@ const Feed = () => {
           {pins && <MasonryLayout pins={pins} />}
         </>
       }
-    </div>
+    </Box>
   )
 }
 

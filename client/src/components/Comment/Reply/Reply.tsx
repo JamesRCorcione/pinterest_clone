@@ -114,7 +114,7 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
     </Box>
   )
 
-  //<Link to={`/user-profile/${comment.taggedUser._id}`}>{`@${comment.taggedUser.userName}`}</Link>
+ // var link = <a href={`/user-profile/${comment.userCommenting._id}`}>{`@${comment.userCommenting.userName} `}</a>
 
 
   return (
@@ -195,12 +195,12 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
       </Box>
       </Box>
       {replying && 
-            <form onSubmit={handleReplySubmit}>
+            <form onSubmit={handleReplySubmit}>              
               <TextField
                 onChange={(e:any) => setText(e.target.value)}             
-                defaultValue={`@${comment.taggedUser?.userName}`}
+                defaultValue={`@${comment.userCommenting.userName}`}
                 rows={2} 
-                sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
+                sx={{ position: 'relative', typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
               >
             </TextField>        
           </form>  

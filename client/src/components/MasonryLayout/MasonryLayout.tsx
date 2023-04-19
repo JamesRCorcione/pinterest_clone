@@ -55,7 +55,7 @@ const MasonryLayout = ({ pins }:any) => {
   if (loading) return <Spinner message="We are adding new ideas to your feed!"/>
 
   return (
-    <div>
+    <Box>
       {!pins?.length 
       ?
         <Box >
@@ -75,7 +75,7 @@ const MasonryLayout = ({ pins }:any) => {
       
       </>
     }     
-    </div>
+    </Box>
   )
 }
 

@@ -21,11 +21,7 @@ import { fetchUser } from '../../utils/fetchUser'
 import { createComment, getComments } from '../../features/commentsSlice'
 import { Circles } from 'react-loader-spinner'
 
-const getTotalComments = (comments:IComment[]) => {
-  let total = comments?.length
-  comments.map((comment, i) => total += comment.replies?.length)
-  return total
-}
+
 
 
 
@@ -50,11 +46,18 @@ const PinDetails = () => {
 
   useEffect(() => {
     getNewComment()
-  }, [comments.length])
+    console.log('sf')
+    setTotalComments(getTotalComments()) 
+  }, [dispatch])
   
   let alreadySaved = user?.result?.saves?.filter((save:any) => save?._id === pin?._id)
   alreadySaved = alreadySaved?.length > 0 ? alreadySaved : [];
 
+  const getTotalComments =  () => {
+    let total = comments.length
+    comments.map((comment:IComment, i:number) => total += comment.replies?.length)
+    return total
+  }
 
   const getPinDetails = async () => {
     window.scrollTo(0, 0) 
@@ -83,6 +86,7 @@ const PinDetails = () => {
     }   
   }
   
+
   const handleComment = async (e:any) => {
     e.preventDefault()
     if (pinId) {
@@ -123,7 +127,7 @@ const PinDetails = () => {
       </Box>
       <Box sx={{display: 'flex'}}>
         <Typography sx={{marginTop: 1}}>
-            {comments.length} Comments 
+            {totalComments} Comments 
           </Typography>
         <Button onClick={handleExpandComments}
         sx={{borderRadius: 99, marginTop: 0.5, marginLeft: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>                
@@ -145,17 +149,12 @@ const PinDetails = () => {
 
   return (
     <>
-      <Box className={classes.pinContainer}>
-        <Box className={classes.imageContainer}>
-          
-          <img className={classes.image} src={pin?.image}></img>
-
-          <Box className={classes.commentSectionContainer}>  
-
-            <Box className={classes.topButtonsContainer}>
-                <MoreHorizIcon sx={{position: 'relative', left: 30, top: 40}} />
-                <UploadIcon sx={{position: 'relative', left: 50, top: 40}}/>
-                <ContentCopyIcon sx={{position: 'relative', left: 70, top: 40}} />
+      <Box className={classes.pageContainer}>
+        <Box className={classes.pinContainer}>
+          <Box className={classes.topButtonsMobileContainer}>
+                <MoreHorizIcon sx={{position: 'relative', left: 30, top: 25}} />
+                <UploadIcon sx={{position: 'relative', left: 50, top: 25}}/>
+                <ContentCopyIcon sx={{position: 'relative', left: 70, top: 25}} />
 
               <Box className={classes.saveButtonContainer}>
                 {alreadySaved?.length !== 0 ? (
@@ -183,18 +182,48 @@ const PinDetails = () => {
                   </Button>                  
                 )}
               </Box>
-            </Box>
+          </Box>      
+          <img className={classes.mobileImage} src={pin?.image}></img>  
+          <img className={classes.image} src={pin?.image}></img>
+          <Box className={classes.commentSectionContainer}>  
 
-            <img className={classes.mobileImage} src={pin?.image}></img>
-              
-            {expandComments
-            ?
+            <Box className={classes.topButtonsContainer}>
+                <MoreHorizIcon sx={{position: 'relative', left: 30, top: 25}} />
+                <UploadIcon sx={{position: 'relative', left: 50, top: 25}}/>
+                <ContentCopyIcon sx={{position: 'relative', left: 70, top: 25}} />
+
+              <Box className={classes.saveButtonContainer}>
+                {alreadySaved?.length !== 0 ? (
+                  <Button 
+                    className={classes.savedButton}
+                    variant="contained" 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      savePin()
+                    }}
+                  >
+                    Saved
+                  </Button>
+                ) : (
+                  <Button 
+                    className={classes.saveButton}
+                    variant="contained" 
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      savePin()
+                    }}
+                    type="button" 
+                  >
+                    {savingPost ? 'Saving...' : 'Save'}
+                  </Button>                  
+                )}
+              </Box>
+            </Box>              
+
+            {detailsRender()}
+
+            {expandComments &&
             <Box className={classes.openCommentsContainer}>
-              {detailsRender()}              
-            </Box>
-            :
-            <Box className={classes.openCommentsContainer}>
-              {detailsRender()}
               <Box className={classes.commentSection}>
                 {comments &&
                   comments.map((comment:IComment, i:number) => (
@@ -211,7 +240,7 @@ const PinDetails = () => {
                 <Avatar sx={{marginBottom: 1, marginLeft: 2, marginRight: 2}}>
                   {user.result.userName.charAt(0)}
                 </Avatar>
-                <Box sx={{marginTop: 1, marginRight: 5}} className={classes.searchBar}>
+                <Box sx={{marginTop: 1, marginRight: 5}} className={classes.inputBar}>
                   <form onSubmit={handleComment}>
                     <Input
                       className={classes.input}
@@ -229,11 +258,11 @@ const PinDetails = () => {
       </Box>      
 
 
-      <Box sx={{display: 'flex', justifyContent: 'center', paddingTop: 5}}>
-        <Typography>More like this</Typography>
+      <Box sx={{display: 'flex', justifyContent: 'center', width: '100%', paddingTop: 10}}>
+        <Typography sx={{fontSize: 22}}>More like this</Typography>
       </Box>
 
-      <Box sx={{paddingTop: 5}}>
+      <Box sx={{width: '100%'}}>
         <Feed />
       </Box>
     </>
