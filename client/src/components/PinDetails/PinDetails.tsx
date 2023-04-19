@@ -145,8 +145,8 @@ const PinDetails = () => {
 
   return (
     <>
-      <Box className={classes.pinContainer}>
-        <Box className={classes.imageContainer}>
+      <Box className={classes.pageContainer}>
+        <Box className={classes.pinContainer}>
           
           <img className={classes.image} src={pin?.image}></img>
 
@@ -211,7 +211,7 @@ const PinDetails = () => {
                 <Avatar sx={{marginBottom: 1, marginLeft: 2, marginRight: 2}}>
                   {user.result.userName.charAt(0)}
                 </Avatar>
-                <Box sx={{marginTop: 1, marginRight: 5}} className={classes.searchBar}>
+                <Box sx={{marginTop: 1, marginRight: 5}} className={classes.inputBar}>
                   <form onSubmit={handleComment}>
                     <Input
                       className={classes.input}
