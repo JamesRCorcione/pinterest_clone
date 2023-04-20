@@ -22,7 +22,7 @@ interface CreatePinProps {
 
 const CreatePin = ({user}:CreatePinProps) => {
     const temp : string[] = []
-    const [pin, setPin] = useState({ title: '', text: '', tags: temp, creatorId: user?.result._id, postedBy: {userId: user?.result._id, userName: user?.result.userName, image: null}, image: '', destination: '' })
+    const [pin, setPin] = useState({ title: '', text: '', tags: temp, creatorId: user?.result._id, totalComments: 0, postedBy: {userId: user?.result._id,  userName: user?.result.userName, image: null}, image: '', destination: '' })
     const [tag, setTag] = useState<string>('')
     const [chips, setChips] = useState<string[]>([])
     const navigate = useNavigate()
@@ -32,7 +32,7 @@ const CreatePin = ({user}:CreatePinProps) => {
       e.preventDefault()
       pin.tags = chips
       await dispatch(createPin(pin))
-      setPin({ title: '', text: '', tags: [], creatorId: user?.result._id, postedBy: {userId: '', userName: '', image: null}, image: '', destination: '' })
+      setPin({ title: '', text: '', tags: [], creatorId: user?.result._id, totalComments: 0, postedBy: {userId: '', userName: '', image: null}, image: '', destination: '' })
       navigate('/')
     }
 

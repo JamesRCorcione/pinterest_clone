@@ -8,6 +8,7 @@ export default makeStyles()((theme) => {
       justifyContent: 'center', 
       alignItems: 'center', 
       marginY: 2, 
+      paddingTop: 80,
       [theme.breakpoints.down(750)]: { 
         width: '100%',
         paddingTop: 10,

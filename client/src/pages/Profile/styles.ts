@@ -3,27 +3,13 @@ import { grey } from '@mui/material/colors';
 
 export default makeStyles()((theme) => {
   return {
-    navbar: {
-      position: 'sticky',
-      top: 0,
-      height: 70,
-      zIndex: 2000,
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'white', 
-      [theme.breakpoints.down(750)]: { 
-        position: 'sticky',
-        bottom: 0,
-        height: 70,
-        width: '100%',
-        zIndex: 2000,
-        backgroundColor: 'pink',
-        boxShadow: '2px 2px 6px rgba(0, 0, 0, 0.2)',
-      }, 
+    topContainer: {
+        display: 'flex', 
+        paddingTop: 80,
+        [theme.breakpoints.down(750)]: { 
+            paddingTop: 0,
+        }
     },
-
     profileImage: {
         top: 20, minHeight: 120, maxHeight: 120, minWidth: 120, maxWidth: 120
     },

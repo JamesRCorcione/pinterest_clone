@@ -20,6 +20,7 @@ import { SavePin } from '../../features/usersSlice'
 import { fetchUser } from '../../utils/fetchUser'
 import { createComment, getComments } from '../../features/commentsSlice'
 import { Circles } from 'react-loader-spinner'
+import { createReply, getReplies } from '../../features/repliesSlice'
 
 
 
@@ -29,49 +30,47 @@ const PinDetails = () => {
   const user = fetchUser()
   const dispatch = useDispatch<AppDispatch>()
   const commentsState = useSelector((state: RootState) => state.commentsState);
-  const { comments } = commentsState
+  let { comments } = commentsState
+  const repliesState = useSelector((state: RootState) => state.repliesState);
+  let { replies } = repliesState
   const [pin, setPin] = useState<IPin>()
-  const [totalComments, setTotalComments] = useState(0)
   const [savingPost, setSavingPost] = useState(false)
-  const [expandComments, setExpandComments] = useState(false)
+  const [expandComments, setExpandComments] = useState(true)
+  const [totalComments, setTotalComments] = useState<number>()
   const [loading, setLoading] = useState(false)
   const [text, setText] = useState<any>()
   const { pinId } = useParams()
   const { classes } = useStyle()
   const location = useLocation()
+  
 
   useEffect(() => {
-    getPinDetails()
-  }, [])
-
-  useEffect(() => {
-    getNewComment()
-    console.log('sf')
-    setTotalComments(getTotalComments()) 
+    const getComment = async () => {
+      getPinDetails()
+      getNewComment()         
+    }
+    getComment()
   }, [dispatch])
   
   let alreadySaved = user?.result?.saves?.filter((save:any) => save?._id === pin?._id)
   alreadySaved = alreadySaved?.length > 0 ? alreadySaved : [];
 
-  const getTotalComments =  () => {
-    let total = comments.length
-    comments.map((comment:IComment, i:number) => total += comment.replies?.length)
-    return total
-  }
 
   const getPinDetails = async () => {
     window.scrollTo(0, 0) 
     //Need another loading screen for the whole pin
     setLoading(true)
-    await dispatch(getPin(pinId))
-      .then((data:any) => setPin(data.payload))  
+    const data = await dispatch(getPin(pinId))
+    setPin(data.payload)
     await dispatch(getComments(pinId))
+    await dispatch(getReplies(pinId))
     setLoading(false)     
   }
 
   const getNewComment = async () => {
     setLoading(true)
     await dispatch(getComments(pinId))
+    await dispatch(getReplies(pinId))
     setLoading(false)
   }
 
@@ -86,6 +85,8 @@ const PinDetails = () => {
     }   
   }  
 
+  console.log(replies.length)
+
   const handleComment = async (e:any) => {
     e.preventDefault()
     if (pinId) {
@@ -95,7 +96,7 @@ const PinDetails = () => {
         userImage: user?.result.image
       }
       setLoading(true)
-      await dispatch(createComment({pinId, text, userCommenting }))
+      await dispatch(createComment({ pinId, text, userCommenting }))
       setText('')
       setLoading(false)
     }
@@ -198,8 +199,8 @@ const PinDetails = () => {
               </Box>
               <Box sx={{display: 'flex'}}>
                 <Typography sx={{marginTop: 1}}>
-                    {totalComments} Comments 
-                  </Typography>
+                  {comments.length + replies.length} Comments 
+                </Typography>
                 <Button onClick={handleExpandComments}
                 sx={{borderRadius: 99, marginTop: 0.5, marginLeft: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>
                   <KeyboardArrowDownIcon sx={{color: 'black'}} />

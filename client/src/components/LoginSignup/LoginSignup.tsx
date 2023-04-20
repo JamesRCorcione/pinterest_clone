@@ -33,7 +33,6 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
 
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('start hi')
 
         try {
             await dispatch(SignUp(form)).unwrap()

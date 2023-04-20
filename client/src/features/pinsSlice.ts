@@ -177,6 +177,8 @@ export const searchPins = createAsyncThunk(
 )
 
 
+
+
 const pinSlice = createSlice({
   name: 'pins',
   initialState,

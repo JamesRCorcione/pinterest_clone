@@ -59,8 +59,8 @@ const Profile = () => {
 
   return (
     <>
-      <Box sx={{display: 'flex'}}>
-        <Box sx={{position: 'absolute', left: '50%'}}>
+      <Box className={classes.topContainer}>
+        <Box sx={{position: 'absolute', left: '50%',}}>
           <Box sx={{position: 'relative', left: '-50%'}}>
             <Avatar className={classes.profileImage}>
               <Typography className={classes.userNameInitial}>{user?.result.userName.charAt(0)}</Typography>
@@ -68,21 +68,20 @@ const Profile = () => {
             <Typography className={classes.userName}>@{user?.result.userName.split(' ').join('')}</Typography>
           </Box>
         </Box>
-        </Box>        
+      </Box>        
 
-        <Box className={classes.buttonContainer} >
-            <Button className={classes.shareButton} variant='outlined'>
-              <Typography sx={{fontSize: 14, color: 'black'}}>Share</Typography>
-              </Button>
-            <Button className={classes.editProfileButton} variant='outlined'>
-            <Typography sx={{fontSize: 14, color: 'black'}}>Edit Profile</Typography>
-            </Button>
-        </Box>
-      
+      <Box className={classes.buttonContainer} >
+        <Button className={classes.shareButton} variant='outlined'>
+          <Typography sx={{fontSize: 14, color: 'black'}}>Share</Typography>
+        </Button>
+        <Button className={classes.editProfileButton} variant='outlined'>
+          <Typography sx={{fontSize: 14, color: 'black'}}>Edit Profile</Typography>
+        </Button>
+      </Box>      
 
-      <Box sx={{display: 'flex', justifyContent: 'center', paddingTop: 30}}>
-            <Button onClick={() => setIsSavedTab(false)}>Created</Button>
-            <Button onClick={() => setIsSavedTab(true)}>Saved</Button>
+      <Box sx={{display: 'flex', justifyContent: 'center', paddingTop: 35}}>
+        <Button onClick={() => setIsSavedTab(false)}>Created</Button>
+        <Button onClick={() => setIsSavedTab(true)}>Saved</Button>
       </Box>
 
       <Box sx={{display: 'flex', justifyContent: 'center'}}>
@@ -93,19 +92,19 @@ const Profile = () => {
             ?
               <h2>No Pins Available</h2>
             :
-              <Box sx={{width: '100%', paddingTop: 8}}>
+              <Box sx={{width: '100%'}}>
                 <MasonryLayout pins={user?.result.saves} />
               </Box>
             } 
             </>
           :
-          <Box sx={{width: '100vw', paddingTop: 8}}>
+          <Box sx={{width: '100vw'}}>
             <MasonryLayout pins={createdPins} />                       
           </Box>
           }      
               
         </Box>         
-    </>
+    </>         
   )
 }
 

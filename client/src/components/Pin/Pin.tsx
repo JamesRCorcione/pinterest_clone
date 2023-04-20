@@ -53,6 +53,11 @@ const Pin = ({ pin }:PinProps) => {
     window.location.reload();
   }
 
+  const handleGoToPin = () => {
+    navigate(`/pin-detail/${_id}`)
+    window.location.reload();
+  }
+
   const handleDeletePin = async (e:any) => {
     await dispatch(deletePin(pin._id))
   }
@@ -66,9 +71,7 @@ const Pin = ({ pin }:PinProps) => {
         className={classes.container} 
         onMouseEnter={() => setPostHovered(true)}
         onMouseLeave={() => setPostHovered(false)}
-        onClick={() => {
-          navigate(`/pin-detail/${_id}`)
-        }}
+        onClick={handleGoToPin}
       >
 
         {/* Switches rendering for if post is hovered with mouse */}

@@ -58,29 +58,11 @@ interface CreateReplyProps {
     }
   )
 
-  export const getReply = createAsyncThunk(
-    'replies/getReply',
-    
-    async (id:any = null, { rejectWithValue }) => {
-      try {
-        const response = await axios.get(baseURL + `replies/reply/${id}`)
-        return response.data
-      } catch (err: any) {
-        let error: AxiosError<ValidationErrors> = err // cast the error for access
-        if (!error.response) {
-          throw err
-        }
-        // We got validation errors, let's return those so we can reference in our component and set form errors
-        return rejectWithValue(error.response.data)
-      }
-    }
-  )
-
 
   export const createReply = createAsyncThunk(
     'replies/createReply',
     
-    async ({pinId, commentId, replyId, text, taggedUser= null, userCommenting={ userId: null, userName: null, userImage: null}}: CreateReplyProps, { rejectWithValue }) => {
+    async ({pinId, commentId = null, replyId = null, text, taggedUser= null, userCommenting={ userId: null, userName: null, userImage: null}}: CreateReplyProps, { rejectWithValue }) => {
       try {
         const response = await axios.post(baseURL + `replies/createReply/${pinId}`, {text, commentId, replyId, userCommenting, taggedUser})
         return response.data
@@ -124,15 +106,12 @@ const repliesSlice = createSlice({
       .addCase(createReply.fulfilled, (state, action) => {
         return { ...state, replies: [action.payload, ...state.replies], replyStatus: 'success', replyError: '' }
       }) 
-      .addCase(heartRepliesPin.fulfilled, (state, action) => {
-        return { ...state, replies: [action.payload, ...state.replies], replyStatus: 'success', replyError: '' }
-      }) 
       .addCase(getReplies.fulfilled, (state, action) => {
         return { ...state, replies: action.payload, replyStatus: 'success', replyError: '' }
-      }) 
-      .addCase(getReply.fulfilled, (state, action) => {
-        return { ...state, reply: action.payload, replyStatus: 'success', replyError: '' }
-      }) 
+      })
+      .addCase(heartRepliesPin.fulfilled, (state, action) => {
+        return { ...state, replies: [action.payload, ...state.replies], replyStatus: 'success', replyError: '' }
+      })        
       .addMatcher(
         isPendingAction,
         // `action` will be inferred as a RejectedAction due to isRejectedAction being defined as a type guard

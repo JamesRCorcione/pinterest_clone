@@ -36,14 +36,14 @@ export const createPin = async (req: Request, res: Response) => {
     
         //if (error) return res.status(400).send(error.details[0].message)
     
-        const { title, text, tags, creatorId, postedBy, image, destination } = req.body
+        const { title, text, tags, creatorId, totalComments, postedBy, image, destination } = req.body
         const selectedFileURL = await cloudinary.uploader.upload(image)
 
 
         //let initComments = new Comments()         
         //initComments = await initComments.save()
     
-        let pin = new Pin({ title, text, tags, creatorId, postedBy, image: selectedFileURL.secure_url, destination })
+        let pin = new Pin({ title, text, tags, creatorId, totalComments, postedBy, image: selectedFileURL.secure_url, destination })
 
 
         pin = await pin.save()
@@ -164,5 +164,4 @@ export const deletePin = async (req: Request, res: Response) => {
 
   res.send(deletedPost)
 }
-
 
