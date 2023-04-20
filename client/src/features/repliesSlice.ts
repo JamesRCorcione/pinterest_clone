@@ -58,6 +58,24 @@ interface CreateReplyProps {
     }
   )
 
+  export const getRepliesByComment = createAsyncThunk(
+    'replies/getReplies',
+    
+    async ({id, commentId}:any = null, { rejectWithValue }) => {
+      try {
+        const response = await axios.get(baseURL + `replies/${id}/${commentId}`, )
+        return response.data
+      } catch (err: any) {
+        let error: AxiosError<ValidationErrors> = err // cast the error for access
+        if (!error.response) {
+          throw err
+        }
+        // We got validation errors, let's return those so we can reference in our component and set form errors
+        return rejectWithValue(error.response.data)
+      }
+    }
+  )
+
 
   export const createReply = createAsyncThunk(
     'replies/createReply',

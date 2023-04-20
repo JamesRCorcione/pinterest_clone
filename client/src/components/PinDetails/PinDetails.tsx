@@ -43,6 +43,8 @@ const PinDetails = () => {
   const { classes } = useStyle()
   const location = useLocation()
   
+  let alreadySaved = user?.result?.saves?.filter((save:any) => save?._id === pin?._id)
+  alreadySaved = alreadySaved?.length > 0 ? alreadySaved : [];
 
   useEffect(() => {
     const getComment = async () => {
@@ -51,10 +53,6 @@ const PinDetails = () => {
     }
     getComment()
   }, [dispatch])
-  
-  let alreadySaved = user?.result?.saves?.filter((save:any) => save?._id === pin?._id)
-  alreadySaved = alreadySaved?.length > 0 ? alreadySaved : [];
-
 
   const getPinDetails = async () => {
     window.scrollTo(0, 0) 
@@ -62,8 +60,6 @@ const PinDetails = () => {
     setLoading(true)
     const data = await dispatch(getPin(pinId))
     setPin(data.payload)
-    await dispatch(getComments(pinId))
-    await dispatch(getReplies(pinId))
     setLoading(false)     
   }
 
@@ -85,8 +81,6 @@ const PinDetails = () => {
     }   
   }  
 
-  console.log(replies.length)
-
   const handleComment = async (e:any) => {
     e.preventDefault()
     if (pinId) {
@@ -97,6 +91,7 @@ const PinDetails = () => {
       }
       setLoading(true)
       await dispatch(createComment({ pinId, text, userCommenting }))
+      getNewComment()
       setText('')
       setLoading(false)
     }
@@ -106,10 +101,12 @@ const PinDetails = () => {
     setExpandComments((expand) => !expand)
   }
 
+
   return (
     <>
       <Box className={classes.pageContainer}>
         <Box className={classes.pinContainer}>
+
           <Box className={classes.topButtonsMobileContainer}>
                 <MoreHorizIcon sx={{position: 'relative', left: 30, top: 25}} />
                 <UploadIcon sx={{position: 'relative', left: 50, top: 25}}/>
@@ -199,7 +196,7 @@ const PinDetails = () => {
               </Box>
               <Box sx={{display: 'flex'}}>
                 <Typography sx={{marginTop: 1}}>
-                  {comments.length + replies.length} Comments 
+                  {comments?.length + replies?.length} Comments 
                 </Typography>
                 <Button onClick={handleExpandComments}
                 sx={{borderRadius: 99, marginTop: 0.5, marginLeft: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>
@@ -222,7 +219,7 @@ const PinDetails = () => {
                 <Box className={classes.commentSection}>
                   {comments &&
                     comments.map((comment:IComment, i:number) => (
-                      <Comment key={i} pinId={pinId} user={user} comment={comment} />
+                      <Comment key={i} pinId={pinId} user={user} comment={comment} commentReplies={replies} />
                     ))
                   }
                 </Box>

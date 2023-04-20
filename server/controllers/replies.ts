@@ -28,7 +28,8 @@ export const createReply = async (req: Request, res: Response) => {
       {$push: {'replies': reply}},
       { 'new': true },  
     )  
-    res.status(200).json({reply})
+
+    res.status(200).json({reply: reply})
   } catch (error) {    
     res.status(500).json({ message: error })
   }
@@ -38,7 +39,9 @@ export const createReply = async (req: Request, res: Response) => {
   export const getReplies = async (req: Request, res: Response) => {
     const { id } = req.params  
     try {
-        const replies = await Replies.find({parentId: id}).sort({ date: -1 })
+        const replies = await Replies.find({pinId: id}).sort({ date: -1 })
+
+        console.log(replies)
 
         res.status(200).json(replies)
     } catch (error) {

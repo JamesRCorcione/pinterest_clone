@@ -8,8 +8,8 @@ import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 import Reply from './Reply/Reply';
-import { useNavigate } from 'react-router-dom';
-import { createReply } from '../../features/repliesSlice';
+import { useNavigate, useParams } from 'react-router-dom';
+import { createReply, getReplies } from '../../features/repliesSlice';
 import Spinner from '../Spinner/Spinner';
 import { Circles } from 'react-loader-spinner';
 import zIndex from '@mui/material/styles/zIndex';
@@ -19,11 +19,13 @@ interface CommentProps {
   user: any, 
   pinId: any, 
   comment: any
+  commentReplies: any
 }
 
-function generateReplies({user, pinId, comment}:CommentProps) {
+function generateReplies({user, pinId, comment, commentReplies}:CommentProps) {
+  console.log('comment replies', commentReplies)
   return (
-    comment?.replies.slice(0).reverse().map((reply:any, i:number) => (
+    commentReplies.map((reply:any, i:number) => ( 
       <Reply key={i} user={user} pinId={pinId} comment={reply} commentId={comment._id} />
     ))
   )
@@ -32,6 +34,9 @@ function generateReplies({user, pinId, comment}:CommentProps) {
 const Comment = ({user, pinId, comment}:CommentProps) => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
+  const repliesState = useSelector((state: RootState) =>  state.repliesState)
+  let { replies } = repliesState
+  const [commentReplies, setCommentReplies] = useState<any>()
   const [replying, setReplying] = useState(false)
   const [text, setText] = useState<any>()
   const [actionBar, setActionBar] = useState(false)
@@ -39,13 +44,25 @@ const Comment = ({user, pinId, comment}:CommentProps) => {
   const [loading, setLoading] = useState(false)
   const [isLoved, setIsLoved] = useState(false)
 
-
   useEffect(() => {
+    const getAsyncReplies = async () => {
+      await dispatch(getReplies(pinId))
+    }
+    getAsyncReplies()
+
+
     if (comment.hearts?.includes(user.result._id)) {
        setIsLoved(true)
     } 
+    
+    replies = replies.filter((reply:any) => reply.parentId === comment._id)
+    setCommentReplies(replies)
+    console.log(comment.text, 'replies',replies)
+    
  }, [dispatch])
 
+
+  
 
   const handleReplying = () => {
     setReplying((reply:any) => !reply)
@@ -215,8 +232,8 @@ const Comment = ({user, pinId, comment}:CommentProps) => {
       </Box>
     
     }
-    {comment?.replies?.length > 0 &&
-      generateReplies({user, pinId, comment})
+    {commentReplies?.length > 0 &&
+      generateReplies({user, pinId, comment, commentReplies})
     }
 
     </>

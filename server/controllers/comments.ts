@@ -23,18 +23,18 @@ export const getComments = async (req: Request, res: Response) => {
       }
   }
   
-  export const getReplies = async (req: Request, res: Response) => {
-    const { id } = req.params
-  
-    try {
-        const replies = await Replies.find({parentId: id}).sort({ createdAt: -1 })
-        
-
-        res.status(200).json(replies)
-    } catch (error) {
-        res.status(404).json({ message: error })
-    }
-  }
+  //export const getReplies = async (req: Request, res: Response) => {
+  //  const { id } = req.params
+  //
+  //  try {
+  //      const replies = await Replies.find({parentId: id}).sort({ createdAt: -1 })
+  //      
+//
+  //      res.status(200).json(replies)
+  //  } catch (error) {
+  //      res.status(404).json({ message: error })
+  //  }
+  //
   
   
   export const createComment = async (req: Request, res: Response) => {
@@ -194,7 +194,8 @@ export const updateReply = async (req: Request, res: Response) => {
     updatedComment?.replies?.map((reply:any, i:number) =>  {
       if (reply._id.toString() === replyId) {        
           //Cannot be undefined, no comment or button to click if thats the case
-          updatedComment!.replies[i].text = text
+          Replies.findByIdAndUpdate(replyId,
+            {text})
       }
     })
     

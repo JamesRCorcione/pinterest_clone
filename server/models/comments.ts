@@ -12,23 +12,7 @@ const commentsSchema = new mongoose.Schema({
         text: { type: String, default: '' },
         hearts: { type: [mongoose.Schema.Types.ObjectId], default: [] },
         totalHearts: { type: Number, default: 0},
-        replies: [{ 
-                _id: { type: mongoose.Schema.Types.ObjectId, default: null },
-                pinId: { type: mongoose.Schema.Types.ObjectId, default: null },
-                parentId: { type: mongoose.Schema.Types.ObjectId, default: null },
-                userCommenting: { 
-                        userId: { type: mongoose.Schema.Types.ObjectId, default: null},
-                        userName: { type: String, default: null},
-                        userImage: { type: String, default: null},
-                },
-                taggedUser: { 
-                        _id: { type: mongoose.Schema.Types.ObjectId, default: null },
-                        userName: { type: String, default: null },
-                },
-                text: { type: String, default: '' },
-                hearts: { type: [mongoose.Schema.Types.ObjectId], default: [] },
-                totalHearts: { type: Number, default: 0},
-         }]
+        replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Replies' }]
 }, {timestamps: true})
 
 const Comments = mongoose.model('Comments', commentsSchema)

@@ -29,7 +29,6 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [isLoved, setIsLoved] = useState<boolean>(false)
 
-
   useEffect(() => {
      if (comment.hearts?.includes(user.result._id)) {
         setIsLoved(true)
@@ -47,7 +46,7 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
     if (pinId) {
       const userCommenting = {
         userId: user.result._id,
-        userName: user.result.userName,
+        userName: user.result?.userName,
         userImage: user.result.image
       }
       setLoading(true)
@@ -95,11 +94,11 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
 
   const handleUnHeartPin = async (e:any) => {
     e.preventDefault()
-    if (pinId) {      
+    if (pinId) {
       setLoading(true)
       await dispatch(unheartReplyPin({pinId, commentId, userId: user.result._id, replyId: comment._id }))
       await dispatch(getComments(pinId))
-      setIsLoved(false)            
+      setIsLoved(false)
       setLoading(false)
     }
   }
@@ -138,8 +137,8 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
     <>
     <Box sx={{paddingLeft: 7, marginRight: 7}}>
       <Box sx={{display: 'flex'}}>
-        <Avatar onClick={() => navigate(`/user-profile/${user.result._id}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{user?.result.userName?.charAt(0)}</Avatar> 
-          <Typography onClick={() => navigate(`/user-profile/${comment?.userCommenting?.userId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}>{comment.userCommenting.userName}</Typography>
+        <Avatar onClick={() => navigate(`/user-profile/${user.result._id}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{user?.result?.userName?.charAt(0)}</Avatar> 
+          <Typography onClick={() => navigate(`/user-profile/${comment?.userCommenting?.userId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}>{comment.userCommenting?.userName}</Typography>
       </Box>
 
       <Box sx={{display: 'flex'}}>
@@ -147,7 +146,7 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
         ?          
           <Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5,  marginX: 2 }}>{comment?.text}</Typography>
         :
-          <Typography sx={{wordBreak: 'break-word', fontSize: 14, marginTop: 0.5,  marginX: 2}}>{comment.userCommenting.userName} {comment?.text}</Typography>
+          <Typography sx={{wordBreak: 'break-word', fontSize: 14, marginTop: 0.5,  marginX: 2}}>{comment.userCommenting?.userName} {comment?.text}</Typography>
         }
       </Box>
 
@@ -198,7 +197,7 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
             <form onSubmit={handleReplySubmit}>              
               <TextField
                 onChange={(e:any) => setText(e.target.value)}             
-                defaultValue={`@${comment.userCommenting.userName}`}
+                defaultValue={`@${comment.userCommenting?.userName}`}
                 rows={2} 
                 sx={{ position: 'relative', typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
               >
