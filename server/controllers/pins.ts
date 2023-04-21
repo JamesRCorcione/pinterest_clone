@@ -109,16 +109,15 @@ export const getPin = async (req: Request, res: Response) => {
 }
 
 export const getSearchPins = async (req: Request, res: Response) => {
-  //const { searchTerm } = req.query
-  const searchTerm = ''
+  const { query } = req.query
   try {
       const pins = await Pin.find({
         $or:[
-          {title: { "$regex": searchTerm, "$options": "i" }},
-          {text: { "$regex": searchTerm, "$options": "i" }},
-          {tags: { "$regex": searchTerm, "$options": "i" }},
-          {destination: { "$regex": searchTerm, "$options": "i" }},
-          {'postedBy.userName': { "$regex": searchTerm, "$options": "i" }},
+          {title: { "$regex": query, "$options": "i" }},
+          {text: { "$regex": query, "$options": "i" }},
+          {tags: { "$regex": query, "$options": "i" }},
+          {destination: { "$regex": query, "$options": "i" }},
+          {'postedBy.userName': { "$regex": query, "$options": "i" }},
       ]})
       
       res.status(200).json(pins)

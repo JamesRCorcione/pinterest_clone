@@ -65,7 +65,7 @@ function App() {
         <Route path='/category/:category' element={<Feed />} />
         <Route path='/pin-detail/:pinId' element={<PinDetails />} />
         <Route path='/user-profile/:userId' index element={<Profile  />} />    
-        <Route path='/search' element={<Feed />} />
+        <Route path='/search/*' element={<Search />} />
       </Routes>   
 
     </GoogleOAuthProvider>

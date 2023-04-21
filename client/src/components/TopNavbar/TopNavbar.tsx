@@ -16,6 +16,8 @@ import { useDispatch } from 'react-redux';
 import { Logout } from '../../features/usersSlice';
 import { fetchUser } from '../../utils/fetchUser';
 import { searchPins } from '../../features/pinsSlice';
+import Feed from '../Feed/Feed';
+import Search from '../Search/Search';
 
 interface MyToken {
   name: string
@@ -51,8 +53,9 @@ const TopNavbar = () => {
   }, [location])
 
   async function search() {
-    const data = await dispatch(searchPins(searchTerm))
-    navigate(`/search?query=${searchTerm || 'none'}`)        
+    //const data = await dispatch(searchPins(searchTerm))
+    navigate(`/search?query=${searchTerm}`)        
+    //return (<Feed pins={data} />)
   }
 
   const handleSearch = (e:any) => {

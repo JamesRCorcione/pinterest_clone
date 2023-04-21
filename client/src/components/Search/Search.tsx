@@ -7,20 +7,40 @@ import Spinner from '../Spinner/Spinner'
 import Feed from '../Feed/Feed'
 
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search)
+}
+
+
 const Search = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const [pins, setPins] = useState<IPin[]>()
   const [loading, setLoading] = useState(false)
+  const [pins, setPins] = useState<IPin[]>()
   const navigate = useNavigate()
 
-  const [searchTerm, setSearchTerm] = useState<string>('') 
+  const query = useQuery()
+  const searchQuery = query.get('query')  
+
+  useEffect(() => {
+    const getSearch = async () => {
+      console.log(searchQuery)
+      if (searchQuery !== '') {
+        setLoading(true)
+        const data = await dispatch(searchPins(searchQuery))
+          setPins(data.payload)
+          setLoading(false)      
+          //navigate(`/search/search?query=${searchTerm || 'none'}`)  
+      } 
+    }
+    getSearch()
+  }, [searchQuery])
 
 
   return (
     <div>
       {loading && <Spinner message="Searching pins" />}
       {pins?.length !== 0 && <Feed pins={pins} />}
-      {pins?.length === 0 && searchTerm !== '' && !loading && (
+      {pins?.length === 0 && searchQuery !== '' && !loading && (
         <div className="mt-10 text-center text-xl ">No Pins Found!</div>
       )}
     </div>
