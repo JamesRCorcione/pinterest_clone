@@ -36,6 +36,7 @@ const TopNavbar = () => {
   const [user, setUser] = useState<any>(fetchUser())
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [openMenu, setOpenMenu] = useState<boolean>()
+  const [openMobileSearch, setOpenMobileSearch] = useState<boolean>()
 
   const [pins, setPins] = useState<IPin[]>()
   const query = useQuery()
@@ -86,12 +87,26 @@ const TopNavbar = () => {
   }
 
   return (
+    <>
+      {openMobileSearch &&
+        <Box sx={{display: 'fixed', backgroundColor: 'rgba(0,0,0,.05)', border: 1, borderColor: grey[400], borderRadius: 99, height: 50, marginTop: 1, marginX: 2}}>
+          <form onSubmit={(e) => handleSearch(e)}>
+            <SearchIcon sx={{paddingTop: 1.5, marginLeft: 2, color: grey[600]}} /> 
+            <Input 
+              className={classes.searchInput}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder='Search Pinterest' 
+              disableUnderline={true} 
+            />
+          </form>
+        </Box>
+      }
       <Box className={classes.navbar}>
         <Button className={classes.mobileHomeButton} onClick={() => navigate('/')}>
           <HomeIcon className={classes.mobileIconSize}/>
           <Typography className={classes.mobileButtonText}>Home</Typography>
         </Button>
-        <Button className={classes.mobileHomeButton} onClick={openSearch}>
+        <Button className={classes.mobileHomeButton} onClick={() => setOpenMobileSearch((prev) => !prev)}>
           <SearchIcon className={classes.mobileIconSize}/>
           <Typography className={classes.mobileButtonText}>Search</Typography>
         </Button>
@@ -170,6 +185,7 @@ const TopNavbar = () => {
           }                
         </Box>
     </Box>
+    </>
   )
 }
 

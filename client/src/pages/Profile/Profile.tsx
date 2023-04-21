@@ -1,8 +1,8 @@
 import { Avatar, Box, Button, capitalize, Icon, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation, useParams } from 'react-router-dom'
-import { GetUserById, updateSaves } from '../../features/usersSlice'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { GetUserById, Logout, updateSaves } from '../../features/usersSlice'
 
 import { grey } from '@mui/material/colors';
 import Pin from '../../components/Pin/Pin'
@@ -15,7 +15,7 @@ import TopNavbar from '../../components/TopNavbar/TopNavbar'
 
 const Profile = () => {
   const { userId } = useParams()
-  let user = fetchUser()
+  const [user, setUser] = useState<any>(fetchUser())
   const dispatch = useDispatch<AppDispatch>()
   const pinsState = useSelector((state: RootState) => state.pinsState);
   const { pins } = pinsState
@@ -26,7 +26,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(false)
   const { category } = useParams()
   const { classes } = useStyles()
-
+  const navigate = useNavigate()
   
 
   useEffect(() => {
@@ -50,6 +50,12 @@ const Profile = () => {
     }
     loadPins()
   }, [location, category])
+
+  const logoutUser = () => {
+    dispatch(Logout())
+    setUser(null)
+    navigate('/login')    
+  }
   
 
   return (
@@ -64,6 +70,10 @@ const Profile = () => {
           </Box>
         </Box>
       </Box>        
+
+      <Box className={classes.mobileLogout}>
+        <Button className={classes.mobileLogoutButton} variant='outlined' onClick={logoutUser}>Logout</Button>
+      </Box>
 
       <Box className={classes.buttonContainer} >
         <Button className={classes.shareButton} variant='outlined'>

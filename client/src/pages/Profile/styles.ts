@@ -10,6 +10,14 @@ export default makeStyles()((theme) => {
             paddingTop: 0,
         }
     },
+    mobileLogout: {
+        position: 'absolute',
+        top: 5,
+        right: 5
+    },
+    mobileLogoutButton: {
+        backgroundColor: grey[300],
+    },
     profileImage: {
         top: 20, minHeight: 120, maxHeight: 120, minWidth: 120, maxWidth: 120
     },
