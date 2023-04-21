@@ -21,6 +21,8 @@ import NotFound from './pages/NotFound';
 function App() {
   const navigate = useNavigate()
   let user = fetchUser()
+  const pinsState = useSelector((state: RootState) => state.pinsState);
+  const { pins } = pinsState
 
 
   useEffect(() => {
@@ -57,7 +59,7 @@ function App() {
       <Routes>     
         <Route path='*' element={<NotFound />} />
         <Route path='/*' element={<Feed /> } />
-        <Route path='/' index element={<Feed /> } />               
+        <Route path='/' index element={<Feed pins={pins} /> } />               
         <Route path='/login' index element={!user && <Login />} />          
         <Route path='/createPin' index element={<CreatePin user={user} /> } />
         <Route path='/category/:category' element={<Feed />} />

@@ -6,7 +6,6 @@ import dotenv from 'dotenv'
 import users from './routes/users'
 import pins from './routes/pins'
 import comments from './routes/comments'
-import replies from './routes/replies'
 
 dotenv.config()
 
@@ -18,7 +17,6 @@ app.use(cors())
 app.use('/api/pins', pins)
 app.use('/api/users', users)
 app.use('/api/comments', comments)
-app.use('/api/replies', replies)
 
 app.get('/', async (req:any, res:any) => {
   res.send('welcome...')

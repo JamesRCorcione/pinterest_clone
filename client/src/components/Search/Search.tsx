@@ -3,8 +3,8 @@ import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { searchPins } from '../../features/pinsSlice'
 
-import MasonryLayout from '../MasonryLayout/MasonryLayout'
 import Spinner from '../Spinner/Spinner'
+import Feed from '../Feed/Feed'
 
 
 const Search = () => {
@@ -19,7 +19,7 @@ const Search = () => {
   return (
     <div>
       {loading && <Spinner message="Searching pins" />}
-      {pins?.length !== 0 && <MasonryLayout pins={pins} />}
+      {pins?.length !== 0 && <Feed pins={pins} />}
       {pins?.length === 0 && searchTerm !== '' && !loading && (
         <div className="mt-10 text-center text-xl ">No Pins Found!</div>
       )}

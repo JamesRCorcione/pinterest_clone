@@ -7,7 +7,6 @@ import { GetUserById, updateSaves } from '../../features/usersSlice'
 import { grey } from '@mui/material/colors';
 import Pin from '../../components/Pin/Pin'
 import Feed from '../../components/Feed/Feed'
-import MasonryLayout from '../../components/MasonryLayout/MasonryLayout'
 import { deletePin, getPins, getPinsByCreator, getPinsByTags } from '../../features/pinsSlice'
 import { fetchUser } from '../../utils/fetchUser'
 import useStyles from './styles'
@@ -28,14 +27,10 @@ const Profile = () => {
   const { category } = useParams()
   const { classes } = useStyles()
 
+  
 
   useEffect(() => {
     async function updateUserSaves() {
-      const ids = pins.map((pin:any) => pin._id)
-      let updatedSaves = user?.result.saves?.filter((save:any) => ids.includes(save._id))
-      if (!updatedSaves) updatedSaves = []
-      await dispatch(updateSaves({user, updatedSaves}))
-      user = fetchUser()
       await dispatch(getPinsByCreator(userId))
       .then((jsonData:any) => setCreatedPins(jsonData.payload))
     }
@@ -93,13 +88,13 @@ const Profile = () => {
               <h2>No Pins Available</h2>
             :
               <Box sx={{width: '100%'}}>
-                <MasonryLayout pins={user?.result.saves} />
+                <Feed pins={user.result.saves} />
               </Box>
             } 
             </>
           :
-          <Box sx={{width: '100vw'}}>
-            <MasonryLayout pins={createdPins} />                       
+          <Box sx={{width: '100%'}}>
+            <Feed pins={createdPins} />                       
           </Box>
           }      
               

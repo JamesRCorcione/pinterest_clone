@@ -31,8 +31,8 @@ const PinDetails = () => {
   const dispatch = useDispatch<AppDispatch>()
   const commentsState = useSelector((state: RootState) => state.commentsState);
   let { comments } = commentsState
-  //const repliesState = useSelector((state: RootState) => state.repliesState);
-  //let { replies } = repliesState
+  const pinsState = useSelector((state: RootState) => state.pinsState);
+  let { pins } = pinsState
   const [pin, setPin] = useState<IPin>()
   const [replies, setReplies] = useState<any>()
   const [savingPost, setSavingPost] = useState(false)
@@ -67,7 +67,6 @@ const PinDetails = () => {
 
   const getNewComment = async () => {
     setLoading(true)
-    console.log('got')
     await dispatch(getComments(pinId))
     setLoading(false)
   }
@@ -257,7 +256,7 @@ const PinDetails = () => {
       </Box>
 
       <Box sx={{width: '100%'}}>
-        <Feed />
+        <Feed pins={pins} />
       </Box>
     </>
   )

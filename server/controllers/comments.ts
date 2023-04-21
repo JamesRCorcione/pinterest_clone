@@ -7,7 +7,6 @@ import { v2 as cloudinary } from 'cloudinary'
 import Comments from '../models/comments'
 import User from '../models/users'
 import mongoose from 'mongoose'
-import Replies from '../models/replies'
 
 
 //Comments
@@ -27,7 +26,6 @@ export const getComments = async (req: Request, res: Response) => {
   //  const { id } = req.params
   //
   //  try {
-  //      const replies = await Replies.find({parentId: id}).sort({ createdAt: -1 })
   //      
 //
   //      res.status(200).json(replies)
@@ -194,13 +192,13 @@ export const updateReply = async (req: Request, res: Response) => {
 
   try {    
     let updatedComment = await Comments.findById(commentId)
-    updatedComment?.replies?.map((reply:any, i:number) =>  {
-      if (reply._id.toString() === replyId) {        
-          //Cannot be undefined, no comment or button to click if thats the case
-          Replies.findByIdAndUpdate(replyId,
-            {text})
-      }
-    })
+    //updatedComment?.replies?.map((reply:any, i:number) =>  {
+    //  if (reply._id.toString() === replyId) {        
+    //      //Cannot be undefined, no comment or button to click if thats the case
+    //      Replies.findByIdAndUpdate(replyId,
+    //        {text})
+    //  }
+    //})
     
     updatedComment?.save()
 
@@ -216,13 +214,17 @@ export const updateReply = async (req: Request, res: Response) => {
     const { commentId, replyId } = req.params
     
     try {    
-      const updatedComment = await Comments.findByIdAndDelete(commentId)
+      let updatedComment = await Comments.findById(commentId)
+      updatedComment?.replies.map(async (replyId:any, i:number) => {
+        await Comments.findByIdAndDelete(replyId)
+      })
      
   
       //if (!Comments) return res.status(404).send("Comment not found...")
   
       //const deletedComment = await Comments.findByIdAndDelete(req.params.id)
   
+      updatedComment = await Comments.findByIdAndDelete(commentId)
       res.send(updatedComment)
     } catch (error) {
       res.status(500).json({ message: error })

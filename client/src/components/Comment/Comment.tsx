@@ -7,7 +7,6 @@ import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
-import Reply from './Reply/Reply';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getReplies } from '../../features/repliesSlice';
 import Spinner from '../Spinner/Spinner';
@@ -59,7 +58,7 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
     if (pinId) {
       await dispatch(deleteComment({pinId, commentId: comment._id, replyId: comment._id}))
       setActionBar(false)
-      //await dispatch(getComments(pinId))
+      await dispatch(getComments(pinId))
     }
   }
 
@@ -69,7 +68,7 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
     if (pinId) {
       setLoading(true)
       await dispatch(updateComment({pinId, commentId: comment._id, replyId: comment._id, text}))
-      //await dispatch(getComments(pinId))
+      await dispatch(getComments(pinId))
       setUpdateHeadComment(false)
       setActionBar(false)
       setLoading(false)
@@ -139,7 +138,6 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
     }
   }
 
-  console.log(comment.text, comment.taggedUser)
 
   //Doesnt allow duplicate rendering of nested comments
   if (comment.parentId && !reply) {
@@ -168,15 +166,15 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
         :
         <>
           {reply ?        
-            <Box sx={{marginLeft: 5}}>
+              <Box sx={{marginLeft: 5}}>
               <Box sx={{display: 'flex'}}>
                 <Avatar onClick={() => navigate(`/user-profile/${user?.userCommenting?.userId}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{comment?.commentingUser?.userName?.charAt(0)}</Avatar>
                 <Typography onClick={() => navigate(`/user-profile/${comment?.userCommenting?.userId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}> {comment?.userCommenting?.userName}</Typography>               
               </Box>
 
-              <Box><Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>{comment?.text + ' ' + reply}</Typography></Box>
+              <Box><Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>{comment?.text}</Typography></Box>
               <Box sx={{display: 'flex', marginLeft: 4.5, marginBottom: 2}}>
-                  <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>2mo</Typography>
+                  <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>{comment.createdAt}</Typography>
                   <Box sx={{marginRight: 1, size: 'small'}}>
                     <Button 
                       variant='text'
@@ -238,7 +236,7 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
 
                 <Box><Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>{comment?.text + ' ' + reply}</Typography></Box>
                 <Box sx={{display: 'flex', marginLeft: 4.5, marginBottom: 2}}>
-                    <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>2mo</Typography>
+                    <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>{comment.createdAt}</Typography>
                     <Box sx={{marginRight: 1, size: 'small'}}>
                       <Button 
                         variant='text'
