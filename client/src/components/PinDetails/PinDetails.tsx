@@ -20,7 +20,7 @@ import { SavePin } from '../../features/usersSlice'
 import { fetchUser } from '../../utils/fetchUser'
 import { createComment, getComments } from '../../features/commentsSlice'
 import { Circles } from 'react-loader-spinner'
-import { createReply, getReplies } from '../../features/repliesSlice'
+import { getReplies } from '../../features/repliesSlice'
 
 
 
@@ -31,9 +31,10 @@ const PinDetails = () => {
   const dispatch = useDispatch<AppDispatch>()
   const commentsState = useSelector((state: RootState) => state.commentsState);
   let { comments } = commentsState
-  const repliesState = useSelector((state: RootState) => state.repliesState);
-  let { replies } = repliesState
+  //const repliesState = useSelector((state: RootState) => state.repliesState);
+  //let { replies } = repliesState
   const [pin, setPin] = useState<IPin>()
+  const [replies, setReplies] = useState<any>()
   const [savingPost, setSavingPost] = useState(false)
   const [expandComments, setExpandComments] = useState(true)
   const [totalComments, setTotalComments] = useState<number>()
@@ -49,24 +50,25 @@ const PinDetails = () => {
   useEffect(() => {
     const getComment = async () => {
       getPinDetails()
-      getNewComment()         
+      getNewComment()
     }
     getComment()
   }, [dispatch])
 
   const getPinDetails = async () => {
-    window.scrollTo(0, 0) 
+    window.scrollTo(0, 0)
     //Need another loading screen for the whole pin
     setLoading(true)
     const data = await dispatch(getPin(pinId))
     setPin(data.payload)
-    setLoading(false)     
+    setLoading(false)    
+
   }
 
   const getNewComment = async () => {
     setLoading(true)
+    console.log('got')
     await dispatch(getComments(pinId))
-    await dispatch(getReplies(pinId))
     setLoading(false)
   }
 
@@ -196,7 +198,7 @@ const PinDetails = () => {
               </Box>
               <Box sx={{display: 'flex'}}>
                 <Typography sx={{marginTop: 1}}>
-                  {comments?.length + replies?.length} Comments 
+                  {comments.length} Comments 
                 </Typography>
                 <Button onClick={handleExpandComments}
                 sx={{borderRadius: 99, marginTop: 0.5, marginLeft: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>
@@ -219,7 +221,7 @@ const PinDetails = () => {
                 <Box className={classes.commentSection}>
                   {comments &&
                     comments.map((comment:IComment, i:number) => (
-                      <Comment key={i} pinId={pinId} user={user} comment={comment} commentReplies={replies} />
+                      <Comment key={i} pinId={pinId} user={user} comment={comment} reply={false} />
                     ))
                   }
                 </Box>

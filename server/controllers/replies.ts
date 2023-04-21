@@ -12,23 +12,16 @@ import Comments from '../models/comments'
 export const createReply = async (req: Request, res: Response) => {
   const { id } = req.params
   const { commentId, replyId, userCommenting, text } = req.body
-
-
+  
   try {        
-    const prev = await Replies.findById(replyId)
-
-    
+    const prev = await Replies.findById(replyId)    
     let data = { pinId: id, parentId: commentId, userCommenting, text, hearts: [], taggedUser: { _id: prev?.userCommenting?.userId, userName: prev?.userCommenting?.userName } }
-
     const reply = new Replies(data)
     reply.save()
-
-
     const updatedComment = await Comments.findByIdAndUpdate(commentId,
       {$push: {'replies': reply}},
       { 'new': true },  
-    )  
-
+    ) 
     res.status(200).json({reply: reply})
   } catch (error) {    
     res.status(500).json({ message: error })
@@ -41,7 +34,7 @@ export const createReply = async (req: Request, res: Response) => {
     try {
         const replies = await Replies.find({pinId: id}).sort({ date: -1 })
 
-        console.log(replies)
+        //console.log(replies)
 
         res.status(200).json(replies)
     } catch (error) {

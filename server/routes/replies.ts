@@ -4,7 +4,7 @@ import auth from '../middleware/auth'
 
 const router = express.Router()
 router.get('/:id', getReplies)
-router.post('/createReply/:id', auth, createReply)
+//router.post('/createReply/:id', auth, createReply)
 router.post('/heartRepliesPin/:id', auth, heartRepliesPin)
 
 export default router

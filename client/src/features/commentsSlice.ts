@@ -175,6 +175,24 @@ export const createComment = createAsyncThunk(
     }
   )
 
+  export const createReply = createAsyncThunk(
+    'comments/createReply',
+    
+    async ({pinId, commentId = null, replyId = null, text, taggedUser, userCommenting={ userId: null, userName: null, userImage: null}}: CreateReplyProps, { rejectWithValue }) => {
+      try {
+        const response = await axios.post(baseURL + `comments/createReply/${pinId}`, {text, commentId, replyId, userCommenting, taggedUser})
+        return response.data
+      } catch (err: any) {
+        let error: AxiosError<ValidationErrors> = err // cast the error for access
+        if (!error.response) {
+          throw err
+        }
+        // We got validation errors, let's return those so we can reference in our component and set form errors
+        return rejectWithValue(error.response.data)
+      }
+    }
+  )
+
   export const deleteReply = createAsyncThunk(
     'comments/deleteReply',
     async ({pinId, commentId,  replyId}: DeleteReplyProps, { rejectWithValue }) => {

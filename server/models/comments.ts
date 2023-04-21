@@ -12,7 +12,7 @@ const commentsSchema = new mongoose.Schema({
         text: { type: String, default: '' },
         hearts: { type: [mongoose.Schema.Types.ObjectId], default: [] },
         totalHearts: { type: Number, default: 0},
-        replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Replies' }]
+        replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comments' }]
 }, {timestamps: true})
 
 const Comments = mongoose.model('Comments', commentsSchema)

@@ -2,14 +2,14 @@ import { Avatar, Box, Button, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { grey, blue } from '@mui/material/colors';
 import { useDispatch, useSelector } from 'react-redux';
-import {  deleteReply, getComments, heartReplyPin, unheartReplyPin, updateReply } from '../../../features/commentsSlice'
+import {  createReply, deleteReply, getComments, heartReplyPin, unheartReplyPin, updateReply } from '../../../features/commentsSlice'
 
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { Link, useNavigate } from 'react-router-dom';
 import Comment from '../Comment';
-import { createReply, heartRepliesPin } from '../../../features/repliesSlice';
+import { heartRepliesPin } from '../../../features/repliesSlice';
 import { Circles } from 'react-loader-spinner';
 
 interface CommentProps {
@@ -22,6 +22,8 @@ interface CommentProps {
 const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
+  const commentsState = useSelector((state: RootState) => state.commentsState);
+  let { comments } = commentsState
   const [replying, setReplying] = useState(false)
   const [actionBar, setActionBar] = useState(false)
   const [updateComment, setUpdateComment] = useState(false)
@@ -33,6 +35,7 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
      if (comment.hearts?.includes(user.result._id)) {
         setIsLoved(true)
      } 
+     
   }, [])
 
 
@@ -51,7 +54,7 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
       }
       setLoading(true)
       await dispatch(createReply({pinId, commentId, replyId: comment._id, text, userCommenting, taggedUser: null }))
-      await dispatch(getComments(pinId))
+      //await dispatch(getComments(pinId))
       setLoading(false)
     }
   }
@@ -84,8 +87,7 @@ const Reply = ({user, pinId, comment, commentId}:CommentProps) => {
     e.preventDefault()
     if (pinId) {
       setLoading(true)
-      await dispatch(heartReplyPin({pinId, commentId, userId: user.result._id, replyId: comment._id }))
-      
+      await dispatch(heartReplyPin({pinId, commentId, userId: user.result._id, replyId: comment._id }))      
       setIsLoved(true)
       await dispatch(getComments(pinId))
       setLoading(false)

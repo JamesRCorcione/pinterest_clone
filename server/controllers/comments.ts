@@ -55,23 +55,26 @@ export const getComments = async (req: Request, res: Response) => {
   
   export const createReply = async (req: Request, res: Response) => {
     const { id } = req.params
-    const { commentId, replyId, userCommenting, text} = req.body
+    const { commentId, taggedUser, replyId, userCommenting, text} = req.body
     try {
 
       const prev = await Comments.findById(replyId)
       
-      let data = { pinId: id, parentId: commentId, userCommenting, text, date: new Date(), hearts: [], totalHearts: 0, taggedUser: prev?.userCommenting?.userName}
+      let data = { pinId: id, parentId: commentId, userCommenting, text, hearts: [], taggedUser }
 
-      const reply = new Replies(data)
-
+      const reply = new Comments(data)
       reply.save()
+
+      
 
       const updatedComment = await Comments.findByIdAndUpdate(commentId,
         {$push: {'replies': reply}},
-      )
+        { 'new': true },  
+      ) 
 
+      console.log(updatedComment)
 
-      res.status(200).json({updatedComment})
+      res.status(200).json({reply: reply})
     } catch (error) {
       
       res.status(500).json({ message: error })
