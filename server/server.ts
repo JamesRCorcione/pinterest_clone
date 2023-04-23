@@ -19,16 +19,16 @@ app.use('/api/users', users)
 app.use('/api/comments', comments)
 
 app.get('/', async (req:any, res:any) => {
-  res.send('welcome...')
+  res.send('Welcome to Pinterest\'s backend :)')
 })
 
 const uri = process.env.ATLAS_URI || ''
-const port = process.env.PORT
+const port = process.env.PORT || 8080
 
 const startServer = async () => {
   mongoose.set('strictQuery', false)
   mongoose.connect(uri)
-    .then(() => app.listen(port, () => console.log(`⚡️[server]: Server is running at https://pinterestclone.onrender.com/`)))
+    .then(() => app.listen(port, () => console.log(`⚡️[server]: Server is running at http://localhost:8080`)))
     .catch((error:any) => console.log(`${error} did not connect`))
 }
 

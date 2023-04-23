@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:19-slim
 
 WORKDIR /app
 
@@ -6,7 +6,7 @@ COPY package.json ./
 
 RUN yarn install
 
-COPY . .
+COPY ./ ./
 
 ENV ATLAS_URI=mongodb+srv://jamescorcione95:123@cluster0.dqtfbaz.mongodb.net/?retryWrites=true&w=majority
 ENV PORT=8080
