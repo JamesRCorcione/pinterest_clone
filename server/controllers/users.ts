@@ -57,6 +57,10 @@ export const signup = async (req: Request, res: Response) => {
   try {   
       const { userName, email, password, birthday, saves, uid } = req.body
 
+      const emailSchema = Joi.string().email()
+      const { error } = emailSchema.validate({email})    
+      if (error) return res.status(400).send({ message: 'Please Enter a valid Email!' })
+
       const oldUser = await User.findOne({ email })
 
       if (oldUser) return res.status(400).json({ message: "User already exists" })

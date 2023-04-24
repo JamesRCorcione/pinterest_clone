@@ -85,7 +85,6 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
         userImage: user?.result.image
       }      
       setLoading(true)
-      console.log(comment)
       // tagged needs to reference parentId, normal uses commentId normally
       await dispatch(createReply({pinId, commentId: comment._id, replyId: null, text, userCommenting, taggedUser: comment.userCommenting.userName}))     
 
@@ -105,7 +104,6 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
         userImage: user?.result.image
       }      
       setLoading(true)
-      console.log(comment)
       // tagged needs to reference parentId, normal uses commentId normally
       await dispatch(createReply({pinId, commentId: comment.parentId, replyId: null, text, userCommenting, taggedUser: comment.userCommenting.userName}))     
 
@@ -115,7 +113,6 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
     }
   }
 
-  //console.log(comment.text, 'replies', replies)
   const handleHeartPin = async (e:any) => {
     e.preventDefault()
     if (pinId) {      
@@ -152,6 +149,7 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
         ?
           /* Main comment reply box */
           <Box>
+          
           <form onSubmit={handleUpdate}>
               <TextField      
                 onChange={(e:any) => setText(e.target.value)}             
@@ -161,7 +159,8 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
               >
             </TextField>        
           </form>  
-          <Button onClick={() => setUpdateHeadComment((prev) => !prev)}>Cancle</Button>
+          
+          <Button onClick={() => setUpdateHeadComment((prev) => !prev)}>Cancel</Button>
           </Box>
         :
         <>
@@ -202,13 +201,15 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
                     </Box>
                     }
                     </Box>
-                  <Box sx={{marginRight: 1}}><MoreHorizIcon onClick={handleOpenActionBar} sx={{cursor: 'pointer', marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} /></Box>
+                    {user?.result?._id === comment?.userCommenting?.userId &&
+                      <Box sx={{marginRight: 1}}><MoreHorizIcon onClick={handleOpenActionBar} sx={{cursor: 'pointer', marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} /></Box>
+                    }
                   {actionBar &&
                     <Box sx={{position: 'relative', height: 150}}>
                       <Box sx={{position: 'absolute', borderRadius: 2, backgroundColor: 'white', height: 100, width: 150, top: 30, right: -50, boxShadow:2, zIndex:2}}>
                         <Box sx={{display: 'flex', flexDirection: 'column'}}>
                           <Button onClick={() => setUpdateHeadComment((prev) => !prev)}>Edit</Button>
-                          <Button onClick={(e) => handleDelete(e)}>Delete</Button>
+                          <Button onClick={(e) => handleDelete(pinId)}>Delete</Button>
                         </Box>
                       </Box>
                     </Box>
@@ -234,7 +235,7 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
                   <Typography onClick={() => navigate(`/user-profile/${comment?.userCommenting?.userId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}> {comment?.userCommenting?.userName}</Typography>               
                 </Box>
 
-                <Box><Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>{comment?.text + ' ' + reply}</Typography></Box>
+                <Box><Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>{comment?.text}</Typography></Box>
                 <Box sx={{display: 'flex', marginLeft: 4.5, marginBottom: 2}}>
                     <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>{comment.createdAt}</Typography>
                     <Box sx={{marginRight: 1, size: 'small'}}>
@@ -264,7 +265,9 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
                       </Box>
                       }
                       </Box>
-                    <Box sx={{marginRight: 1}}><MoreHorizIcon onClick={handleOpenActionBar} sx={{cursor: 'pointer', marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} /></Box>
+                      {user?.result?._id === comment?.userCommenting?.userId &&
+                        <Box sx={{marginRight: 1}}><MoreHorizIcon onClick={handleOpenActionBar} sx={{cursor: 'pointer', marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} /></Box>
+                      }
                     {actionBar &&
                       <Box sx={{position: 'relative', height: 150}}>
                         <Box sx={{position: 'absolute', borderRadius: 2, backgroundColor: 'white', height: 100, width: 150, top: 30, right: -50, boxShadow:2, zIndex:2}}>

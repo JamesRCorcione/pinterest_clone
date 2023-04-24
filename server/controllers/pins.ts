@@ -27,16 +27,17 @@ interface middlewareRequest extends Request {
 export const createPin = async (req: Request, res: Response) => {
     try {
         const schema = Joi.object({
-          task: Joi.string().min(3).max(300).required(),
-          isComplete: Joi.boolean(),
-          date: Joi.date(),
+          title: Joi.string().required(),
+          text: Joi.string().required(),
+          image: Joi.required(),
         })
     
-        //const { error } = schema.validate(req.body)
-    
-        //if (error) return res.status(400).send(error.details[0].message)
-    
         const { title, text, tags, creatorId, totalComments, postedBy, image, destination } = req.body
+        const { error } = schema.validate({title, text, image})
+    
+        if (error) return res.status(400).send(error.details[0].message)
+    
+        
         const selectedFileURL = await cloudinary.uploader.upload(image)
 
 
@@ -155,9 +156,9 @@ export const updatePin = async (req: Request, res: Response) => {
 
 //Delete
 export const deletePin = async (req: Request, res: Response) => {
-    const post = await Pin.findById(req.params.id)
+  const pin = await Pin.findById(req.params.id)
 
-  if (!Pin) return res.status(404).send("Post not found...")
+  if (!pin) return res.status(404).send("Pin not found...")
 
   const deletedPost = await Pin.findByIdAndDelete(req.params.id)
 

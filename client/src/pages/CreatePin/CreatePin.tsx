@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { AiOutlineCloudUpload } from 'react-icons/ai'
 import { MdDelete } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { uuid } from 'uuidv4'
 import Spinner from '../../components/Spinner/Spinner'
 
@@ -26,7 +26,16 @@ const CreatePin = ({user}:CreatePinProps) => {
     const [tag, setTag] = useState<string>('')
     const [chips, setChips] = useState<string[]>([])
     const navigate = useNavigate()
-    const dispatch = useDispatch<AppDispatch>()    
+    const { state } = useLocation()  
+    const dispatch = useDispatch<AppDispatch>()   
+    
+    useEffect(() => {
+      if (state) {
+        console.log(state.pin)
+        setPin({title: state.pin.title, text: state.pin.text, tags: state.pin.tags, creatorId: user?.result._id, totalComments: state.pin.totalComments, postedBy: state.pin.postedBy, image: state.pin.image, destination: state.pin.destination })    
+        setChips(state.pin.tags)
+      }
+    }, [state])
 
     const handlePinSave = async (e:React.FormEvent) => {
       e.preventDefault()
@@ -35,6 +44,8 @@ const CreatePin = ({user}:CreatePinProps) => {
       setPin({ title: '', text: '', tags: [], creatorId: user?.result._id, totalComments: 0, postedBy: {userId: '', userName: '', image: null}, image: '', destination: '' })
       navigate('/')
     }
+
+    console.log(pin)
 
     const setTags = async () => {
       
@@ -47,7 +58,7 @@ const CreatePin = ({user}:CreatePinProps) => {
     
 
     const handlePin = () => {
-      setChips([...chips, tag])     
+      setChips([...chips, tag])
     }
 
   return (

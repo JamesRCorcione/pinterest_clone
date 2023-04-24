@@ -46,8 +46,7 @@ export default makeStyles()((theme) => {
         width: '100%',
         borderRadius: 40,
       }
-    },
-    
+    },    
     topButtonsContainer: {
       display: 'flex', width: '100%', paddingBottom: 50,
       [theme.breakpoints.down(750)]: { 
@@ -66,7 +65,7 @@ export default makeStyles()((theme) => {
       }
     },
     saveButtonContainer: {
-      position: 'relative', top: 30, left: 225,
+      position: 'relative', top: 20, left: 215,
       [theme.breakpoints.down(750)]: { 
         position: 'absolute', right: 0, top: 15
       }
@@ -156,5 +155,26 @@ export default makeStyles()((theme) => {
       backgroundColor: grey[100],
       "& fieldset": { borderRadius: 10 }
     },
+    actionButton: {
+      position: 'relative', left: 70, top: 25, color: grey[900], minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30
+    },
+    downloadButton: {
+      position: 'relative', left: 50, top: 25, color: grey[900], minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30
+    },
+    shareButton: {
+      position: 'relative', left: 30, top: 25, color: grey[900], minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30
+    },
+    copyLinkButton: {
+      borderRadius: 99, 
+      backgroundColor: grey[600], 
+      marginTop: 2, 
+      minHeight: 32, 
+      maxHeight: 32, 
+      minWidth: 32, 
+      maxWidth: 32,
+      '&:hover': {
+        backgroundColor: grey[600], 
+      }
+    }
   }
 })

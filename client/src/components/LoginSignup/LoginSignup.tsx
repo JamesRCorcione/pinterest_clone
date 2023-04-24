@@ -23,7 +23,7 @@ import { Circles } from 'react-loader-spinner';
 
 
 const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
-    const classes = useStyle()
+    const { classes } = useStyle()
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate()
     const [form, setForm] = useState<IUser>({ userName: '', email: '', password: '', image: '', birthday: null, saves: [] })
@@ -167,6 +167,39 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
         setOpenLogin(false)
     }
 
+    const renderFacebookButton = ({message, iconOffset, textOffset, textSize}:any) => (
+        <FacebookLogin
+            appId={'772299484215013'}
+            fields="name,email,picture"
+            callback={loginWithFacebook}
+            icon={<FaFacebook style={{position: 'relative', left: iconOffset, top: 5 }} size="20px" />}
+            onFailure={(err) => {
+            console.log("FB LOGIN ERROR:", err);
+            }}
+            containerStyle={{
+            backgroundColor: "#3b5998",
+            borderColor: "#3b5998",
+            display: "flex",
+            color: "#fff",
+            cursor: "pointer",
+            marginBottom: 3,
+            borderRadius: 99,
+            marginTop: 10,                    
+            }}
+            buttonStyle={{
+            position: 'relative',
+            bottom: 10,
+            textTransform: "none",
+            height: 42,
+            background: "none",
+            border: "none",
+            fontSize: textSize,
+            marginLeft: textOffset
+            }}
+            textButton={message}
+        /> 
+    )
+
 
   return (
     <>
@@ -193,46 +226,19 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                     className={classes.googleButton}
                 >
                     <FcGoogle
-                    style={{
-                        position: 'absolute',
-                        top: 10,
-                        left: 20,
-                      }}
+                        className={classes.googleLoginIcon}
                         size="20px"
                     /> 
-                    <Typography sx={{color: '#3b5998', fontWeight: 'bold', fontSize: 14, }}>Log in with Google</Typography>
-                </Button>                            
-                <FacebookLogin
-                    appId={'772299484215013'}
-                    fields="name,email,picture"
-                    callback={loginWithFacebook}
-                    icon={<FaFacebook style={{position: 'relative', left: -22, top: 5 }} size="20px" />}
-                    onFailure={(err) => {
-                    console.log("FB LOGIN ERROR:", err);
-                    }}
-                    containerStyle={{
-                    backgroundColor: "#3b5998",
-                    borderColor: "#3b5998",
-                    display: "flex",
-                    color: "#fff",
-                    cursor: "pointer",
-                    marginBottom: 3,
-                    borderRadius: 99,
-                    marginTop: 10,
-                    
-                    }}
-                    buttonStyle={{
-                    position: 'relative',
-                    bottom: 10,
-                    textTransform: "none",
-                    height: 42,
-                    background: "none",
-                    border: "none",
-                    fontSize: 14,
-                    marginLeft: 20
-                    }}
-                    textButton='LOG IN WITH FACEBOOK'
-                />                          
+                    <Typography className={classes.googleLoginText}>Log in with Google</Typography>
+                </Button>
+
+                {/* Not Ideal, but it works. A mobile and desktop view below for Facebook Login Button */}
+                {window.innerWidth <= 750 ?     
+                    renderFacebookButton({message:'LOG IN WITH FACEBOOK', iconOffset: -5, textOffset: 4, textSize: 12})  
+                :
+                    renderFacebookButton({message:'LOG IN WITH FACEBOOK', iconOffset: -12, textOffset: 20, textSize: 14})                      
+                }
+
             </Box>
             <Divider sx={{paddingTop: 1.7, margin: 'auto', width: '70%', color: 'grey'}}>
                 <Typography sx={{fontStyle: 'sans', fontSize: '12px'}}>OR</Typography>
@@ -247,14 +253,14 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                     
                     <Box sx={{display: 'flex', marginTop: 0.5}}>
                         <Typography sx={{fontStyle: 'sans', fontSize: '12px', marginTop: 1,}}>Forgot your</Typography>
-                        <Button onClick={() => {}} sx={{position: 'absolute', left: 122, marginTop: 0.85, textTransform: 'unset', background: 'none', border: 'none',  padding: 0, fontSize: '12px', fontFamily: 'sans-serif', color: '#069', textDecoration: 'underline', cursor: 'pointer'}}>
+                        <Button onClick={() => {}} className={classes.userNameLink}>
                             username
                         </Button>
-                        <Typography sx={{fontStyle: 'sans', fontSize: '12px', marginTop: 1, marginLeft: 8}}>or</Typography>
-                        <Button onClick={() => {}} sx={{position: 'absolute', left: 200, marginTop: 0.85, textTransform: 'unset', background: 'none', border: 'none',  padding: 0, fontSize: '12px', fontFamily: 'sans-serif', color: '#069', textDecoration: 'underline', cursor: 'pointer'}}>
+                        <Typography sx={{fontStyle: 'sans', fontSize: '12px', marginTop: 1, marginLeft: 7.75}}>or</Typography>
+                        <Button onClick={() => {}} className={classes.passwordLink}>
                             password
                         </Button>
-                        <Typography sx={{fontStyle: 'sans', fontSize: '12px', marginTop: 1, marginLeft: 8}}>?</Typography>
+                        <Typography sx={{fontStyle: 'sans', fontSize: '12px', marginTop: 1, marginLeft: 7.75}}>?</Typography>
                     </Box>
 
 
@@ -285,47 +291,16 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                         className={classes.googleButton}
                     >
                         <FcGoogle
-                        style={{
-                            position: 'absolute',
-                            top: 10,
-                            left: 20,
-                        }}
+                        className={classes.googleLoginIcon}
                             size="20px"
                         /> 
-                        <Typography sx={{color: '#3b5998', fontWeight: 'bold', fontSize: 14, }}>Sign up with Google</Typography>
+                        <Typography className={classes.googleLoginText}>Sign up with Google</Typography>
                     </Button>                            
-                    <FacebookLogin
-                        appId={'772299484215013'}
-                        fields="name,email,picture"
-                        callback={signupWithFacebook}
-                        icon={<FaFacebook style={{position: 'relative', left: -22, top: 5 }} size="20px" />}
-                        onFailure={(err) => {
-                        console.log("FB LOGIN ERROR:", err);
-                        }}
-                        containerStyle={{
-                        backgroundColor: "#3b5998",
-                        borderColor: "#3b5998",
-                        display: "flex",
-                        color: "#fff",
-                        cursor: "pointer",
-                        marginBottom: 3,
-                        borderRadius: 99,
-                        marginTop: 10,
-                        
-                        }}
-                        buttonStyle={{
-                        position: 'relative',
-                        bottom: 10,
-                        textTransform: "none",
-                        height: 42,
-                        background: "none",
-                        border: "none",
-                        fontSize: 14,
-                        marginLeft: 20
-                        }}
-                        textButton='SIGN UP WITH FACEBOOK'
-                    /> 
-
+                    {window.innerWidth <= 750 ?     
+                        renderFacebookButton({message:'SIGN UP WITH FACEBOOK', iconOffset: -2, textOffset: -4, textSize: 12})  
+                    :
+                        renderFacebookButton({message:'SIGN UP WITH FACEBOOK', iconOffset: -12, textOffset: 20, textSize: 14})                      
+                    } 
                 </Box>
                 <Divider sx={{paddingTop: 2.5, margin: 'auto', width: '70%', color: 'grey'}}>
                     <Typography sx={{fontStyle: 'sans', fontSize: '12px'}}>OR</Typography>
@@ -352,12 +327,12 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
             <>
                 <IconButton className={classes.backButton} size='small' onClick={handleSignupSwitch} ><ArrowBackIcon /></IconButton>
                 <Box className={classes.login}>
-                    <Typography className={classes.popupTitle} sx={{marginBottom: 0.5, marginTop: 11}}>Create your username and password</Typography>
+                    <Typography className={classes.popupTitle}>Create your username and password</Typography>
                     <Typography className={classes.serviceAgreement}>Choose wisely—because once you get a username, you can’t change it.</Typography>
                 </Box>
                 
                 <Box className={classes.formContainer} sx={{marginTop: 35}}>
-                    <form autoComplete='off' noValidate onSubmit={handleSignUp} >  
+                    <form autoComplete='off' noValidate onSubmit={handleSignUp}>  
                         <TextField className={classes.inputTextSignupFinal} name="username" variant="outlined" label="Username" fullWidth onChange={(e) => setForm({ ...form, userName: e.target.value })} />
                         <TextField className={classes.inputTextSignupFinal} name="password" variant="outlined" type='password' label="Password" fullWidth onChange={(e) => setForm({ ...form, password: e.target.value })} />
 

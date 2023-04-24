@@ -48,6 +48,7 @@ const TopNavbar = () => {
           const decodedToken = decode<MyToken>(token)  
           if(decodedToken.exp * 1000 < new Date().getTime()) {
             logoutUser()
+            navigate('/')
           }
       }
     setUser(fetchUser())

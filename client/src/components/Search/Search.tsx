@@ -23,7 +23,6 @@ const Search = () => {
 
   useEffect(() => {
     const getSearch = async () => {
-      console.log(searchQuery)
       if (searchQuery !== '') {
         setLoading(true)
         const data = await dispatch(searchPins(searchQuery))

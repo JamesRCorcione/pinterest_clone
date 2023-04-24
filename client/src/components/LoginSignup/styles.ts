@@ -1,7 +1,8 @@
-import { makeStyles } from '@material-ui/core'
-import { red } from '@mui/material/colors'
+import { makeStyles } from 'tss-react/mui'
+import { red, grey } from '@mui/material/colors';
 
-export default makeStyles((theme) => ({
+export default makeStyles()((theme) => {
+  return {
   // Defines the popup box and exit button; It doesn't change between menues
       dialog: {
         position: 'absolute',
@@ -38,7 +39,13 @@ export default makeStyles((theme) => ({
 
   //These are Text and Button styles that wont change between the menus
       popupTitle: {        
-        fontSize: 20,       
+        fontSize: 20,     
+        marginBottom: 0.5, 
+        marginTop: 11,
+        [theme.breakpoints.down(800)]: {
+          marginBottom: 0.5, 
+          marginTop: 5,
+        }  
       },
       serviceAgreement : {
         fontSize: 12,        
@@ -125,5 +132,79 @@ export default makeStyles((theme) => ({
         paddingLeft: 60,
         paddingRight: 64,
       },
-      
-}))
+
+
+  //Mobile fixes
+  googleLoginText: {
+    color: '#3b5998', fontWeight: 'bold', fontSize: 14,
+    [theme.breakpoints.down(800)]: { 
+      color: '#3b5998', fontWeight: 'bold', fontSize: 12, marginLeft: 0
+    }
+  },
+  googleLoginIcon: {
+    position: 'relative',
+    left: -22,
+    [theme.breakpoints.down(800)]: { 
+      position: 'relative',
+      left: -10,
+    }
+  },
+  userNameLink: {
+    position: 'absolute', 
+    left: 122, 
+    marginTop: 6.5, 
+    textTransform: 'unset', 
+    background: 'none', 
+    border: 'none',  
+    padding: 0, 
+    fontSize: '12px', 
+    fontFamily: 'sans-serif',
+    color: '#069', 
+    textDecoration: 'underline', 
+    cursor: 'pointer',
+    [theme.breakpoints.down(800)]: { 
+      position: 'absolute', 
+      left: 106, 
+      marginTop: 6.75, 
+      textTransform: 'unset', 
+      background: 'none', 
+      border: 'none',  
+      padding: 0, 
+      fontSize: '12px', 
+      fontFamily: 'sans-serif',
+      color: '#069', 
+      textDecoration: 'underline', 
+      cursor: 'pointer',
+    }
+  },
+  passwordLink: {
+    position: 'absolute', 
+    left: 195, 
+    marginTop: 6.5, 
+    textTransform: 'unset', 
+    background: 'none', 
+    border: 'none',  
+    padding: 0, 
+    fontSize: '12px', 
+    fontFamily: 'sans-serif', 
+    color: '#069', 
+    textDecoration: 'underline', 
+    cursor: 'pointer',
+    [theme.breakpoints.down(800)]: { 
+      position: 'absolute', 
+      left: 180,
+      marginTop: 6.5, 
+      textTransform: 'unset', 
+      background: 'none', 
+      border: 'none',  
+      padding: 0, 
+      fontSize: '12px', 
+      fontFamily: 'sans-serif', 
+      color: '#069', 
+      textDecoration: 'underline', 
+      cursor: 'pointer',
+    }
+  },
+
+
+}})

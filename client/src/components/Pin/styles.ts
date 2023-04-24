@@ -71,14 +71,14 @@ export default makeStyles()((theme) => {
     htmlLinkButton: {
       '&:hover': { backgroundColor: grey[100], opacity: 1}, minHeight: 30, maxHeight: 30, minWidth: 90, maxWidth: 120, borderRadius: 99, position: 'absolute', bottom: 15, left: 10, backgroundColor: grey[200], opacity: 0.9
     },
-    shareImageButton: {
+    moreActionsButton: {
       '&:hover': { backgroundColor: grey[100], opacity: 1}, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30, backgroundColor: grey[200], borderRadius: 99, position: 'absolute', bottom: 15, right: 60, opacity: 0.9 
     },
     imageOp: {
       overflow: 'hidden',
       objectFit: 'cover',   
     },
-    moreActionsButton: {
+    shareImageButton: {
       '&:hover': { 
         backgroundColor: grey[100], 
         opacity: 1

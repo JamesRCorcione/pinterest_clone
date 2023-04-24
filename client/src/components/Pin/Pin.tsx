@@ -59,7 +59,7 @@ const Pin = ({ pin }:PinProps) => {
   }
 
   const handleDeletePin = async (e:any) => {
-    await dispatch(deletePin(pin._id))
+    await dispatch(deletePin({pinId: pin._id}))
   }
 
   return (  
@@ -146,21 +146,22 @@ const Pin = ({ pin }:PinProps) => {
             </Box>
 
             {/* Button for more action menu to open */}
-            <Box>
-                <Button 
-                  className={classes.moreActionsButton}
-                  href={`${image}?dl=`}
-                  download
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    e.preventDefault()                    
-                    setOpenPinMenu((prev) => !prev)
-                  }}
-                >
-                  <MoreHorizIcon />
-                </Button>
-            </Box>  
-
+            {user.result._id === pin.creatorId &&
+              <Box>
+                  <Button 
+                    className={classes.moreActionsButton}
+                    href={`${image}?dl=`}
+                    download
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      e.preventDefault()                    
+                      setOpenPinMenu((prev) => !prev)
+                    }}
+                  >
+                    <MoreHorizIcon />
+                  </Button>
+              </Box>  
+            }
           </Box>
           </>
         }

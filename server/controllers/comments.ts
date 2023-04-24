@@ -70,7 +70,6 @@ export const getComments = async (req: Request, res: Response) => {
         { 'new': true },  
       ) 
 
-      console.log(updatedComment)
 
       res.status(200).json({reply: reply})
     } catch (error) {

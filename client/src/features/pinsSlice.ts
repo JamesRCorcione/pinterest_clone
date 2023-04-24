@@ -143,9 +143,9 @@ export const updatePin = createAsyncThunk(
 
 export const deletePin = createAsyncThunk(
   'pins/deletePin',
-  async (id: any, { rejectWithValue }) => {
+  async ({pinId}: any, { rejectWithValue }) => {
     try {
-      const response = await API.delete('pins/' + id)
+      const response = await API.delete('pins/' + pinId)
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access

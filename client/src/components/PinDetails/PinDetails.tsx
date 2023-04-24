@@ -1,8 +1,8 @@
 import Feed from '../Feed/Feed'
 import { Box, Button, Typography, Link, TextField, Input, Avatar } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
-import { getPin } from '../../features/pinsSlice'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { deletePin, getPin } from '../../features/pinsSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import UploadIcon from '@mui/icons-material/Upload';
@@ -11,6 +11,25 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Divider } from '@mui/material';
 import { grey, blue } from '@mui/material/colors';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import LinkIcon from '@mui/icons-material/Link';
+import DownloadIcon from '@mui/icons-material/Download';
+import ShareIcon from '@mui/icons-material/Share';
+import FileSaver from 'file-saver'
+
+import {
+  EmailShareButton,
+  EmailIcon,  
+  FacebookShareButton,
+  FacebookIcon,
+  LinkedinShareButton,
+  LinkedinIcon,
+  PinterestShareButton,
+  PinterestIcon,
+  RedditShareButton,
+  RedditIcon,
+  TwitterShareButton,
+  TwitterIcon,
+} from "react-share";
 
 
 
@@ -20,10 +39,6 @@ import { SavePin } from '../../features/usersSlice'
 import { fetchUser } from '../../utils/fetchUser'
 import { createComment, getComments } from '../../features/commentsSlice'
 import { Circles } from 'react-loader-spinner'
-import { getReplies } from '../../features/repliesSlice'
-
-
-
 
 
 const PinDetails = () => {
@@ -34,7 +49,8 @@ const PinDetails = () => {
   const pinsState = useSelector((state: RootState) => state.pinsState);
   let { pins } = pinsState
   const [pin, setPin] = useState<IPin>()
-  const [replies, setReplies] = useState<any>()
+  const navigate = useNavigate()
+  const [openPinMenu, setOpenPinMenu] = useState(false)
   const [savingPost, setSavingPost] = useState(false)
   const [expandComments, setExpandComments] = useState(true)
   const [totalComments, setTotalComments] = useState<number>()
@@ -71,6 +87,10 @@ const PinDetails = () => {
     setLoading(false)
   }
 
+  async function handleDownload() {
+    FileSaver.saveAs(pin?.image.toString()!, `${pin?.title.toString()!}.jpg`);
+  }
+
   const savePin = async () => {
     if (alreadySaved.length === 0 && pin) {      
       setSavingPost(true)   
@@ -102,6 +122,22 @@ const PinDetails = () => {
     setExpandComments((expand) => !expand)
   }
 
+  const handleDeletePin = async (e:any) => {    
+    if (pinId) {
+      await dispatch(deletePin({pinId}))
+      setOpenPinMenu(false)
+      navigate('/')
+    }
+  }
+
+  const handleUpdatePin = (e:any) => {
+    if (pinId) {
+      setOpenPinMenu(false)
+      navigate('/createPin', { state: { pin } })
+    }
+  }
+
+  console.log(pin?.image.slice(8))
 
   return (
     <>
@@ -109,7 +145,9 @@ const PinDetails = () => {
         <Box className={classes.pinContainer}>
 
           <Box className={classes.topButtonsMobileContainer}>
+              <Button onClick={() => {}}>
                 <MoreHorizIcon sx={{position: 'relative', left: 30, top: 25}} />
+              </Button>
                 <UploadIcon sx={{position: 'relative', left: 50, top: 25}}/>
                 <ContentCopyIcon sx={{position: 'relative', left: 70, top: 25}} />
 
@@ -142,13 +180,74 @@ const PinDetails = () => {
           </Box>      
           <img className={classes.mobileImage} src={pin?.image}></img>
           <img className={classes.image} src={pin?.image}></img>
-          <Box className={classes.commentSectionContainer}>  
+          <Box className={classes.commentSectionContainer}>            
 
-            <Box className={classes.topButtonsContainer}>
-                <MoreHorizIcon sx={{position: 'relative', left: 30, top: 25}} />
-                <UploadIcon sx={{position: 'relative', left: 50, top: 25}}/>
-                <ContentCopyIcon sx={{position: 'relative', left: 70, top: 25}} />
+            <Box className={classes.topButtonsContainer}> 
+            <FacebookShareButton
+              url={window.location.href}
+              quote={'Dummy text!'}
+              hashtag="#muo"
+            >
+              <FacebookIcon size={32} round />
+            </FacebookShareButton>
 
+            <TwitterShareButton
+              url={window.location.href}
+            >
+              <TwitterIcon size={32} round />
+            </TwitterShareButton>
+
+            <LinkedinShareButton 
+              url={window.location.href}
+            >
+              <LinkedinIcon size={32} round />
+            </LinkedinShareButton>
+
+            <PinterestShareButton
+              url={window.location.href}  
+              media={pin?.image!}    
+              description={'Share to Pinterest'}        
+            >
+              <PinterestIcon size={32} round />
+            </PinterestShareButton>
+
+            <RedditShareButton
+              url={window.location.href}  
+            >
+              <RedditIcon size={32} round />
+            </RedditShareButton>
+
+            <Button className={classes.copyLinkButton} onClick={() => navigator.clipboard.writeText(window.location.href)} disableRipple>
+              <LinkIcon sx={{color: 'white'}} />
+            </Button>
+
+            <Button className={classes.shareButton} onClick={() => handleDownload()}>
+              
+                <DownloadIcon />
+              
+              </Button>            
+              <Button className={classes.downloadButton} >
+                <ShareIcon />
+              </Button>    
+              {user.result._id === pin?.creatorId &&
+              <>
+                <Button 
+                  className={classes.actionButton}
+                  onClick={() => setOpenPinMenu((prev) => !prev)}
+                >
+                  <MoreHorizIcon />
+                </Button>
+                {openPinMenu &&                  
+                    <Box sx={{position: 'absolute', width: 0}}>
+                        <Box sx={{position: 'relative', display: 'flex', flexDirection: 'column', borderRadius: 2, left: 130, top: 60, height: 80, width: 150, backgroundColor: 'white', boxShadow: 2, zIndex: 200}}>
+                          <Button onClick={(e) => handleUpdatePin(pinId)}>Edit</Button>
+                          <Button onClick={(e) => handleDeletePin(pinId)}>Delete</Button>
+                    </Box>
+                  </Box>
+                }
+                
+              </>
+              }
               <Box className={classes.saveButtonContainer}>
                 {alreadySaved?.length !== 0 ? (
                   <Button 
