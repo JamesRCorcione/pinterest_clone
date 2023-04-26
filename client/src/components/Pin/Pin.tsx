@@ -8,7 +8,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 
 import useStyles from './styles'
 import { useDispatch } from 'react-redux'
-import { SavePin } from '../../features/usersSlice'
+import { RemoveSavePin, SavePin } from '../../features/usersSlice'
 import { grey } from '@mui/material/colors'
 import { deletePin } from '../../features/pinsSlice'
 import { Divider } from '@material-ui/core'
@@ -19,7 +19,7 @@ interface PinProps {
 }
 
 const Pin = ({ pin }:PinProps) => {
-  const user = fetchUser()
+  let user = fetchUser()
   const [postHovered, setPostHovered] = useState(false)
   const [savingPost, setSavingPost] = useState(false)
   const [openPinMenu, setOpenPinMenu] = useState(false)
@@ -29,16 +29,19 @@ const Pin = ({ pin }:PinProps) => {
   const dispatch = useDispatch<AppDispatch>()
   const { postedBy, image, _id, destination } = pin
 
- useEffect(() => {
-  setOpenMobileMenu(false)
- }, [])
+  let totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
+  let saved = totalSaved?.length > 0 ? true : false
 
-  let alreadySaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
-  alreadySaved = alreadySaved?.length > 0 ? alreadySaved : []
+  useEffect(() => {
+   setOpenMobileMenu(false)  
+   user = fetchUser()
+    totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
+    saved = totalSaved?.length > 0 ? true : false
+  }, [])
 
-
-  const savePin = async (e:any) => {    
-    if (alreadySaved?.length === 0) {
+  const savePin = async (e:any) => {
+    user = fetchUser()
+    if (!saved) {
       setSavingPost(true)
       await dispatch(SavePin({user, pin}))
       .then(() => {
@@ -47,6 +50,19 @@ const Pin = ({ pin }:PinProps) => {
       })
       .catch((error:any) => console.log(error))
     }   
+  }
+
+  const removeSavePin = async (e:any) => {   
+    user = fetchUser()
+    if (saved) {
+      setSavingPost(true)
+      await dispatch(RemoveSavePin({user, pin}))
+      .then(() => {
+       window.location.reload();
+        setSavingPost(false);      
+      })
+      .catch((error:any) => console.log(error))  
+    }
   }
   
   const handleGoToProfile = () => {
@@ -93,14 +109,14 @@ const Pin = ({ pin }:PinProps) => {
 
             {/* Save button logic and buttons */}
             <Box className={classes.saveButtonContainer}>              
-              {alreadySaved?.length !== 0 ? (
+              {saved ? (
                 <Button 
                   className={classes.savedButton}
                   variant="contained" 
                   onClick={(e) => {
                     e.stopPropagation()
                     e.preventDefault()
-                    savePin(e)
+                    removeSavePin(e)
                   }}
                 >
                     Saved

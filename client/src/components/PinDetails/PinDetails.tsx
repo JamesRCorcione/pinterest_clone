@@ -21,14 +21,14 @@ import Share from '../Share/Share'
 
 import Comment from '../Comment/Comment'
 import useStyle from './styles'
-import { SavePin } from '../../features/usersSlice'
+import { RemoveSavePin, SavePin } from '../../features/usersSlice'
 import { fetchUser } from '../../utils/fetchUser'
 import { createComment, getComments } from '../../features/commentsSlice'
 import { Circles } from 'react-loader-spinner'
 
 
 const PinDetails = () => {
-  const user = fetchUser()
+  let user = fetchUser()
   const dispatch = useDispatch<AppDispatch>()
   const commentsState = useSelector((state: RootState) => state.commentsState);
   let { comments } = commentsState
@@ -45,8 +45,10 @@ const PinDetails = () => {
   const { pinId } = useParams()
   const { classes } = useStyle()
   
-  let alreadySaved = user?.result?.saves?.filter((save:any) => save?._id === pin?._id)
-  alreadySaved = alreadySaved?.length > 0 ? alreadySaved : [];
+  let totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
+  let saved = totalSaved?.length > 0 ? true : false
+
+  console.log(saved, user.result.saves)
 
   useEffect(() => {
     const getComment = async () => {
@@ -73,7 +75,7 @@ const PinDetails = () => {
   }
 
   const savePin = async () => {
-    if (alreadySaved.length === 0 && pin) {      
+    if (!saved && pin) {      
       setSavingPost(true)   
       await dispatch(SavePin({user, pin}))
       .then(() => {
@@ -82,6 +84,19 @@ const PinDetails = () => {
       })      
     }   
   }  
+
+  const removeSavePin = async (e:any) => {   
+    user = fetchUser()
+    if (saved) {
+      setSavingPost(true)
+      await dispatch(RemoveSavePin({user, pin}))
+      .then(() => {
+       //window.location.reload();
+        setSavingPost(false);      
+      })
+      .catch((error:any) => console.log(error))  
+    }
+  }
 
   const handleComment = async (e:any) => {
     e.preventDefault()
@@ -164,7 +179,7 @@ const PinDetails = () => {
               }
 
               <Box className={classes.saveButtonContainer}>
-                {alreadySaved?.length !== 0 ? (
+                {saved ? (
                   <Button 
                     className={classes.savedButton}
                     variant="contained" 
@@ -227,14 +242,11 @@ const PinDetails = () => {
               </>
               }
               <Box className={classes.saveButtonContainer}>
-                {alreadySaved?.length !== 0 ? (
+                {saved ? (
                   <Button 
                     className={classes.savedButton}
                     variant="contained" 
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      savePin()
-                    }}
+                    onClick={removeSavePin}
                   >
                     Saved
                   </Button>

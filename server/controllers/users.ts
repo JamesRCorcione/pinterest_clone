@@ -40,12 +40,16 @@ export const savePin = async (req: Request, res: Response) => {
   }
 }
 
-export const updateSaves = async (req: Request, res: Response) => { 
+export const removeSavePin = async (req: Request, res: Response) => { 
   const { id } = req.params
-  const {user, updatedSaves} = req.body
+  const {user, pin} = req.body 
 
   try {
-      const updatedUser = await User.findByIdAndUpdate(id, {'saves': updatedSaves})
+      const updatedUser = await User.findByIdAndUpdate(user.result._id, 
+        {$pull: {'saves': pin}},
+        { 'new': true },  
+        )
+
 
       res.status(200).json({ result: updatedUser, token: user.result.token, authType: user.result.authType })
   } catch (error) {

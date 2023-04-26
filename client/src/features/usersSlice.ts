@@ -170,11 +170,11 @@ export const SavePin = createAsyncThunk (
   }
 )
 
-export const updateSaves = createAsyncThunk (
-  'users/updateSaves',
-  async ({user, updatedSaves}:any, { rejectWithValue }) => {
+export const RemoveSavePin = createAsyncThunk (
+  'users/removeSaves',
+  async ({user, pin}:any, { rejectWithValue }) => {
     try {
-      const response = await API.put(baseURL + `users/updateSaves/${user.result._id}`, {user, updatedSaves})
+      const response = await API.put(baseURL + `users/removeSavePin/${user.result._id}`, {user, pin})
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {
@@ -183,8 +183,6 @@ export const updateSaves = createAsyncThunk (
     }
   }
 )
-
-
 
 export const Logout = createAsyncThunk(
   'users',
@@ -228,8 +226,8 @@ export const Logout = createAsyncThunk(
           )
           return { ...state, user: updatedUser, pinStatus: 'success', pinError: '' }
           }) 
-        .addCase(updateSaves.fulfilled, (state, action) => {
-          const updatedUser = state.users.map((user) =>
+        .addCase(RemoveSavePin.fulfilled, (state, action) => {
+          const updatedUser = state.users.filter((user) =>
           user._id === action.payload._id ? action.payload : user
           )
           return { ...state, user: updatedUser, pinStatus: 'success', pinError: '' }

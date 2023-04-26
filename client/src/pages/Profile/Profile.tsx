@@ -2,7 +2,7 @@ import { Avatar, Box, Button, capitalize, Icon, Typography } from '@mui/material
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { GetUserById, Logout, updateSaves } from '../../features/usersSlice'
+import { GetUserById, Logout, RemoveSavePin } from '../../features/usersSlice'
 
 import { grey } from '@mui/material/colors';
 import Pin from '../../components/Pin/Pin'
@@ -26,44 +26,26 @@ const Profile = () => {
   const [createdPins, setCreatedPins] = useState<IPin>()
   const [isSavedTab, setIsSavedTab] = useState<boolean>(true)
   const [loading, setLoading] = useState(false)
-  const { category } = useParams()
   const { classes } = useStyles()
   const navigate = useNavigate()
   const [openShare, setOpenShare] = useState<boolean>(false)
   const [openEditProfile, setOpenEditProfile] = useState<boolean>(false)
 
+  console.log('cur user saves', currentUser.result.saves)
 
   useEffect(() => {    
-    async function getUserProfile() {
-      let userData = await dispatch(GetUserById(userId))
-      setProfileUser({result: userData.payload})
-    }
     getUserProfile() 
-  },[])
-  
-  useEffect(() => {
-    async function updateUserSaves() {
-      await dispatch(getPinsByCreator(userId))
-      .then((jsonData:any) => setCreatedPins(jsonData.payload))
-    }
-    
-    updateUserSaves()  
-    
-  }, [location, dispatch])
+  }, [])
 
-  useEffect(() => {
-    async function loadPins() {
-      setLoading(true)
+  async function getUserProfile() {
+    await dispatch(GetUserById(userId))
+      .then((userData:any) => setProfileUser({result: userData.payload}))
+    await dispatch(getPinsByCreator(userId))
+      .then((jsonData:any) => setCreatedPins(jsonData.payload))    
+    await dispatch(getPins(null))
 
-      if(category) {
-        await dispatch(getPinsByTags(category))
-      } else {
-        await dispatch(getPins(null))
-      }
-      setLoading(false)
-    }
-    loadPins()
-  }, [location, category])
+    
+  }
 
   const logoutUser = () => {
     dispatch(Logout())
@@ -71,7 +53,6 @@ const Profile = () => {
     navigate('/login')    
   }
   
-
   return (
     <>
     {profileUser &&

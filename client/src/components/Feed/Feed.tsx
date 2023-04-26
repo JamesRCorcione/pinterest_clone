@@ -8,6 +8,7 @@ import Spinner from '../Spinner/Spinner'
 import { Box } from '@mui/material'
 import Masonry from 'react-masonry-css'
 import Pin from '../Pin/Pin'
+import { fetchUser } from '../../utils/fetchUser'
 
 const breakpointObj = {
   default: 3,
@@ -20,7 +21,7 @@ const breakpointObj = {
 
 const Feed = ({pins}:any) => {
   const [loading, setLoading] = useState(false)
-  
+  const user = fetchUser()
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const location = useLocation()

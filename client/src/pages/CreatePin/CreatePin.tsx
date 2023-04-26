@@ -25,7 +25,6 @@ const CreatePin = ({user}:CreatePinProps) => {
     
     useEffect(() => {
       if (state) {
-        console.log(state.pin)
         setPin({title: state.pin.title, text: state.pin.text, tags: state.pin.tags, creatorId: user?.result._id, totalComments: state.pin.totalComments, postedBy: state.pin.postedBy, image: state.pin.image, destination: state.pin.destination })    
         setChips(state.pin.tags)
       }
@@ -59,7 +58,6 @@ const CreatePin = ({user}:CreatePinProps) => {
         alert('Please Enter a New Tag!')
       }
       e.target.reset()
-      console.log(e.target)
     }
 
   return (
