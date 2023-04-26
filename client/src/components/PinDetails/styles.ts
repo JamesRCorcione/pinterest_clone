@@ -90,14 +90,16 @@ export default makeStyles()((theme) => {
       }
     },
     commentSectionContainer: {
-      display: 'flex', 
+      display: 'flex',
       flexDirection: 'column', 
+      position: 'relative',
       flex: 'wrap', 
       maxHeight: '92vh', 
-      height: 'auto', 
+      height: 'auto',       
       width: 400,
       [theme.breakpoints.down(750)]: { 
-        width: '95%',
+        width: '100%',
+        //paddingBottom: 80
       }
     },
     openCommentsContainer: {
@@ -106,10 +108,12 @@ export default makeStyles()((theme) => {
       overflowX: 'hidden', 
       height: '100%', 
       marginTop: 5,  
-      marginRight: 2, 
+      marginRight: 2,
       marginLeft: 2,
+      marginBottom: 65,
       [theme.breakpoints.down(750)]: { 
         width: '100%',
+        
       }
     },
     commentSection: {
@@ -119,14 +123,16 @@ export default makeStyles()((theme) => {
       height: 'auto', 
       width: 400,
       [theme.breakpoints.down(750)]: { 
-        width: '100%'
+        width: '100%',
+        
       }
     },
     commentInputContainer: {
-      display: 'flex', 
-      flexDirection: 'column', 
-      justifyContent: 'end', 
-      alignContent: 'end',
+      position: 'absolute',
+      bottom: 0,
+      width: '100%',
+      borderRadius: 99,
+      backgroundColor: 'white',
 
     },
     profileImage: {
@@ -148,7 +154,7 @@ export default makeStyles()((theme) => {
       width: '80%',
     },
     inputBar: {
-      width: '90%',
+      width: '100%',
       height: 50,
       borderRadius: 99, 
       border: '1px solid #D3D3D3', 
@@ -163,18 +169,6 @@ export default makeStyles()((theme) => {
     },
     shareButton: {
       position: 'relative', left: 30, top: 25, color: grey[900], minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30
-    },
-    copyLinkButton: {
-      borderRadius: 99, 
-      backgroundColor: grey[600], 
-      marginTop: 2, 
-      minHeight: 32, 
-      maxHeight: 32, 
-      minWidth: 32, 
-      maxWidth: 32,
-      '&:hover': {
-        backgroundColor: grey[600], 
-      }
-    }
+    },    
   }
 })

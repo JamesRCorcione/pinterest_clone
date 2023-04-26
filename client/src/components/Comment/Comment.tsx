@@ -8,7 +8,6 @@ import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 import { useNavigate, useParams } from 'react-router-dom';
-import { getReplies } from '../../features/repliesSlice';
 import Spinner from '../Spinner/Spinner';
 import { Circles } from 'react-loader-spinner';
 import PinDetails from '../PinDetails/PinDetails';
@@ -76,7 +75,7 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
   }
   
   const handleReplySubmit = async (e:any) => {
-    setReplying(false)
+    //setReplying(false)
     e.preventDefault()
     if (pinId) {
       const userCommenting = {
@@ -116,25 +115,24 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
   const handleHeartPin = async (e:any) => {
     e.preventDefault()
     if (pinId) {      
-      setLoading(true)
+      //setLoading(true)
       await dispatch(heartCommentPin({pinId, commentId: comment._id, userId: user.result._id, replyId: comment._id }))
       setIsLoved(true)
       await dispatch(getComments(pinId))
-      setLoading(false)
+      //setLoading(false)
     }
   }
 
   const handleUnHeartPin = async (e:any) => {
     e.preventDefault()
     if (pinId) {      
-      setLoading(true)
+      //setLoading(true)
       await dispatch(unheartCommentPin({pinId, commentId: comment._id, userId: user.result._id, replyId: comment._id }))
       setIsLoved(false)
       await dispatch(getComments(pinId))
-      setLoading(false)
+      //setLoading(false)
     }
   }
-
 
   //Doesnt allow duplicate rendering of nested comments
   if (comment.parentId && !reply) {

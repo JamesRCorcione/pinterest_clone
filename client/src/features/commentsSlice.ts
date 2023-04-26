@@ -21,6 +21,17 @@ function isPendingAction(action: Action) {
   return action.type.endsWith('pending')
 }
 
+const API = axios.create({ baseURL })
+
+API.interceptors.request.use((req) => {
+  if (localStorage.getItem('profile')) {
+    req.headers.authorization = `Bearer ${JSON.parse(localStorage.getItem('profile') || 'false').token}`
+    req.headers.authorizationtype = `${JSON.parse(localStorage.getItem('profile') || 'false').authType}`
+  }
+
+  return req
+})
+
 interface CreateCommentProps {
     pinId: String,
     userCommenting: {
@@ -68,7 +79,7 @@ export const getComments = createAsyncThunk(
     
     async (id:any = null, { rejectWithValue }) => {
       try {
-        const response = await axios.get(baseURL + `comments/${id}`)
+        const response = await API.get(baseURL + `comments/${id}`)
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -87,7 +98,7 @@ export const createComment = createAsyncThunk(
     
     async ({pinId, text, userCommenting={ userId: null, userName: null, userImage: null}}: CreateCommentProps, { rejectWithValue }) => {
       try {
-        const response = await axios.post(baseURL + `comments/${pinId}`, {text, userCommenting})
+        const response = await API.post(baseURL + `comments/${pinId}`, {text, userCommenting})
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -105,7 +116,7 @@ export const createComment = createAsyncThunk(
 
     async ({pinId, commentId, userId, replyId}: HeartCommentProps, { rejectWithValue }) => {
       try {
-        const response = await axios.put(baseURL + `comments/heartCommentPin/${pinId}`, {commentId, userId, replyId})
+        const response = await API.put(baseURL + `comments/heartCommentPin/${pinId}`, {commentId, userId, replyId})
         
         return response.data
       } catch (err: any) {
@@ -124,7 +135,7 @@ export const createComment = createAsyncThunk(
 
     async ({pinId, commentId, userId, replyId}: HeartCommentProps, { rejectWithValue }) => {
       try {
-        const response = await axios.put(baseURL + `comments/unheartCommentPin/${pinId}`, {commentId, userId, replyId})
+        const response = await API.put(baseURL + `comments/unheartCommentPin/${pinId}`, {commentId, userId, replyId})
         
         return response.data
       } catch (err: any) {
@@ -143,7 +154,7 @@ export const createComment = createAsyncThunk(
 
     async ({pinId, commentId, userId, replyId}: HeartCommentProps, { rejectWithValue }) => {
       try {
-        const response = await axios.put(baseURL + `comments/heartReplyPin/${pinId}`, {commentId, userId, replyId})
+        const response = await API.put(baseURL + `comments/heartReplyPin/${pinId}`, {commentId, userId, replyId})
         
         return response.data
       } catch (err: any) {
@@ -162,7 +173,7 @@ export const createComment = createAsyncThunk(
 
     async ({pinId, commentId, userId, replyId}: HeartCommentProps, { rejectWithValue }) => {
       try {
-        const response = await axios.put(baseURL + `comments/unheartReplyPin/${pinId}`, {commentId, userId, replyId})
+        const response = await API.put(baseURL + `comments/unheartReplyPin/${pinId}`, {commentId, userId, replyId})
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -180,7 +191,7 @@ export const createComment = createAsyncThunk(
     
     async ({pinId, commentId = null, replyId = null, text, taggedUser, userCommenting={ userId: null, userName: null, userImage: null}}: CreateReplyProps, { rejectWithValue }) => {
       try {
-        const response = await axios.post(baseURL + `comments/createReply/${pinId}`, {text, commentId, replyId, userCommenting, taggedUser})
+        const response = await API.post(baseURL + `comments/createReply/${pinId}`, {text, commentId, replyId, userCommenting, taggedUser})
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -197,7 +208,7 @@ export const createComment = createAsyncThunk(
     'comments/deleteReply',
     async ({pinId, commentId,  replyId}: DeleteReplyProps, { rejectWithValue }) => {
       try {
-        const response = await axios.delete(baseURL + `comments/${commentId}/deleteReply/${replyId}`)
+        const response = await API.delete(baseURL + `comments/${commentId}/deleteReply/${replyId}`)
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -215,7 +226,7 @@ export const createComment = createAsyncThunk(
     async ({pinId, commentId,  replyId, text}: UpdateReplyProps, { rejectWithValue }) => {
       try {
   
-        const response = await axios.put(baseURL + `comments/${commentId}/updateReply/${replyId}`, {text})  
+        const response = await API.put(baseURL + `comments/${commentId}/updateReply/${replyId}`, {text})  
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -232,7 +243,7 @@ export const createComment = createAsyncThunk(
     'comments/deleteComment',
     async ({pinId, commentId,  replyId}: DeleteReplyProps, { rejectWithValue }) => {
       try {
-        const response = await axios.delete(baseURL + `comments/${commentId}`)
+        const response = await API.delete(baseURL + `comments/${commentId}`)
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -250,7 +261,7 @@ export const createComment = createAsyncThunk(
     async ({pinId, commentId,  replyId, text}: UpdateReplyProps, { rejectWithValue }) => {
       try {
   
-        const response = await axios.put(baseURL + `comments/${commentId}`, {text})  
+        const response = await API.put(baseURL + `comments/${commentId}`, {text})  
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access

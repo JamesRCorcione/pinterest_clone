@@ -1,20 +1,19 @@
-import { createComment, createReply, deleteComment, deleteReply, getComments, heartCommentPin, heartReplyPin, unheartCommentPin, unheartReplyPin, updateComment, updateReply } from '../controllers/comments'
+import { createComment, createReply, deleteComment, deleteReply, getComments, heartCommentPin, unheartCommentPin, updateComment, updateReply } from '../controllers/comments'
 import express from 'express'
-import auth from '../middleware/auth.js'
+import auth from '../middleware/auth'
 
 const router = express.Router()
+
 router.get('/:id', getComments)
-router.post('/:id', createComment)
-router.put('/heartCommentPin/:id', heartCommentPin)
-router.put('/unheartCommentPin/:id', unheartCommentPin)
-router.put('/heartReplyPin/:id', heartReplyPin)
-router.put('/unheartReplyPin/:id', unheartReplyPin)
+router.post('/:id', auth, createComment)
+router.delete('/:commentId', auth, deleteComment)
+router.put('/:commentId', auth, updateComment)
 
-router.delete('/:commentId', deleteComment)
-router.put('/:commentId', updateComment)
+router.post('/createReply/:id', auth, createReply)
+router.delete('/:commentId/deleteReply/:replyId', auth, deleteReply)
+router.put('/:commentId/updateReply/:replyId', auth, updateReply)
 
-router.post('/createReply/:id', createReply)
-router.delete('/:commentId/deleteReply/:replyId', deleteReply)
-router.put('/:commentId/updateReply/:replyId', updateReply)
+router.put('/heartCommentPin/:id', auth, heartCommentPin)
+router.put('/unheartCommentPin/:id', auth, unheartCommentPin)
 
 export default router

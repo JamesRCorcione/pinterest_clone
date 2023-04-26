@@ -33,13 +33,11 @@ export const createPin = async (req: Request, res: Response) => {
         })
     
         const { title, text, tags, creatorId, totalComments, postedBy, image, destination } = req.body
-        const { error } = schema.validate({title, text, image})
+        const { error } = schema.validate({title, text, image})   
+        console.log(error) 
+        if (error) return res.status(400).send({ message: error?.details[0].message })
     
-        if (error) return res.status(400).send(error.details[0].message)
-    
-        
         const selectedFileURL = await cloudinary.uploader.upload(image)
-
 
         //let initComments = new Comments()         
         //initComments = await initComments.save()
@@ -164,4 +162,5 @@ export const deletePin = async (req: Request, res: Response) => {
 
   res.send(deletedPost)
 }
+
 

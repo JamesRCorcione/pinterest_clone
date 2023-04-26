@@ -12,14 +12,16 @@ import { fetchUser } from '../../utils/fetchUser'
 import useStyles from './styles'
 import Spinner from '../../components/Spinner/Spinner'
 import TopNavbar from '../../components/TopNavbar/TopNavbar'
+import Share from '../../components/Share/Share'
+import EditProfile from '../../components/EditProfile/EditProfile'
 
 const Profile = () => {
   const { userId } = useParams()
-  const [user, setUser] = useState<any>(fetchUser())
+  const [currentUser, setCurrentUser] = useState<any>(fetchUser())
   const dispatch = useDispatch<AppDispatch>()
   const pinsState = useSelector((state: RootState) => state.pinsState);
   const { pins } = pinsState
-  //const [user, setUser] = useState<IUser>()
+  const [profileUser, setProfileUser] = useState<any>()
   const location = useLocation()
   const [createdPins, setCreatedPins] = useState<IPin>()
   const [isSavedTab, setIsSavedTab] = useState<boolean>(true)
@@ -27,14 +29,26 @@ const Profile = () => {
   const { category } = useParams()
   const { classes } = useStyles()
   const navigate = useNavigate()
-  
+  const [openShare, setOpenShare] = useState<boolean>(false)
+  const [openEditProfile, setOpenEditProfile] = useState<boolean>(false)
 
+
+  useEffect(() => {    
+    async function getUserProfile() {
+      let userData = await dispatch(GetUserById(userId))
+      setProfileUser({result: userData.payload})
+    }
+    getUserProfile() 
+  },[])
+  
   useEffect(() => {
     async function updateUserSaves() {
       await dispatch(getPinsByCreator(userId))
       .then((jsonData:any) => setCreatedPins(jsonData.payload))
     }
-    updateUserSaves()   
+    
+    updateUserSaves()  
+    
   }, [location, dispatch])
 
   useEffect(() => {
@@ -53,20 +67,22 @@ const Profile = () => {
 
   const logoutUser = () => {
     dispatch(Logout())
-    setUser(null)
+    //setProfileUser(null)
     navigate('/login')    
   }
   
 
   return (
     <>
+    {profileUser &&
+      <>
       <Box className={classes.topContainer}>
         <Box sx={{position: 'absolute', left: '50%',}}>
           <Box sx={{position: 'relative', left: '-50%'}}>
             <Avatar className={classes.profileImage}>
-              <Typography className={classes.userNameInitial}>{user?.result.userName.charAt(0)}</Typography>
+              <Typography className={classes.userNameInitial}>{profileUser?.result.userName.charAt(0)}</Typography>
             </Avatar>          
-            <Typography className={classes.userName}>@{user?.result.userName.split(' ').join('')}</Typography>
+            <Typography className={classes.userName}>@{profileUser?.result.userName.split(' ').join('')}</Typography>
           </Box>
         </Box>
       </Box>        
@@ -76,13 +92,33 @@ const Profile = () => {
       </Box>
 
       <Box className={classes.buttonContainer} >
-        <Button className={classes.shareButton} variant='outlined'>
+        
+        <Box className={classes.shareButton}>
+          {openShare &&
+            <Box sx={{position: 'absolute', top: 60,  zIndex: 2}}>
+              <Share image={profileUser.result.image} />
+            </Box>
+          }
+        </Box>
+
+        <Box className={classes.editProfileButton}>
+          {openEditProfile &&
+            <Box sx={{position: 'absolute', top: 60,  zIndex: 2}}>
+              <EditProfile profileUser={profileUser} />
+            </Box>
+          }
+        </Box>
+
+        <Button className={classes.shareButton}  onClick={() => setOpenShare((prev) => !prev)} variant='outlined'>
           <Typography sx={{fontSize: 14, color: 'black'}}>Share</Typography>
-        </Button>
-        <Button className={classes.editProfileButton} variant='outlined'>
-          <Typography sx={{fontSize: 14, color: 'black'}}>Edit Profile</Typography>
-        </Button>
-      </Box>      
+        </Button>        
+        
+        {currentUser.result._id === profileUser.result._id &&
+          <Button className={classes.editProfileButton} onClick={() => setOpenEditProfile((prev) => !prev)} variant='outlined'>
+            <Typography sx={{fontSize: 14, color: 'black'}}>Edit Profile</Typography>
+          </Button>
+        }
+      </Box>            
 
       <Box sx={{display: 'flex', justifyContent: 'center', paddingTop: 35}}>
         <Button onClick={() => setIsSavedTab(false)}>Created</Button>
@@ -98,7 +134,7 @@ const Profile = () => {
               <h2>No Pins Available</h2>
             :
               <Box sx={{width: '100%'}}>
-                <Feed pins={user.result.saves} />
+                <Feed pins={profileUser.result.saves} />
               </Box>
             } 
             </>
@@ -108,8 +144,10 @@ const Profile = () => {
           </Box>
           }      
               
-        </Box>         
-    </>         
+      </Box>         
+      </>
+    }
+  </>
   )
 }
 

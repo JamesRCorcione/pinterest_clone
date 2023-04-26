@@ -9,7 +9,6 @@ import { configureStore } from "@reduxjs/toolkit"
 import { Provider } from 'react-redux';
 import pinsReducer from './features/pinsSlice';
 import commentsReducer from './features/commentsSlice';
-import repliesReducer from './features/repliesSlice';
 import usersReducer from './features/usersSlice';
 import pinSlice  from '../src/features/pinsSlice'
 import { HashRouter  } from 'react-router-dom';
@@ -20,7 +19,6 @@ import { ThemeProvider } from '@mui/material/styles';
     reducer: {
       pinsState: pinsReducer,
       commentsState: commentsReducer,
-      repliesState: repliesReducer,
     },
     middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -36,5 +36,6 @@ export default makeStyles()((theme) => {
     editProfileButton: {
         position: 'relative', top: 200,height: 40,borderRadius: 20, backgroundColor: grey[300]
     }
+   
 }
 })

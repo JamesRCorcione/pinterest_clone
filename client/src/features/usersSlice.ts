@@ -20,13 +20,24 @@ function isPendingAction(action: Action) {
   return action.type.endsWith('pending')
 }
 
-  
+const API = axios.create({ baseURL })
+
+API.interceptors.request.use((req) => {
+  if (localStorage.getItem('profile')) {
+    req.headers.authorization = `Bearer ${JSON.parse(localStorage.getItem('profile') || 'false').token}`
+    req.headers.authorizationtype = `${JSON.parse(localStorage.getItem('profile') || 'false').authType}`
+  }
+
+  return req
+})  
+
+
 // this is an action creator
 export const SignUp = createAsyncThunk(
   'users',
   async (user: IUser, { rejectWithValue }) => {
     try {
-      const response = await axios.post(baseURL + 'users/signup', user)
+      const response = await API.post(baseURL + 'users/signup', user)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {
@@ -44,7 +55,7 @@ export const SignIn = createAsyncThunk(
   'users',
   async (user: IUser, { rejectWithValue }) => {
     try {
-      const response = await axios.post(baseURL + 'users/signin', user)
+      const response = await API.post(baseURL + 'users/signin', user)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {
@@ -64,7 +75,7 @@ export const GoogleSignUp = createAsyncThunk(
   'users',
   async (user: any, { rejectWithValue }) => {
     try {      
-      const response = await axios.post(baseURL + 'users/googleSignup', user)
+      const response = await API.post(baseURL + 'users/googleSignup', user)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {
@@ -82,7 +93,7 @@ export const GoogleSignIn = createAsyncThunk(
   'users',
   async (user:any, { rejectWithValue }) => {
     try {
-      const response = await axios.post(baseURL + 'users/googleSignin', user)
+      const response = await API.post(baseURL + 'users/googleSignin', user)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {
@@ -100,7 +111,7 @@ export const FacebookSignUp = createAsyncThunk(
   'users',
   async (user: any, { rejectWithValue }) => {
     try {      
-      const response = await axios.post(baseURL + 'users/facebookSignup', user)
+      const response = await API.post(baseURL + 'users/facebookSignup', user)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {
@@ -118,7 +129,7 @@ export const FacebookSignIn = createAsyncThunk(
   'users',
   async (user:any, { rejectWithValue }) => {
     try {
-      const response = await axios.post(baseURL + 'users/facebookSignin', user)
+      const response = await API.post(baseURL + 'users/facebookSignin', user)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {
@@ -132,13 +143,11 @@ export const FacebookSignIn = createAsyncThunk(
   }
 )
 
-
-
 export const GetUserById = createAsyncThunk (
     'users',
     async (id: any = null, { rejectWithValue }) => {
       try {
-        const response = await axios.get(baseURL + `users/${id}`)
+        const response = await API.get(baseURL + `users/${id}`)
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -151,7 +160,7 @@ export const SavePin = createAsyncThunk (
   'users/savePin',
   async ({user, pin}:SavePinProps, { rejectWithValue }) => {
     try {
-      const response = await axios.put(baseURL + `users/savePin/${user.result._id}`, {user, pin})
+      const response = await API.put(baseURL + `users/savePin/${user.result._id}`, {user, pin})
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {
@@ -165,7 +174,7 @@ export const updateSaves = createAsyncThunk (
   'users/updateSaves',
   async ({user, updatedSaves}:any, { rejectWithValue }) => {
     try {
-      const response = await axios.put(baseURL + `users/updateSaves/${user.result._id}`, {user, updatedSaves})
+      const response = await API.put(baseURL + `users/updateSaves/${user.result._id}`, {user, updatedSaves})
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {

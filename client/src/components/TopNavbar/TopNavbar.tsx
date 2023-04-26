@@ -38,9 +38,7 @@ const TopNavbar = () => {
   const [openMenu, setOpenMenu] = useState<boolean>()
   const [openMobileSearch, setOpenMobileSearch] = useState<boolean>()
 
-  const [pins, setPins] = useState<IPin[]>()
   const query = useQuery()
-  const searchQuery = query.get('query')  
 
   useEffect(() => {
     const token = user?.token
@@ -55,9 +53,7 @@ const TopNavbar = () => {
   }, [location])
 
   async function search() {
-    //const data = await dispatch(searchPins(searchTerm))
     navigate(`/search?query=${searchTerm}`)        
-    //return (<Feed pins={data} />)
   }
 
   const handleSearch = (e:any) => {
@@ -69,23 +65,28 @@ const TopNavbar = () => {
     }
   }
 
+  const handleGoToProfile = () => {
+    window.scrollTo(0, 0)
+    navigate(`/user-profile/${user?.result._id}`)    
+    window.location.reload()
+  }
+
   const logoutUser = () => {
     dispatch(Logout())
     setUser(null)
     navigate('/login')    
   }
 
+  const handleOpenSearch = () => {
+    window.scrollTo(0,0)
+    setOpenMobileSearch((prev) => !prev)
+    navigate('/')
+  }
+
   const handleOpenMenu = () => {
     setOpenMenu((openMenu) => !openMenu)
   }
 
-  const openSearch = () => {
-    return (
-      <Box sx={{zIndex: 3000, position: 'absolute', top: 0}}>
-        <h1>Hi</h1>  
-      </Box>
-    )
-  }
 
   return (
     <>
@@ -107,7 +108,7 @@ const TopNavbar = () => {
           <HomeIcon className={classes.mobileIconSize}/>
           <Typography className={classes.mobileButtonText}>Home</Typography>
         </Button>
-        <Button className={classes.mobileHomeButton} onClick={() => setOpenMobileSearch((prev) => !prev)}>
+        <Button className={classes.mobileHomeButton} onClick={() => handleOpenSearch()}>
           <SearchIcon className={classes.mobileIconSize}/>
           <Typography className={classes.mobileButtonText}>Search</Typography>
         </Button>
@@ -155,7 +156,7 @@ const TopNavbar = () => {
         <Box sx={{display:'flex', justifyContent:'end', height: '100%'}}>
           <Button 
             className={classes.profileButton} 
-            onClick={() => navigate(`/user-profile/${user.result._id}`)}
+            onClick={handleGoToProfile}
           >
             <Avatar sx={{maxWidth: '25px', maxHeight: '25px', minWidth: '25px', minHeight: '25px'}} />
           </Button>
@@ -171,7 +172,7 @@ const TopNavbar = () => {
               <Box className={classes.dropDownMenu}>
                 <Button 
                   sx={{paddingRight: 10, marginTop: 2, height: 50, width: '100%'}}
-                  onClick={() => navigate(`/user-profile/${user.result._id}`)} 
+                  onClick={handleGoToProfile} 
                 >
                   Profile
                 </Button>

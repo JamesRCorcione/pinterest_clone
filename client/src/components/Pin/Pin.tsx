@@ -12,6 +12,7 @@ import { SavePin } from '../../features/usersSlice'
 import { grey } from '@mui/material/colors'
 import { deletePin } from '../../features/pinsSlice'
 import { Divider } from '@material-ui/core'
+import FileSaver from 'file-saver'
 
 interface PinProps {
     pin: IPin
@@ -49,17 +50,24 @@ const Pin = ({ pin }:PinProps) => {
   }
   
   const handleGoToProfile = () => {
-    navigate(`/user-profile/${postedBy?.userId}`)
+    window.scrollTo(0, 0)
+    navigate(`/user-profile/${postedBy?.userId}`)    
     window.location.reload();
   }
 
   const handleGoToPin = () => {
+    window.scrollTo(0, 0)
     navigate(`/pin-detail/${_id}`)
     window.location.reload();
   }
 
   const handleDeletePin = async (e:any) => {
     await dispatch(deletePin({pinId: pin._id}))
+  }
+
+  async function handleDownload(e:any) {
+    e.stopPropagation()
+    FileSaver.saveAs(pin?.image.toString()!, `${pin?.title.toString()!}.jpg`);
   }
 
   return (  
@@ -114,7 +122,8 @@ const Pin = ({ pin }:PinProps) => {
             </Box>
 
             {/* Button for html link */}
-            <Box>
+            {destination &&
+              <Box>
               <Button
                   className={classes.htmlLinkButton}
                   href={`${destination}`}
@@ -129,17 +138,15 @@ const Pin = ({ pin }:PinProps) => {
                   <Typography sx={{fontSize: 10, color: 'black'}}>{destination?.slice(12,23)}...</Typography>
                   }
               </Button>
-            </Box>
+              </Box>
+            }
 
             {/* Button for sharing */}
             <Box>
               <Button 
                 className={classes.shareImageButton}
-                href={`${image}?dl=`}
-                download
-                onClick={(e) => {
-                  e.stopPropagation()
-                }}
+                
+                onClick={(e) => handleDownload(e)}
               >
                 <UploadIcon />
               </Button>
@@ -176,7 +183,7 @@ const Pin = ({ pin }:PinProps) => {
       <Box sx={{display: 'flex'}}>
         <Button 
           style={{ backgroundColor: 'transparent' }} 
-          onClick={() => navigate(`/user-profile/${postedBy?.userId}`)}
+          onClick={handleGoToProfile}
           sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
         >
           {postedBy?.image 

@@ -4,14 +4,18 @@ import auth from '../middleware/auth'
 
 const router = express.Router()
 
+
+router.get("/:id", getUser)
+router.put("/savePin/:id", auth, savePin)
+router.put("/updateSaves/:id", auth, updateSaves)
+
 router.post("/signup", signup)
 router.post("/signin", signin)
 router.post("/googleSignup", googleSignup)
 router.post("/googleSignin", googleSignin)
 router.post("/facebookSignup", facebookSignup)
 router.post("/facebookSignin", facebookSignin)
-router.put("/savePin/:id", auth, savePin)
-router.put("/updateSaves/:id", auth, updateSaves)
-router.get("/:id", getUser)
+
+
 
 export default router

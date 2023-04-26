@@ -15,21 +15,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import DownloadIcon from '@mui/icons-material/Download';
 import ShareIcon from '@mui/icons-material/Share';
 import FileSaver from 'file-saver'
-
-import {
-  EmailShareButton,
-  EmailIcon,  
-  FacebookShareButton,
-  FacebookIcon,
-  LinkedinShareButton,
-  LinkedinIcon,
-  PinterestShareButton,
-  PinterestIcon,
-  RedditShareButton,
-  RedditIcon,
-  TwitterShareButton,
-  TwitterIcon,
-} from "react-share";
+import Share from '../Share/Share'
 
 
 
@@ -53,12 +39,11 @@ const PinDetails = () => {
   const [openPinMenu, setOpenPinMenu] = useState(false)
   const [savingPost, setSavingPost] = useState(false)
   const [expandComments, setExpandComments] = useState(true)
-  const [totalComments, setTotalComments] = useState<number>()
   const [loading, setLoading] = useState(false)
-  const [text, setText] = useState<any>()
+  const [text, setText] = useState<string>('')
+  const [openShare, setOpenShare] = useState<boolean>(false)
   const { pinId } = useParams()
   const { classes } = useStyle()
-  const location = useLocation()
   
   let alreadySaved = user?.result?.saves?.filter((save:any) => save?._id === pin?._id)
   alreadySaved = alreadySaved?.length > 0 ? alreadySaved : [];
@@ -66,7 +51,7 @@ const PinDetails = () => {
   useEffect(() => {
     const getComment = async () => {
       getPinDetails()
-      getNewComment()
+      getNewComment()      
     }
     getComment()
   }, [dispatch])
@@ -85,10 +70,6 @@ const PinDetails = () => {
     setLoading(true)
     await dispatch(getComments(pinId))
     setLoading(false)
-  }
-
-  async function handleDownload() {
-    FileSaver.saveAs(pin?.image.toString()!, `${pin?.title.toString()!}.jpg`);
   }
 
   const savePin = async () => {
@@ -114,12 +95,9 @@ const PinDetails = () => {
       await dispatch(createComment({ pinId, text, userCommenting }))
       getNewComment()
       setText('')
+      e.target.reset()
       setLoading(false)
     }
-  }
-
-  const handleExpandComments = () => {
-    setExpandComments((expand) => !expand)
   }
 
   const handleDeletePin = async (e:any) => {    
@@ -130,6 +108,10 @@ const PinDetails = () => {
     }
   }
 
+  const handleExpandComments = () => {
+    setExpandComments((expand) => !expand)
+  }
+
   const handleUpdatePin = (e:any) => {
     if (pinId) {
       setOpenPinMenu(false)
@@ -137,7 +119,11 @@ const PinDetails = () => {
     }
   }
 
-  console.log(pin?.image.slice(8))
+
+
+  async function handleDownload() {
+    FileSaver.saveAs(pin?.image.toString()!, `${pin?.title.toString()!}.jpg`);
+  }
 
   return (
     <>
@@ -145,11 +131,37 @@ const PinDetails = () => {
         <Box className={classes.pinContainer}>
 
           <Box className={classes.topButtonsMobileContainer}>
-              <Button onClick={() => {}}>
-                <MoreHorizIcon sx={{position: 'relative', left: 30, top: 25}} />
-              </Button>
-                <UploadIcon sx={{position: 'relative', left: 50, top: 25}}/>
-                <ContentCopyIcon sx={{position: 'relative', left: 70, top: 25}} />
+              
+          <Button className={classes.shareButton} onClick={() => handleDownload()}>              
+                <DownloadIcon />              
+              </Button>            
+              <Button className={classes.downloadButton} onClick={() => setOpenShare((prev) => !prev)}>
+                <ShareIcon />
+              </Button>    
+              {openShare &&
+                <Box sx={{position: 'absolute', top: 60, left: 38, zIndex: 2}}>
+                  <Share image={pin?.image} />
+                </Box>
+              }
+              {user.result._id === pin?.creatorId &&
+              <>
+                <Button 
+                  className={classes.actionButton}
+                  onClick={() => setOpenPinMenu((prev) => !prev)}
+                >
+                  <MoreHorizIcon />
+                </Button>
+                {openPinMenu &&                  
+                    <Box sx={{position: 'absolute', width: 0}}>
+                        <Box sx={{position: 'relative', display: 'flex', flexDirection: 'column', borderRadius: 2, left: 130, top: 60, height: 80, width: 150, backgroundColor: 'white', boxShadow: 2, zIndex: 200}}>
+                          <Button onClick={(e) => handleUpdatePin(pinId)}>Edit</Button>
+                          <Button onClick={(e) => handleDeletePin(pinId)}>Delete</Button>
+                    </Box>
+                  </Box>
+                }
+                
+              </>
+              }
 
               <Box className={classes.saveButtonContainer}>
                 {alreadySaved?.length !== 0 ? (
@@ -179,56 +191,22 @@ const PinDetails = () => {
               </Box>
           </Box>      
           <img className={classes.mobileImage} src={pin?.image}></img>
+
           <img className={classes.image} src={pin?.image}></img>
-          <Box className={classes.commentSectionContainer}>            
+          <Box className={classes.commentSectionContainer}>   
 
             <Box className={classes.topButtonsContainer}> 
-            <FacebookShareButton
-              url={window.location.href}
-              quote={'Dummy text!'}
-              hashtag="#muo"
-            >
-              <FacebookIcon size={32} round />
-            </FacebookShareButton>
-
-            <TwitterShareButton
-              url={window.location.href}
-            >
-              <TwitterIcon size={32} round />
-            </TwitterShareButton>
-
-            <LinkedinShareButton 
-              url={window.location.href}
-            >
-              <LinkedinIcon size={32} round />
-            </LinkedinShareButton>
-
-            <PinterestShareButton
-              url={window.location.href}  
-              media={pin?.image!}    
-              description={'Share to Pinterest'}        
-            >
-              <PinterestIcon size={32} round />
-            </PinterestShareButton>
-
-            <RedditShareButton
-              url={window.location.href}  
-            >
-              <RedditIcon size={32} round />
-            </RedditShareButton>
-
-            <Button className={classes.copyLinkButton} onClick={() => navigator.clipboard.writeText(window.location.href)} disableRipple>
-              <LinkIcon sx={{color: 'white'}} />
-            </Button>
-
-            <Button className={classes.shareButton} onClick={() => handleDownload()}>
-              
-                <DownloadIcon />
-              
+              <Button className={classes.shareButton} onClick={() => handleDownload()}>              
+                <DownloadIcon />              
               </Button>            
-              <Button className={classes.downloadButton} >
+              <Button className={classes.downloadButton} onClick={() => setOpenShare((prev) => !prev)}>
                 <ShareIcon />
               </Button>    
+              {openShare &&
+                <Box sx={{position: 'absolute', top: 60, left: 38, zIndex: 2}}>
+                  <Share image={pin?.image} />
+                </Box>
+              }
               {user.result._id === pin?.creatorId &&
               <>
                 <Button 
@@ -274,9 +252,8 @@ const PinDetails = () => {
                   </Button>                  
                 )}
               </Box>
-            </Box>              
+            </Box>     
 
-              
             <Box>
               <Box sx={{display: 'flex', marginLeft: 1, width: 'auto',}}>
                 <Link>{pin?.destination}</Link>
@@ -314,7 +291,7 @@ const PinDetails = () => {
               }
             </Box> 
 
-            {expandComments &&
+            {expandComments ?
               <Box className={classes.openCommentsContainer}>
                 <Box className={classes.commentSection}>
                   {comments &&
@@ -324,7 +301,14 @@ const PinDetails = () => {
                   }
                 </Box>
               </Box>
+              :
+              <>
+              {/* Not a fan of this solution, but it works fine */}
+              <Box sx={{height: 100}}></Box>
+              </>
             }
+
+            
 
             <Box className={classes.commentInputContainer}>
               <Divider />
