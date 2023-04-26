@@ -14,7 +14,6 @@ interface CreatePinProps {
     }
 }
 
-
 const CreatePin = ({user}:CreatePinProps) => {
     const [tag, setTag] = useState<string>('')
     const [tags, setTags] = useState<string[]>([])

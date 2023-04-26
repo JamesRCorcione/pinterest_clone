@@ -156,6 +156,21 @@ export const GetUserById = createAsyncThunk (
     }
 )
 
+export const UpdateUser = createAsyncThunk (
+  'users',
+  async ({_id, userName, password, image}: any = null, { rejectWithValue }) => {
+    try {
+      const response = await API.put(baseURL + `users/${_id}`, {userName, password, image})
+      console.log('rep', response.data)
+      localStorage.setItem('profile', JSON.stringify({ ...response.data }))
+      return response.data
+    } catch (err: any) {
+      let error: AxiosError<ValidationErrors> = err // cast the error for access
+        throw error 
+    }
+  }
+)
+
 export const SavePin = createAsyncThunk (
   'users/savePin',
   async ({user, pin}:SavePinProps, { rejectWithValue }) => {
@@ -218,6 +233,9 @@ export const Logout = createAsyncThunk(
           return { ...state, users: [action.payload, ...state.users], userStatus: 'success', userError: '' }
         }) 
         .addCase(GetUserById.fulfilled, (state, action) => {
+          return { ...state, user: action.payload, pinStatus: 'success', pinError: '' }
+        })
+        .addCase(UpdateUser.fulfilled, (state, action) => {
           return { ...state, user: action.payload, pinStatus: 'success', pinError: '' }
         })
         .addCase(SavePin.fulfilled, (state, action) => {

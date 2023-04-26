@@ -139,6 +139,16 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
     return null
   }
 
+  const getElapsedTime = () => {
+    console.log(((new Date().getTime() - new Date(comment.createdAt).getTime()) / 1000) / 60, 'minutes')
+
+  }
+
+  let x = new Date(comment.createdAt).toString().split(' ')
+  let c = x.slice(1,4)
+  let y = c.join('-')
+  console.log(y)
+
   return (
     <>
       {!loading ?
@@ -171,7 +181,7 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
 
               <Box><Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>{comment?.text}</Typography></Box>
               <Box sx={{display: 'flex', marginLeft: 4.5, marginBottom: 2}}>
-                  <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>{comment.createdAt}</Typography>
+                  <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>{y}</Typography>
                   <Box sx={{marginRight: 1, size: 'small'}}>
                     <Button 
                       variant='text'
@@ -235,7 +245,7 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
 
                 <Box><Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>{comment?.text}</Typography></Box>
                 <Box sx={{display: 'flex', marginLeft: 4.5, marginBottom: 2}}>
-                    <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>{comment.createdAt}</Typography>
+                    <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>{y}</Typography>
                     <Box sx={{marginRight: 1, size: 'small'}}>
                       <Button 
                         variant='text'

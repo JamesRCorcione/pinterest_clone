@@ -31,7 +31,6 @@ const Profile = () => {
   const [openShare, setOpenShare] = useState<boolean>(false)
   const [openEditProfile, setOpenEditProfile] = useState<boolean>(false)
 
-  console.log('cur user saves', currentUser.result.saves)
 
   useEffect(() => {    
     getUserProfile() 

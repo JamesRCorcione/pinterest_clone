@@ -171,3 +171,39 @@ export const facebookSignin = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Something went wrong" })
   }
 }
+
+export const updateUser = async (req: Request, res: Response) => {
+  const { userName, password, image } = req.body
+  const schema = Joi.object({
+    task: Joi.string().min(3).max(300).required(),
+    isComplete: Joi.boolean(),
+    date: Joi.date(),
+  });
+
+  //const { error } = schema.validate(req.body)
+
+  //if (error) return res.status(400).send(error.details[0].message)
+
+  try {
+    
+  
+    const user = await User.findById(req.params.id)
+  
+    if (!user) return res.status(404).send("Post not found...")
+  
+    const { userName, password, image } = req.body
+  
+    const userUpdated = await User.findByIdAndUpdate(
+      req.params.id,
+      { userName, password, image },
+      { new: true }
+    )
+
+    //console.log(updatedUser)
+    
+
+    res.status(200).json({ result: userUpdated })
+  } catch (err) {
+    res.status(500).json({ message: "Something went wrong" })
+  }
+}

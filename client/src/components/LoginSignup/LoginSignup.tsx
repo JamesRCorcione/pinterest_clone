@@ -15,8 +15,6 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
 import axios from 'axios';
-import Spinner from '../Spinner/Spinner';
-import { ProgressBar } from 'react-loader-spinner';
 import { Circles } from 'react-loader-spinner';
 
 
@@ -128,7 +126,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
             handleSuccessfulExit() 
         } catch (error:any) {
             alert(error.message)
-            handleUnsuccessfulExit()        
+            handleUnsuccessfulExit()
         }
     }
 
@@ -199,7 +197,6 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
             textButton={message}
         /> 
     )
-
 
   return (
     <>
