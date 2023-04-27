@@ -12,9 +12,3 @@ const pinSchema = new mongoose.Schema({
 const Pins = mongoose.model('Pins', pinSchema)
 
 export default Pins
-
-//postedBy: {
-//userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-//userName: { type: String },
-//image: { type: String },
-//}

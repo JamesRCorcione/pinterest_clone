@@ -83,7 +83,7 @@ const Pin = ({ pin }:PinProps) => {
                   onClick={(e) => {
                     e.stopPropagation()
                     e.preventDefault()
-                    removeSavePin({e, user, pin, saved})
+                    removeSavePin({e, user, pin, saved, dispatch})
                   }}
                 >
                     Saved
@@ -95,7 +95,7 @@ const Pin = ({ pin }:PinProps) => {
                   onClick={(e) => {
                     e.stopPropagation()
                     e.preventDefault()
-                    savePin({e, user, pin, saved})
+                    savePin({e, user, pin, saved, dispatch})
                   }}
                   type="button" 
                   >
@@ -214,7 +214,7 @@ const Pin = ({ pin }:PinProps) => {
             </Button>
             <Button
               style={{ backgroundColor: 'transparent' }} 
-              onClick={(e) => handleDeletePin({e, pinId: pin._id, navigate, dispatch})}
+              onClick={(e) => handleDeletePin({pinId: pin._id})}
               sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
             >
               <Typography sx={{marginLeft: 2}}>Delete Pin</Typography>
@@ -229,7 +229,7 @@ const Pin = ({ pin }:PinProps) => {
           <Box className={classes.mobileActionMenu}>
             <Button
                 style={{ backgroundColor: 'transparent' }} 
-                onClick={(e) => savePin(e)}
+                onClick={(e) => savePin({e, user, pin, saved, dispatch})}
                 sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
             >
                 <Typography sx={{marginLeft: 2}}>Save Pin</Typography>

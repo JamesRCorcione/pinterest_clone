@@ -15,9 +15,12 @@ const secret = process.env.SECRET as string
 export const getUser = async (req: Request, res: Response) => { 
   const { id } = req.params
 
+
   try {
       const user = await User.findById(id)
       
+      console.log(user?.userName, id)
+
       res.status(200).json(user)
   } catch (error) {
       res.status(404).json({ message: error })
@@ -61,8 +64,10 @@ export const signup = async (req: Request, res: Response) => {
   try {   
       const { userName, email, password, birthday, saves, uid } = req.body
 
+      console.log(email)
       const emailSchema = Joi.string().email()
-      const { error } = emailSchema.validate({email})    
+      const { error } = emailSchema.validate(email)    
+      console.log(error)
       if (error) return res.status(400).send({ message: 'Please Enter a valid Email!' })
 
       const oldUser = await User.findOne({ email })
@@ -92,7 +97,6 @@ export const signin = async (req: Request, res: Response) => {
     if (!oldUser) return res.status(404).json({ message: "User doesn't exist" })
 
     const isPasswordCorrect = await bcrypt.compare(password, oldUser.password)
-
 
     if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" })
     
@@ -183,33 +187,30 @@ export const getUsers = async (req: Request, res: Response) => {
   }
 
 export const updateUser = async (req: Request, res: Response) => {
-  const { userName, password, image } = req.body
-  const schema = Joi.object({
-    task: Joi.string().min(3).max(300).required(),
-    isComplete: Joi.boolean(),
-    date: Joi.date(),
-  });
-
+  //const { userName, password, image } = req.body
+  //const schema = Joi.object({
+  //  task: Joi.string().min(3).max(300).required(),
+  //  isComplete: Joi.boolean(),
+  //  date: Joi.date(),
+  //});
   //const { error } = schema.validate(req.body)
-
   //if (error) return res.status(400).send(error.details[0].message)
-
-  try {
-    
+  try {    
   
     const user = await User.findById(req.params.id)
   
     if (!user) return res.status(404).send("Post not found...")
   
-    const { userName, password, image } = req.body
-  
-    const userUpdated = await User.findByIdAndUpdate(
-      req.params.id,
-      { userName, password, image },
-      { new: true }
-    )    
+    const { userName, password, image, authType } = req.body
 
-    res.status(200).json({ result: userUpdated })
+    const hashedPassword = await bcrypt.hash(password, 12)
+
+    const result = await User.findByIdAndUpdate( req.params.id, { userName, password: hashedPassword, image })
+    
+    const secret = process.env.SECRET as string
+    const token = jwt.sign( { userName, id: req.params.id }, secret, { expiresIn: "1h" } )
+    
+    res.status(200).json({ result, token, authType: 'Custom' })
   } catch (err) {
     res.status(500).json({ message: "Something went wrong" })
   }

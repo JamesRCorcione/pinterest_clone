@@ -75,6 +75,7 @@ const EditProfile = ({profileUser}:any) => {
   const handleUpdateUser = async (e:React.FormEvent) => {
     e.preventDefault()
       try{
+        console.log(user)
         await dispatch(UpdateUser({_id: profileUser.result._id, userName: user.userName, password: user.password, image: user.image})).unwrap()
         navigate('/')
       } catch (error:any) {

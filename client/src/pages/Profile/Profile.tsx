@@ -41,9 +41,7 @@ const Profile = () => {
       .then((userData:any) => setProfileUser({result: userData.payload}))
     await dispatch(getPinsByCreator(userId))
       .then((jsonData:any) => setCreatedPins(jsonData.payload))    
-    await dispatch(getPins(null))
-
-    
+    await dispatch(getPins(null))    
   }
 
   const logoutUser = () => {

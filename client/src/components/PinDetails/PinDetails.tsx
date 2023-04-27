@@ -11,6 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Divider } from '@mui/material';
 import { grey, blue } from '@mui/material/colors';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import LinkIcon from '@mui/icons-material/Link';
 import DownloadIcon from '@mui/icons-material/Download';
 import ShareIcon from '@mui/icons-material/Share';
@@ -24,6 +25,7 @@ import { createComment, getComments } from '../../features/commentsSlice'
 import { Circles } from 'react-loader-spinner'
 
 import { handleDownload, handleDeletePin, removeSavePin, savePin, } from '../../utils/pinUtils'
+import { GetUserById } from '../../features/usersSlice'
 
 const PinDetails = () => {
   let user = fetchUser()
@@ -37,6 +39,11 @@ const PinDetails = () => {
   const pinsState = useSelector((state: RootState) => state.pinsState);
   let { pins } = pinsState
 
+  const usersState = useSelector((state: RootState) => state.usersState);
+  let { users } = usersState
+
+  
+
   const [pin, setPin] = useState<IPin>()  
   const [openPinMenu, setOpenPinMenu] = useState(false)
   const [savingPost, setSavingPost] = useState(false)
@@ -45,7 +52,12 @@ const PinDetails = () => {
   const [text, setText] = useState<string>('')
   const [openShare, setOpenShare] = useState<boolean>(false)
   
+  const creatorId = pin?.creatorId
+  const [creatorUserName, setCreatorUserName] = useState('Hi')
+  const [creatorUserImage, setCreatorUserImage] = useState('Hi')
 
+  const creator = users.find((user:any) => user._id === creatorId)
+  console.log('creator', creator)
   
   let totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
   let saved = totalSaved?.length > 0 ? true : false 
@@ -56,7 +68,14 @@ const PinDetails = () => {
       getCommentsUpdate()      
     }
     updatePinDetials()
+    getCreatorUser()
   }, [])
+
+  const getCreatorUser = async () => {
+    let data = await dispatch(GetUserById(creatorId))
+    setCreatorUserName(data.payload.userName)
+    setCreatorUserImage(data.payload.image)
+  }
 
   const getPinDetails = async () => {
     window.scrollTo(0, 0)
@@ -237,9 +256,9 @@ const PinDetails = () => {
                   {pin?.text}
                 </Box>
               </Box>
-              <Box sx={{display: 'flex',width: 'auto'}}>
-                {}
-                {}
+              <Box sx={{display: 'flex', width: 'auto'}}>
+                {creatorUserImage}
+                {creatorUserName}
                 {pin?.tags}
               </Box>
               <Box sx={{display: 'flex'}}>
@@ -248,7 +267,11 @@ const PinDetails = () => {
                 </Typography>
                 <Button onClick={handleExpandComments}
                 sx={{borderRadius: 99, marginTop: 0.5, marginLeft: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>
-                  <KeyboardArrowDownIcon sx={{color: 'black'}} />
+                  {!expandComments ?
+                    <KeyboardArrowDownIcon sx={{color: 'black'}} />
+                  :
+                  <KeyboardArrowRightIcon sx={{color: 'black'}} />
+                  }
                 </Button>
               </Box>
               {loading &&
@@ -273,15 +296,12 @@ const PinDetails = () => {
                   }
                 </Box>
               </Box>
-              :              
-              <>
-                {/* Spaceing needed for mobile view below */}
-                {/* Not a fan of this solution, but it works fine */}
-                <Box sx={{height: 100}}></Box>
-              </>
+            :
+            <Box className={classes.openCommentsContainer}></Box>
             }            
 
             {/* Comments are expanded and rendering below*/}
+            <Box sx={{position: 'relative'}}>
             <Box className={classes.commentInputContainer}>
               <Divider />
                 <Box className={classes.profileImage}>
@@ -301,7 +321,8 @@ const PinDetails = () => {
                 </Box>
               </Box>
             </Box>
-
+            </Box>
+            
           </Box>
         </Box>
       </Box>      

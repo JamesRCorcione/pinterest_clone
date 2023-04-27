@@ -94,8 +94,7 @@ export default makeStyles()((theme) => {
       flexDirection: 'column', 
       position: 'relative',
       flex: 'wrap', 
-      maxHeight: '92vh', 
-      height: 'auto',       
+      maxHeight: '92vh',    
       width: 400,
       [theme.breakpoints.down(750)]: { 
         width: '100%',
@@ -110,6 +109,7 @@ export default makeStyles()((theme) => {
       marginTop: 5,  
       marginRight: 2,
       marginLeft: 2,
+      //marginBottom: 65,
       [theme.breakpoints.down(750)]: { 
         width: '100%',
         
@@ -121,6 +121,7 @@ export default makeStyles()((theme) => {
       overflowY: 'auto',  
       height: 'auto', 
       width: 400,
+      
       [theme.breakpoints.down(750)]: { 
         width: '100%',
         
@@ -131,7 +132,6 @@ export default makeStyles()((theme) => {
       bottom: 0,
       borderRadius: 99,
       width: '100%',
-      height: 'auto'
     },
     profileImage: {
       paddingBottom: 5, 
@@ -153,7 +153,7 @@ export default makeStyles()((theme) => {
     },
     inputBar: {
       width: '100%',
-      height: 'auto',
+      //height: 'auto',
       //borderRadius: 99, 
       //border: '1px solid #D3D3D3', 
       //backgroundColor: grey[100],
