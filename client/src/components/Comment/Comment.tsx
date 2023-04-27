@@ -190,7 +190,8 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
                   onChange={(e:any) => setText(e.target.value)}             
                   placeholder='Reply'
                   defaultValue={`@${commenterUserName} `}
-                  rows={2} 
+                  multiline
+                  maxRows={10} 
                   sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
                 >
               </TextField>        
@@ -255,7 +256,8 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
                 <TextField      
                   onChange={(e:any) => setText(e.target.value)}             
                   placeholder='Reply'
-                  rows={2} 
+                  multiline
+                  maxRows={10}  
                   sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
                 >
               </TextField>        
@@ -287,7 +289,8 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
                     onChange={(e:any) => setText(e.target.value)}             
                     placeholder='Reply'
                     defaultValue={comment.text}
-                    rows={2} 
+                    multiline
+                    maxRows={10} 
                     sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
                   >
                 </TextField>        

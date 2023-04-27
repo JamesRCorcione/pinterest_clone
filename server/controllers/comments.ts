@@ -1,15 +1,25 @@
 import { Request, Response } from 'express'
-import crypto, { randomUUID } from 'crypto'
 import Joi from 'joi'
-import dotenv from 'dotenv'
-import { v2 as cloudinary } from 'cloudinary'
-
 import Comments from '../models/comments'
-import User from '../models/users'
-import mongoose from 'mongoose'
-
 
 //Comments
+//Create
+export const createComment = async (req: Request, res: Response) => {
+  const { id } = req.params
+  const { commentingUserId, text, commentId} = req.body
+
+  //commentId ===> parentId
+
+  let data = { pinId: id, commentingUserId, text, hearts: [], totalHearts: 0, replies: [] }    
+  const comment = new Comments(data)  
+
+  comment.save()
+  .then(comment => res.json({
+      comment: comment
+  }))
+  .catch((err:any) => res.status(500).json({error: err}))     
+} 
+
 //Retreive
 export const getComments = async (req: Request, res: Response) => {
   const { id } = req.params
@@ -21,24 +31,8 @@ export const getComments = async (req: Request, res: Response) => {
         res.status(500).send("Error: " + error)
       }
 }
-   
-export const createComment = async (req: Request, res: Response) => {
-    const { id } = req.params
-    const { commentingUserId, text, commentId} = req.body
 
-    //commentId ===> parentId
-  
-    let data = { pinId: id, commentingUserId, text, hearts: [], totalHearts: 0, replies: [] }    
-    const comment = new Comments(data)  
-
-    comment.save()
-    .then(comment => res.json({
-        comment: comment
-    }))
-    .catch((err:any) => res.status(500).json({error: err}))     
-} 
-
-
+//Update
 export const updateComment = async (req: Request, res: Response) => {
     const { commentId, replyId } = req.params
     const { text } = req.body
@@ -53,7 +47,7 @@ export const updateComment = async (req: Request, res: Response) => {
     }  
 }
 
-    //Delete
+//Delete
 export const deleteComment = async (req: Request, res: Response) => {
       const { commentId, replyId } = req.params
       
@@ -75,6 +69,7 @@ export const deleteComment = async (req: Request, res: Response) => {
       }  
 }    
 
+//Heart Pin
 export const heartCommentPin = async (req: Request, res: Response) => {
     const { id } = req.params
     const { commentId, userId, replyId } = req.body
@@ -92,6 +87,7 @@ export const heartCommentPin = async (req: Request, res: Response) => {
     }
 }
 
+//Unheart Pin
 export const unheartCommentPin = async (req: Request, res: Response) => {
     const { id } = req.params
     const { commentId, userId, replyId } = req.body
@@ -111,7 +107,10 @@ export const unheartCommentPin = async (req: Request, res: Response) => {
     }
 }
 
-//Replies need to be pushed into Head Comments array
+//Replies need to be pushed into Head Comments array, is easier and cleaner to have seperate api
+//Doesn't need a retrieval method because they are of type Comment model object and retrieved with them
+
+//Create
 export const createReply = async (req: Request, res: Response) => {
   const { id } = req.params
   const { commentId, taggedUser, replyId, commentingUserId, text} = req.body
@@ -136,6 +135,7 @@ export const createReply = async (req: Request, res: Response) => {
   }    
 }
 
+//Update
 export const updateReply = async (req: Request, res: Response) => {
   const { commentId, replyId } = req.params
   const { text } = req.body
@@ -181,54 +181,3 @@ export const deleteReply = async (req: Request, res: Response) => {
       res.status(500).json({ message: error })
     }  
 }
-
-//Dont think this is needed anymore
-export const heartReplyPin = async (req: Request, res: Response) => {
-    const { id } = req.params
-    const { commentId, userId, replyId } = req.body
-
-  
-    try {
-      let updatedComment = await Comments.findById(commentId)
-      const c = updatedComment?.replies
-      c?.map((reply:any, i:number) => {
-        if (reply._id.toString() === replyId) {          
-          reply.hearts.push(userId)
-          reply.totalHearts = reply.totalHearts + 1
-        }
-      })
-
-      
-      updatedComment?.save()
-      res.status(200).send()
-    } catch (error) {
-      res.status(500).json({ message: error })
-    }
-}
-
-//Dont think this is needed anymore
-export const unheartReplyPin = async (req: Request, res: Response) => {
-    const { id } = req.params
-    const { commentId, userId, replyId } = req.body
-
-  
-    try {
-      let updatedComment = await Comments.findById(commentId)
-      const c = updatedComment?.replies
-      c?.map((reply:any, i:number) => {
-        if (reply._id.toString() === replyId) {       
-          reply.hearts.pull(userId)
-          reply.totalHearts = reply.totalHearts - 1
-        }
-      })
-      
-      updatedComment?.save()
-      res.status(200).send()
-    } catch (error) {
-      res.status(500).json({ message: error })
-    }
-}
-
-
-
-

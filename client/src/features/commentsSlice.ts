@@ -141,43 +141,6 @@ export const createComment = createAsyncThunk(
     }
   )
 
-  export const heartReplyPin = createAsyncThunk(
-    'comments/heartReplyPin',
-
-    async ({pinId, commentId, userId, replyId}: HeartCommentProps, { rejectWithValue }) => {
-      try {
-        const response = await API.put(baseURL + `comments/heartReplyPin/${pinId}`, {commentId, userId, replyId})
-        
-        return response.data
-      } catch (err: any) {
-        let error: AxiosError<ValidationErrors> = err // cast the error for access
-        if (!error.response) {
-          throw err
-        }
-        // We got validation errors, let's return those so we can reference in our component and set form errors
-        return rejectWithValue(error.response.data)
-      }
-    }
-  )
-
-  export const unheartReplyPin = createAsyncThunk(
-    'comments/unheartReplyPin',
-
-    async ({pinId, commentId, userId, replyId}: HeartCommentProps, { rejectWithValue }) => {
-      try {
-        const response = await API.put(baseURL + `comments/unheartReplyPin/${pinId}`, {commentId, userId, replyId})
-        return response.data
-      } catch (err: any) {
-        let error: AxiosError<ValidationErrors> = err // cast the error for access
-        if (!error.response) {
-          throw err
-        }
-        // We got validation errors, let's return those so we can reference in our component and set form errors
-        return rejectWithValue(error.response.data)
-      }
-    }
-  )
-
   export const createReply = createAsyncThunk(
     'comments/createReply',
     

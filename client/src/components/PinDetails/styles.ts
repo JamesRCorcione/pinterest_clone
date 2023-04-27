@@ -110,7 +110,6 @@ export default makeStyles()((theme) => {
       marginTop: 5,  
       marginRight: 2,
       marginLeft: 2,
-      marginBottom: 65,
       [theme.breakpoints.down(750)]: { 
         width: '100%',
         
@@ -128,12 +127,11 @@ export default makeStyles()((theme) => {
       }
     },
     commentInputContainer: {
-      position: 'absolute',
+      position: 'relative',
       bottom: 0,
-      width: '100%',
       borderRadius: 99,
-      backgroundColor: 'white',
-
+      width: '100%',
+      height: 'auto'
     },
     profileImage: {
       paddingBottom: 5, 
@@ -144,9 +142,9 @@ export default makeStyles()((theme) => {
     input: {
       typography: 'subtitle2',
       width: '100%', 
-      marginTop: 10, 
-      marginLeft: 10,
-      color: grey[600]
+      borderRadius: 10,
+      backgroundColor: grey[100],
+      "& fieldset": { borderRadius: 10 }
     },
     comment: {
       borderRadius: 99,
@@ -155,11 +153,11 @@ export default makeStyles()((theme) => {
     },
     inputBar: {
       width: '100%',
-      height: 50,
-      borderRadius: 99, 
-      border: '1px solid #D3D3D3', 
-      backgroundColor: grey[100],
-      "& fieldset": { borderRadius: 10 }
+      height: 'auto',
+      //borderRadius: 99, 
+      //border: '1px solid #D3D3D3', 
+      //backgroundColor: grey[100],
+      //"& fieldset": { borderRadius: 10 }
     },
     actionButton: {
       position: 'relative', left: 70, top: 25, color: grey[900], minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30

@@ -105,19 +105,19 @@ const PinDetails = () => {
           <img className={classes.mobileImage} src={pin?.image}></img>
           <Box className={classes.topButtonsMobileContainer}>
               
-          <Button className={classes.shareButton} onClick={(e) => handleDownload({e, pin})}>              
+            <Button className={classes.shareButton} onClick={(e) => handleDownload({e, pin})}>              
                 <DownloadIcon />              
-              </Button>            
-              <Button className={classes.downloadButton} onClick={() => setOpenShare((prev) => !prev)}>
+            </Button>            
+             <Button className={classes.downloadButton} onClick={() => setOpenShare((prev) => !prev)}>
                 <ShareIcon />
-              </Button>    
-              {openShare &&
-                <Box sx={{position: 'absolute', top: 60, left: 38, zIndex: 2}}>
+             </Button>    
+             {openShare &&
+               <Box sx={{position: 'absolute', top: 60, left: 38, zIndex: 2}}>
                   <Share image={pin?.image} />
-                </Box>
-              }
-              {user.result._id === pin?.creatorId &&
-              <>
+               </Box>
+             }
+             {user.result._id === pin?.creatorId &&
+             <>
                 <Button 
                   className={classes.actionButton}
                   onClick={() => setOpenPinMenu((prev) => !prev)}
@@ -133,10 +133,9 @@ const PinDetails = () => {
                   </Box>
                 }
                 
-              </>
-              }
-
-              <Box className={classes.saveButtonContainer}>
+             </>
+             }
+             <Box className={classes.saveButtonContainer}>
                 {saved ? (
                   <Button 
                     className={classes.savedButton}
@@ -161,9 +160,8 @@ const PinDetails = () => {
                     {savingPost ? 'Saving...' : 'Save'}
                   </Button>                  
                 )}
-              </Box>
-          </Box>      
-          
+             </Box>
+          </Box>  
 
           {/* Non mobile dynamic view rendering below */}
           <img className={classes.image} src={pin?.image}></img>
@@ -286,22 +284,24 @@ const PinDetails = () => {
             {/* Comments are expanded and rendering below*/}
             <Box className={classes.commentInputContainer}>
               <Divider />
-            <Box className={classes.profileImage}>
+                <Box className={classes.profileImage}>
                 <Avatar sx={{marginBottom: 1, marginLeft: 2, marginRight: 2}}>
                   {user?.result.userName.charAt(0)}
                 </Avatar>
                 <Box sx={{marginTop: 1, marginRight: 5}} className={classes.inputBar}>
                   <form onSubmit={handleComment}>
-                    <Input
+                    <TextField
                       className={classes.input}
                       onChange={(e:any) => setText(e.target.value)}
                       placeholder='Add a comment'
-                      disableUnderline={true}
+                      multiline
+                      maxRows={10} 
                     />
                   </form>
                 </Box>
               </Box>
             </Box>
+
           </Box>
         </Box>
       </Box>      
