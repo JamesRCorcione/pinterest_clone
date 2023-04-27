@@ -34,7 +34,7 @@ API.interceptors.request.use((req) => {
 
 interface CreateCommentProps {
     pinId: String,
-    commenterId: any
+    commentingUserId: any
     text: any,     
 }
 
@@ -88,9 +88,9 @@ export const getComments = createAsyncThunk(
 export const createComment = createAsyncThunk(
     'comments/createComment',
     
-    async ({pinId, text, commenterId}: CreateCommentProps, { rejectWithValue }) => {
+    async ({pinId, text, commentingUserId}: CreateCommentProps, { rejectWithValue }) => {
       try {
-        const response = await API.post(baseURL + `comments/${pinId}`, {text, commenterId})
+        const response = await API.post(baseURL + `comments/${pinId}`, {text, commentingUserId})
         return response.data
       } catch (err: any) {
         let error: AxiosError<ValidationErrors> = err // cast the error for access

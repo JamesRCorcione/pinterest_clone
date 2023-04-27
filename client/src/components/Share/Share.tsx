@@ -32,12 +32,8 @@ import {
 } from "react-share";
 
 
-import Comment from '../Comment/Comment'
 import useStyle from './styles'
-import { SavePin } from '../../features/usersSlice'
-import { fetchUser } from '../../utils/fetchUser'
-import { createComment, getComments } from '../../features/commentsSlice'
-import { Circles } from 'react-loader-spinner'
+
 
 
 const Share = ({image}:any) => {

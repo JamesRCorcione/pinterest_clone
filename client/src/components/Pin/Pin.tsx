@@ -14,6 +14,9 @@ import { deletePin } from '../../features/pinsSlice'
 import { Divider } from '@material-ui/core'
 import FileSaver from 'file-saver'
 
+import { handleDownload, handleDeletePin, removeSavePin, savePin } from '../../utils/pinUtils'
+import { handleGoToPin, handleGoToProfile } from '../../utils/navigationUtils'
+
 interface PinProps {
     pin: IPin
 }
@@ -21,11 +24,11 @@ interface PinProps {
 const Pin = ({ pin }:PinProps) => {
   let user = fetchUser()
   const [postHovered, setPostHovered] = useState(false)
-  
+  const navigate = useNavigate()
   const [savingPost, setSavingPost] = useState(false)
   const [openPinMenu, setOpenPinMenu] = useState(false)
   const [openMobileMenu, setOpenMobileMenu] = useState(false)
-  const navigate = useNavigate()
+  
   const { classes } = useStyles()
   const dispatch = useDispatch<AppDispatch>()
   const { creatorId, image, _id, destination } = pin
@@ -50,54 +53,6 @@ const Pin = ({ pin }:PinProps) => {
     setCreatorUserImage(data.payload.image)
   }
 
-  const savePin = async (e:any) => {
-    user = fetchUser()
-    if (!saved) {
-      setSavingPost(true)
-      await dispatch(SavePin({user, pin}))
-      .then(() => {
-        window.location.reload();
-        setSavingPost(false);      
-      })
-      .catch((error:any) => console.log(error))
-    }   
-  }
-
-
-  const removeSavePin = async (e:any) => {   
-    user = fetchUser()
-    if (saved) {
-      setSavingPost(true)
-      await dispatch(RemoveSavePin({user, pin}))
-      .then(() => {
-       window.location.reload();
-        setSavingPost(false);      
-      })
-      .catch((error:any) => console.log(error))  
-    }
-  }
-  
-  const handleGoToProfile = () => {
-    window.scrollTo(0, 0)
-    navigate(`/user-profile/${creatorId}`)    
-    window.location.reload();
-  }
-
-  const handleGoToPin = () => {
-    window.scrollTo(0, 0)
-    navigate(`/pin-detail/${_id}`)
-    window.location.reload();
-  }
-
-  const handleDeletePin = async (e:any) => {
-    await dispatch(deletePin({pinId: pin._id}))
-  }
-
-  async function handleDownload(e:any) {
-    e.stopPropagation()
-    FileSaver.saveAs(pin?.image.toString()!, `${pin?.title.toString()!}.jpg`);
-  }
-
   return (  
     <>
     <Box>
@@ -107,7 +62,7 @@ const Pin = ({ pin }:PinProps) => {
         className={classes.container} 
         onMouseEnter={() => setPostHovered(true)}
         onMouseLeave={() => setPostHovered(false)}
-        onClick={handleGoToPin}
+        onClick={() => handleGoToPin({_id, navigate})}
       >
 
         {/* Switches rendering for if post is hovered with mouse */}
@@ -128,7 +83,7 @@ const Pin = ({ pin }:PinProps) => {
                   onClick={(e) => {
                     e.stopPropagation()
                     e.preventDefault()
-                    removeSavePin(e)
+                    removeSavePin({e, user, pin, saved})
                   }}
                 >
                     Saved
@@ -140,7 +95,7 @@ const Pin = ({ pin }:PinProps) => {
                   onClick={(e) => {
                     e.stopPropagation()
                     e.preventDefault()
-                    savePin(e)
+                    savePin({e, user, pin, saved})
                   }}
                   type="button" 
                   >
@@ -174,7 +129,7 @@ const Pin = ({ pin }:PinProps) => {
               <Button 
                 className={classes.shareImageButton}
                 
-                onClick={(e) => handleDownload(e)}
+                onClick={(e) => handleDownload({e, pin})}
               >
                 <UploadIcon />
               </Button>
@@ -211,7 +166,7 @@ const Pin = ({ pin }:PinProps) => {
       <Box sx={{display: 'flex'}}>
         <Button 
           style={{ backgroundColor: 'transparent' }} 
-          onClick={handleGoToProfile}
+          onClick={() => handleGoToProfile({creatorId, navigate})}
           sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
         >
           {creatorUserImage 
@@ -246,41 +201,44 @@ const Pin = ({ pin }:PinProps) => {
       </Box>
 
         
-        {/* ... Menu Opening */}
-    {openPinMenu &&
-      <Box sx={{position: 'relative', left: 175, bottom: 75}}>
-        <Box sx={{position: 'absolute', height: 'auto', width: 120, borderRadius: 2, boxShadow: 5, backgroundColor: 'white'}}>
-          <Button
+      {/* ... Menu Opening */}
+      {openPinMenu &&
+        <Box sx={{position: 'relative', left: 175, bottom: 75}}>
+          <Box sx={{position: 'absolute', height: 'auto', width: 120, borderRadius: 2, boxShadow: 5, backgroundColor: 'white'}}>
+            <Button
+                style={{ backgroundColor: 'transparent' }} 
+                onClick={() => {}}
+                sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
+            >
+                <Typography sx={{marginLeft: 2}}>Edit Pin</Typography>
+            </Button>
+            <Button
               style={{ backgroundColor: 'transparent' }} 
-              onClick={() => {}}
+              onClick={(e) => handleDeletePin({e, pinId: pin._id, navigate, dispatch})}
               sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
-          >
-              <Typography sx={{marginLeft: 2}}>Edit Pin</Typography>
-          </Button>
-          <Button
-            style={{ backgroundColor: 'transparent' }} 
-            onClick={(e) => handleDeletePin(e)}
-            sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
-          >
-            <Typography sx={{marginLeft: 2}}>Delete Pin</Typography>
-          </Button>
+            >
+              <Typography sx={{marginLeft: 2}}>Delete Pin</Typography>
+            </Button>
+          </Box>
         </Box>
-      </Box>
-    }
-    {openMobileMenu &&
-      <Box sx={{position: 'relative'}}>
-        <Box className={classes.mobileActionMenu}>
-          <Button
-              style={{ backgroundColor: 'transparent' }} 
-              onClick={(e) => savePin(e)}
-              sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
-          >
-              <Typography sx={{marginLeft: 2}}>Save Pin</Typography>
-          </Button>
+      }
 
-        </Box>
-    </Box>
-    }
+      {/* ... Mobile Menu Opening */}
+      {openMobileMenu &&
+        <Box sx={{position: 'relative'}}>
+          <Box className={classes.mobileActionMenu}>
+            <Button
+                style={{ backgroundColor: 'transparent' }} 
+                onClick={(e) => savePin(e)}
+                sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
+            >
+                <Typography sx={{marginLeft: 2}}>Save Pin</Typography>
+            </Button>
+
+          </Box>
+      </Box>
+      }
+
     </Box>    
     </>
   )

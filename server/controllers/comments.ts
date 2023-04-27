@@ -20,27 +20,15 @@ export const getComments = async (req: Request, res: Response) => {
       } catch (error) {
         res.status(500).send("Error: " + error)
       }
-  }
-  
-  //export const getReplies = async (req: Request, res: Response) => {
-  //  const { id } = req.params
-  //
-  //  try {
-  //      
-//
-  //      res.status(200).json(replies)
-  //  } catch (error) {
-  //      res.status(404).json({ message: error })
-  //  }
-  //
-  
-  
-  export const createComment = async (req: Request, res: Response) => {
+}
+   
+export const createComment = async (req: Request, res: Response) => {
     const { id } = req.params
     const { commentingUserId, text, commentId} = req.body
 
+    //commentId ===> parentId
   
-    let data = { pinId: id, commentingUserId, text, date: new Date(), hearts: [], totalHearts: 0, replies: [] }    
+    let data = { pinId: id, commentingUserId, text, hearts: [], totalHearts: 0, replies: [] }    
     const comment = new Comments(data)  
 
     comment.save()
@@ -48,38 +36,46 @@ export const getComments = async (req: Request, res: Response) => {
         comment: comment
     }))
     .catch((err:any) => res.status(500).json({error: err}))     
-  }
-  
-  
-  export const createReply = async (req: Request, res: Response) => {
-    const { id } = req.params
-    const { commentId, taggedUser, replyId, commentingUserId, text} = req.body
-    try {
+} 
 
-      const prev = await Comments.findById(replyId)
+
+export const updateComment = async (req: Request, res: Response) => {
+    const { commentId, replyId } = req.params
+    const { text } = req.body
+    
+    try {    
+      await Comments.findByIdAndUpdate(commentId, {text})      
       
-      let data = { pinId: id, parentId: commentId, commentingUserId, text, hearts: [], taggedUser }
-
-      const reply = new Comments(data)
-      reply.save()
-
-      
-
-      const updatedComment = await Comments.findByIdAndUpdate(commentId,
-        {$push: {'replies': reply}},
-        { 'new': true },  
-      ) 
-
-
-      res.status(200).json({reply: reply})
+  
+      res.status(200).send()
     } catch (error) {
-      
       res.status(500).json({ message: error })
-    }    
-  }
-  
+    }  
+}
 
-  export const heartCommentPin = async (req: Request, res: Response) => {
+    //Delete
+export const deleteComment = async (req: Request, res: Response) => {
+      const { commentId, replyId } = req.params
+      
+      try {    
+        let updatedComment = await Comments.findById(commentId)
+        updatedComment?.replies.map(async (replyId:any, i:number) => {
+          await Comments.findByIdAndDelete(replyId)
+        })
+       
+    
+        //if (!Comments) return res.status(404).send("Comment not found...")
+    
+        //const deletedComment = await Comments.findByIdAndDelete(req.params.id)
+    
+        updatedComment = await Comments.findByIdAndDelete(commentId)
+        res.send(updatedComment)
+      } catch (error) {
+        res.status(500).json({ message: error })
+      }  
+}    
+
+export const heartCommentPin = async (req: Request, res: Response) => {
     const { id } = req.params
     const { commentId, userId, replyId } = req.body
 
@@ -94,9 +90,9 @@ export const getComments = async (req: Request, res: Response) => {
     } catch (error) {
       res.status(500).json({ message: error })
     }
-  }
+}
 
- export const unheartCommentPin = async (req: Request, res: Response) => {
+export const unheartCommentPin = async (req: Request, res: Response) => {
     const { id } = req.params
     const { commentId, userId, replyId } = req.body
 
@@ -113,77 +109,32 @@ export const getComments = async (req: Request, res: Response) => {
     } catch (error) {
       res.status(500).json({ message: error })
     }
-  }
-
-  export const heartReplyPin = async (req: Request, res: Response) => {
-    const { id } = req.params
-    const { commentId, userId, replyId } = req.body
-
-  
-    try {
-      let updatedComment = await Comments.findById(commentId)
-      const c = updatedComment?.replies
-      c?.map((reply:any, i:number) => {
-        if (reply._id.toString() === replyId) {          
-          reply.hearts.push(userId)
-          reply.totalHearts = reply.totalHearts + 1
-        }
-      })
-
-      
-      updatedComment?.save()
-      res.status(200).send()
-    } catch (error) {
-      res.status(500).json({ message: error })
-    }
-  }
-
-  export const unheartReplyPin = async (req: Request, res: Response) => {
-    const { id } = req.params
-    const { commentId, userId, replyId } = req.body
-
-  
-    try {
-      let updatedComment = await Comments.findById(commentId)
-      const c = updatedComment?.replies
-      c?.map((reply:any, i:number) => {
-        if (reply._id.toString() === replyId) {       
-          reply.hearts.pull(userId)
-          reply.totalHearts = reply.totalHearts - 1
-        }
-      })
-      
-      updatedComment?.save()
-      res.status(200).send()
-    } catch (error) {
-      res.status(500).json({ message: error })
-    }
-  }
-
-  //Delete
-export const deleteReply = async (req: Request, res: Response) => {
-  const { commentId, replyId } = req.params
-
-  try {    
-    let updatedComment = await Comments.findById(commentId)
-    updatedComment?.replies?.map((reply:any, i:number) =>  {
-      if (reply._id.toString() === replyId) {
-        updatedComment?.replies.splice(i, 1)
-      }
-    })
-    
-    updatedComment?.save()
-
-    //if (!Comments) return res.status(404).send("Comment not found...")
-
-    //const deletedComment = await Comments.findByIdAndDelete(req.params.id)
-
-    res.send(updatedComment)
-  } catch (error) {
-    res.status(500).json({ message: error })
-  }  
 }
 
+//Replies need to be pushed into Head Comments array
+export const createReply = async (req: Request, res: Response) => {
+  const { id } = req.params
+  const { commentId, taggedUser, replyId, commentingUserId, text} = req.body
+  try {
+
+    const prev = await Comments.findById(replyId)
+    
+    let data = { pinId: id, parentId: commentId, commentingUserId, text, hearts: [], taggedUser }
+
+    const reply = new Comments(data)
+    reply.save()      
+
+    const updatedComment = await Comments.findByIdAndUpdate(commentId,
+      {$push: {'replies': reply}},
+      { 'new': true },  
+    ) 
+
+    res.status(200).json({reply: reply})
+  } catch (error) {
+    
+    res.status(500).json({ message: error })
+  }    
+}
 
 export const updateReply = async (req: Request, res: Response) => {
   const { commentId, replyId } = req.params
@@ -207,41 +158,77 @@ export const updateReply = async (req: Request, res: Response) => {
   }  
 }
 
-
-  //Delete
-  export const deleteComment = async (req: Request, res: Response) => {
+//Delete
+export const deleteReply = async (req: Request, res: Response) => {
     const { commentId, replyId } = req.params
-    
+  
     try {    
       let updatedComment = await Comments.findById(commentId)
-      updatedComment?.replies.map(async (replyId:any, i:number) => {
-        await Comments.findByIdAndDelete(replyId)
+      updatedComment?.replies?.map((reply:any, i:number) =>  {
+        if (reply._id.toString() === replyId) {
+          updatedComment?.replies.splice(i, 1)
+        }
       })
-     
+      
+      updatedComment?.save()
   
       //if (!Comments) return res.status(404).send("Comment not found...")
   
       //const deletedComment = await Comments.findByIdAndDelete(req.params.id)
   
-      updatedComment = await Comments.findByIdAndDelete(commentId)
       res.send(updatedComment)
     } catch (error) {
       res.status(500).json({ message: error })
     }  
-  }
+}
+
+//Dont think this is needed anymore
+export const heartReplyPin = async (req: Request, res: Response) => {
+    const { id } = req.params
+    const { commentId, userId, replyId } = req.body
+
   
-  
-  export const updateComment = async (req: Request, res: Response) => {
-    const { commentId, replyId } = req.params
-    const { text } = req.body
-    
-    try {    
-      await Comments.findByIdAndUpdate(commentId, {text})      
+    try {
+      let updatedComment = await Comments.findById(commentId)
+      const c = updatedComment?.replies
+      c?.map((reply:any, i:number) => {
+        if (reply._id.toString() === replyId) {          
+          reply.hearts.push(userId)
+          reply.totalHearts = reply.totalHearts + 1
+        }
+      })
+
       
-  
+      updatedComment?.save()
       res.status(200).send()
     } catch (error) {
       res.status(500).json({ message: error })
-    }  
-  }
+    }
+}
+
+//Dont think this is needed anymore
+export const unheartReplyPin = async (req: Request, res: Response) => {
+    const { id } = req.params
+    const { commentId, userId, replyId } = req.body
+
   
+    try {
+      let updatedComment = await Comments.findById(commentId)
+      const c = updatedComment?.replies
+      c?.map((reply:any, i:number) => {
+        if (reply._id.toString() === replyId) {       
+          reply.hearts.pull(userId)
+          reply.totalHearts = reply.totalHearts - 1
+        }
+      })
+      
+      updatedComment?.save()
+      res.status(200).send()
+    } catch (error) {
+      res.status(500).json({ message: error })
+    }
+}
+
+
+
+

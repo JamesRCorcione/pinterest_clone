@@ -38,8 +38,6 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
   const [commenterUserName, setCommenterUserName] = useState('')
   const [commenterUserImage, setCommenterUserImage] = useState('')
 
-  console.log(commenterUserName, commenterId)
-
   useEffect(() => {
     getCommenterUser()
   }, [])
@@ -52,7 +50,27 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
       const commentReplies = comments.filter((reply:any) => reply.parentId == comment._id)
       setReplies(commentReplies)
     }  
- }, [comments, dispatch])
+ }, [comments])
+
+
+  const handleCreateComment = async ({e, taggedUser}:any) => {
+    setReplying(false)
+    e.preventDefault()
+    if (pinId) {
+      const commenterId = user.result._id
+      setLoading(true)
+      // tagged needs to reference parentId, normal uses commentId normally
+      // dispatches a createReply, because Id needs to be pushed to head comment
+      if (taggedUser) {
+        await dispatch(createReply({pinId, commentId: comment.parentId, replyId: null, text, commentingUserId: commenterId, taggedUser: commenterId}))     
+      } else {
+        await dispatch(createReply({pinId, commentId: comment._id, replyId: null, text, commentingUserId: commenterId, taggedUser: commenterId}))
+      }
+      setUpdateHeadComment(false)
+      await dispatch(getComments(pinId))      
+      setLoading(false)
+    }
+  }
 
   const getCommenterUser = async () => {
   let data = await dispatch(GetUserById(commenterId))
@@ -60,24 +78,7 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
     setCommenterUserImage(data.payload.image)
   }
 
-  const handleReplying = () => {
-    setReplying((reply:any) => !reply)
-  }
-
-  const handleOpenActionBar = () => {
-    setActionBar((prev) => !prev)
-  }
-
-  const handleDelete = async (e:any) => {
-    e.preventDefault()
-    if (pinId) {
-      await dispatch(deleteComment({pinId, commentId: comment._id, replyId: comment._id}))
-      setActionBar(false)
-      await dispatch(getComments(pinId))
-    }
-  }
-
-  const handleUpdate = async (e:any) => {
+  const handleUpdateComment = async (e:any) => {
     setReplying(false)
     e.preventDefault()
     if (pinId) {
@@ -89,34 +90,13 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
       setLoading(false)
     }
   }
-  
-  const handleReplySubmit = async (e:any) => {
-    //setReplying(false)
-    e.preventDefault()
+
+  const handleDeleteComment = async (e:any) => {
+    //e.preventDefault()
     if (pinId) {
-      const commenterId = user.result._id
-      setLoading(true)
-      // tagged needs to reference parentId, normal uses commentId normally
-      await dispatch(createReply({pinId, commentId: comment._id, replyId: null, text, commentingUserId: commenterId, taggedUser: commenterId}))
-
-      setUpdateHeadComment(false)
-      await dispatch(getComments(pinId))      
-      setLoading(false)
-    }
-  }
-
-  const handleTaggedReplySubmit = async (e:any) => {
-    setReplying(false)
-    e.preventDefault()
-    if (pinId) {
-      const commenterId = user.result._id      
-      setLoading(true)
-      // tagged needs to reference parentId, normal uses commentId normally
-      await dispatch(createReply({pinId, commentId: comment.parentId, replyId: null, text, commentingUserId: commenterId, taggedUser: commenterId}))     
-
-      setUpdateHeadComment(false)
-      await dispatch(getComments(pinId))      
-      setLoading(false)
+      await dispatch(deleteComment({pinId, commentId: comment._id, replyId: comment._id}))
+      setActionBar(false)
+      await dispatch(getComments(pinId))
     }
   }
 
@@ -142,172 +122,187 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
     }
   }
 
+  const handleOpenReplying = () => {
+    setReplying((reply:any) => !reply)
+  }
+
+  const handleOpenActionBar = () => {
+    setActionBar((prev) => !prev)
+  }
+
+  const getElapsedTime = () => {
+    console.log(((new Date().getTime() - new Date(comment.createdAt).getTime()) / 1000) / 60, 'minutes')
+  }
+
+  const renderReply = () => (
+    <Box sx={{marginLeft: 5}}>
+      <Box sx={{display: 'flex'}}>
+        <Avatar onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{commenterUserName?.charAt(0)}</Avatar>
+        <Typography onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}> {commenterUserName}</Typography>               
+      </Box>
+      <Box><Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>{comment?.text}</Typography></Box>
+      <Box sx={{display: 'flex', marginLeft: 4.5, marginBottom: 2}}>
+          <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>{y}</Typography>
+          <Box sx={{marginRight: 1, size: 'small'}}>
+            <Button 
+              variant='text'
+              disableElevation
+              disableRipple
+              sx={{marginLeft: 1, minHeight: 0, maxHeight: 0, minWidth: 0, maxWidth: 0}}
+              onClick={handleOpenReplying}
+            >
+              <Typography sx={{fontWeight: 500, textTransform: 'capitalize', color: 'black', fontSize: 12, marginRight: 3.5}}>Reply</Typography>
+            </Button>
+          </Box>
+          <Box sx={{marginRight: 1}}>
+            {(isLoved && comment.hearts?.length > 0)
+            ?
+            <Box sx={{display: 'flex'}}>
+              <FavoriteRoundedIcon onClick={(e) => handleUnHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
+              <Typography>{comment.hearts?.length}</Typography>
+            </Box>
+            :
+            <Box sx={{display: 'flex'}}>
+              <FavoriteBorderRoundedIcon onClick={(e) => handleHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
+              {comment.hearts?.length > 0 &&
+                <Typography>{comment.hearts.length}</Typography>
+              }
+            </Box>
+            }
+            </Box>
+            {user?.result?._id === commenterId &&
+              <Box sx={{marginRight: 1}}><MoreHorizIcon onClick={handleOpenActionBar} sx={{cursor: 'pointer', marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} /></Box>
+            }
+          {actionBar &&
+            <Box sx={{position: 'relative', height: 150}}>
+              <Box sx={{position: 'absolute', borderRadius: 2, backgroundColor: 'white', height: 100, width: 150, top: 30, right: -50, boxShadow:2, zIndex:2}}>
+                <Box sx={{display: 'flex', flexDirection: 'column'}}>
+                  <Button onClick={() => setUpdateHeadComment((prev) => !prev)}>Edit</Button>
+                  <Button onClick={(e) => handleDeleteComment(pinId)}>Delete</Button>
+                </Box>
+              </Box>
+            </Box>
+          }
+      </Box>
+        {replying && 
+              <form onSubmit={(e) => handleCreateComment({e, taggedUser: true})}>
+                <TextField      
+                  onChange={(e:any) => setText(e.target.value)}             
+                  placeholder='Reply'
+                  defaultValue={`@${commenterUserName} `}
+                  rows={2} 
+                  sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
+                >
+              </TextField>        
+            </form>  
+        }      
+    </Box>
+  )
+
+  const renderHeadComment = () => (
+    <Box sx={{marginLeft: 0}}>
+      <Box sx={{display: 'flex'}}>
+        <Avatar onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{commenterUserName?.charAt(0)}</Avatar>
+        <Typography onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}>{commenterUserName}</Typography>               
+      </Box>
+      <Box><Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>{comment?.text}</Typography></Box>
+      <Box sx={{display: 'flex', marginLeft: 4.5, marginBottom: 2}}>
+          <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>{y}</Typography>
+          <Box sx={{marginRight: 1, size: 'small'}}>
+            <Button 
+              variant='text'
+              disableElevation
+              disableRipple
+              sx={{marginLeft: 1, minHeight: 0, maxHeight: 0, minWidth: 0, maxWidth: 0}}
+              onClick={handleOpenReplying}
+            >
+              <Typography sx={{fontWeight: 500, textTransform: 'capitalize', color: 'black', fontSize: 12, marginRight: 3.5}}>Reply</Typography>
+            </Button>
+          </Box>
+          <Box sx={{marginRight: 1}}>
+            {(isLoved && comment.hearts?.length > 0)
+            ?
+            <Box sx={{display: 'flex'}}>
+              <FavoriteRoundedIcon onClick={(e) => handleUnHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
+              <Typography>{comment.hearts?.length}</Typography>
+            </Box>
+            :
+            <Box sx={{display: 'flex'}}>
+              <FavoriteBorderRoundedIcon onClick={(e) => handleHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
+              {comment.hearts?.length > 0 &&
+                <Typography>{comment.hearts.length}</Typography>
+              }
+            </Box>
+            }
+            </Box>
+            {user?.result?._id === commenterId &&
+              <Box sx={{marginRight: 1}}><MoreHorizIcon onClick={handleOpenActionBar} sx={{cursor: 'pointer', marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} /></Box>
+            }
+          {actionBar &&
+            <Box sx={{position: 'relative', height: 150}}>
+              <Box sx={{position: 'absolute', borderRadius: 2, backgroundColor: 'white', height: 100, width: 150, top: 30, right: -50, boxShadow:2, zIndex:2}}>
+                <Box sx={{display: 'flex', flexDirection: 'column'}}>
+                  <Button onClick={() => setUpdateHeadComment((prev) => !prev)}>Edit</Button>
+                  <Button onClick={(e) => handleDeleteComment(e)}>Delete</Button>
+                </Box>
+              </Box>
+            </Box>
+          }
+        
+      </Box>
+        {replying && 
+              <form onSubmit={(e) => handleCreateComment({e, taggedUser: false})}>
+                <TextField      
+                  onChange={(e:any) => setText(e.target.value)}             
+                  placeholder='Reply'
+                  rows={2} 
+                  sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
+                >
+              </TextField>        
+            </form>  
+        }      
+    </Box>
+  )
+
+  //Temp time keeping, just an accurate date of posting
+  let x = new Date(comment.createdAt).toString().split(' ')
+  let c = x.slice(1,4)
+  let y = c.join('-')
+
   //Doesnt allow duplicate rendering of nested comments
   if (comment.parentId && !reply) {
     return null
   }
 
-  const getElapsedTime = () => {
-    console.log(((new Date().getTime() - new Date(comment.createdAt).getTime()) / 1000) / 60, 'minutes')
-
-  }
-
-  let x = new Date(comment.createdAt).toString().split(' ')
-  let c = x.slice(1,4)
-  let y = c.join('-')
-
   return (
     <>
       {!loading ?
         <>
-        {updateHeadComment
-        ?
-          /* Main comment reply box */
-          <Box>
-          
-          <form onSubmit={handleUpdate}>
-              <TextField      
-                onChange={(e:any) => setText(e.target.value)}             
-                placeholder='Reply'
-                rows={2} 
-                sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
-              >
-            </TextField>        
-          </form>  
-          
-          <Button onClick={() => setUpdateHeadComment((prev) => !prev)}>Cancel</Button>
-          </Box>
-        :
-        <>
-          {reply ?        
-              <Box sx={{marginLeft: 5}}>
-              <Box sx={{display: 'flex'}}>
-                <Avatar onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{commenterUserName?.charAt(0)}</Avatar>
-                <Typography onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}> {commenterUserName}</Typography>               
-              </Box>
-
-              <Box><Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>{comment?.text}</Typography></Box>
-              <Box sx={{display: 'flex', marginLeft: 4.5, marginBottom: 2}}>
-                  <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>{y}</Typography>
-                  <Box sx={{marginRight: 1, size: 'small'}}>
-                    <Button 
-                      variant='text'
-                      disableElevation
-                      disableRipple
-                      sx={{marginLeft: 1, minHeight: 0, maxHeight: 0, minWidth: 0, maxWidth: 0}}
-                      onClick={handleReplying}
-                    >
-                      <Typography sx={{fontWeight: 500, textTransform: 'capitalize', color: 'black', fontSize: 12, marginRight: 3.5}}>Reply</Typography>
-                    </Button>
-                  </Box>
-                  <Box sx={{marginRight: 1}}>
-                    {(isLoved && comment.hearts?.length > 0)
-                    ?
-                    <Box sx={{display: 'flex'}}>
-                      <FavoriteRoundedIcon onClick={(e) => handleUnHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
-                      <Typography>{comment.hearts?.length}</Typography>
-                    </Box>
-                    :
-                    <Box sx={{display: 'flex'}}>
-                      <FavoriteBorderRoundedIcon onClick={(e) => handleHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
-                      {comment.hearts?.length > 0 &&
-                        <Typography>{comment.hearts.length}</Typography>
-                      }
-                    </Box>
-                    }
-                    </Box>
-                    {user?.result?._id === commenterId &&
-                      <Box sx={{marginRight: 1}}><MoreHorizIcon onClick={handleOpenActionBar} sx={{cursor: 'pointer', marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} /></Box>
-                    }
-                  {actionBar &&
-                    <Box sx={{position: 'relative', height: 150}}>
-                      <Box sx={{position: 'absolute', borderRadius: 2, backgroundColor: 'white', height: 100, width: 150, top: 30, right: -50, boxShadow:2, zIndex:2}}>
-                        <Box sx={{display: 'flex', flexDirection: 'column'}}>
-                          <Button onClick={() => setUpdateHeadComment((prev) => !prev)}>Edit</Button>
-                          <Button onClick={(e) => handleDelete(pinId)}>Delete</Button>
-                        </Box>
-                      </Box>
-                    </Box>
-                  }
-              </Box>
-                {replying && 
-                      <form onSubmit={handleTaggedReplySubmit}>
-                        <TextField      
-                          onChange={(e:any) => setText(e.target.value)}             
-                          placeholder='Reply'
-                          defaultValue={`@${commenterUserName} `}
-                          rows={2} 
-                          sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
-                        >
-                      </TextField>        
-                    </form>  
-                }      
-              </Box>
-            :
-              <Box sx={{marginLeft: 0}}>
-                <Box sx={{display: 'flex'}}>
-                  <Avatar onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{commenterUserName?.charAt(0)}</Avatar>
-                  <Typography onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}>{commenterUserName}</Typography>               
-                </Box>
-
-                <Box><Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>{comment?.text}</Typography></Box>
-                <Box sx={{display: 'flex', marginLeft: 4.5, marginBottom: 2}}>
-                    <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>{y}</Typography>
-                    <Box sx={{marginRight: 1, size: 'small'}}>
-                      <Button 
-                        variant='text'
-                        disableElevation
-                        disableRipple
-                        sx={{marginLeft: 1, minHeight: 0, maxHeight: 0, minWidth: 0, maxWidth: 0}}
-                        onClick={handleReplying}
-                      >
-                        <Typography sx={{fontWeight: 500, textTransform: 'capitalize', color: 'black', fontSize: 12, marginRight: 3.5}}>Reply</Typography>
-                      </Button>
-                    </Box>
-                    <Box sx={{marginRight: 1}}>
-                      {(isLoved && comment.hearts?.length > 0)
-                      ?
-                      <Box sx={{display: 'flex'}}>
-                        <FavoriteRoundedIcon onClick={(e) => handleUnHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
-                        <Typography>{comment.hearts?.length}</Typography>
-                      </Box>
-                      :
-                      <Box sx={{display: 'flex'}}>
-                        <FavoriteBorderRoundedIcon onClick={(e) => handleHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
-                        {comment.hearts?.length > 0 &&
-                          <Typography>{comment.hearts.length}</Typography>
-                        }
-                      </Box>
-                      }
-                      </Box>
-                      {user?.result?._id === commenterId &&
-                        <Box sx={{marginRight: 1}}><MoreHorizIcon onClick={handleOpenActionBar} sx={{cursor: 'pointer', marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} /></Box>
-                      }
-                    {actionBar &&
-                      <Box sx={{position: 'relative', height: 150}}>
-                        <Box sx={{position: 'absolute', borderRadius: 2, backgroundColor: 'white', height: 100, width: 150, top: 30, right: -50, boxShadow:2, zIndex:2}}>
-                          <Box sx={{display: 'flex', flexDirection: 'column'}}>
-                            <Button onClick={() => setUpdateHeadComment((prev) => !prev)}>Edit</Button>
-                            <Button onClick={(e) => handleDelete(e)}>Delete</Button>
-                          </Box>
-                        </Box>
-                      </Box>
-                    }
-                </Box>
-                  {replying && 
-                        <form onSubmit={handleReplySubmit}>
-                          <TextField      
-                            onChange={(e:any) => setText(e.target.value)}             
-                            placeholder='Reply'
-                            rows={2} 
-                            sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
-                          >
-                        </TextField>        
-                      </form>  
-                  }      
-              </Box>
-            }
-          </>            
+          {updateHeadComment
+          ?
+            /* Head comment reply box */
+            <>            
+              <form onSubmit={handleUpdateComment}>
+                  <TextField      
+                    onChange={(e:any) => setText(e.target.value)}             
+                    placeholder='Reply'
+                    defaultValue={comment.text}
+                    rows={2} 
+                    sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
+                  >
+                </TextField>        
+              </form>              
+              <Button onClick={() => setUpdateHeadComment((prev) => !prev)}>Cancel</Button>
+            </>
+          :
+            /* Head comment rendering and Reply indented rendering */
+            <>            
+              {reply ?        
+                renderReply()
+              :            
+                renderHeadComment()            
+              }
+            </>            
           }
         </>
       :
