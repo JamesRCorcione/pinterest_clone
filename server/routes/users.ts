@@ -1,10 +1,11 @@
-import { signup, signin, getUser, updateUser, savePin, googleSignin, googleSignup, facebookSignin, facebookSignup, removeSavePin } from '../controllers/users'
+import { signup, signin, getUser, updateUser, savePin, googleSignin, googleSignup, facebookSignin, facebookSignup, removeSavePin, getUsers } from '../controllers/users'
 import express from 'express'
 import auth from '../middleware/auth'
 
 const router = express.Router()
 
 
+router.get('/', getUsers)
 router.get("/:id", getUser)
 router.put("/:id", auth, updateUser)
 router.put("/savePin/:id", auth, savePin)

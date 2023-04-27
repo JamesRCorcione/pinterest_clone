@@ -18,8 +18,6 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.headers.authorization?.split(' ')[1] as string
         const authType = req.headers.authorizationtype
-
-        console.log('middleware',token, authType)
  
         let decodedData
         if (authType === 'Custom') {            

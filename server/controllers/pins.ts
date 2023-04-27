@@ -32,9 +32,8 @@ export const createPin = async (req: Request, res: Response) => {
           image: Joi.required(),
         })
     
-        const { title, text, tags, creatorId, totalComments, postedBy, image, destination } = req.body
+        const { title, text, tags, creatorId, totalComments, image, destination } = req.body
         const { error } = schema.validate({title, text, image})   
-        console.log(error) 
         if (error) return res.status(400).send({ message: error?.details[0].message })
     
         const selectedFileURL = await cloudinary.uploader.upload(image)
@@ -42,7 +41,7 @@ export const createPin = async (req: Request, res: Response) => {
         //let initComments = new Comments()         
         //initComments = await initComments.save()
     
-        let pin = new Pin({ title, text, tags, creatorId, totalComments, postedBy, image: selectedFileURL.secure_url, destination })
+        let pin = new Pin({ title, text, tags, creatorId, totalComments, image: selectedFileURL.secure_url, destination })
 
 
         pin = await pin.save()
@@ -110,6 +109,7 @@ export const getPin = async (req: Request, res: Response) => {
 export const getSearchPins = async (req: Request, res: Response) => {
   const { query } = req.query
   try {
+      //const creatorUserName = await User.findById(creatorId)
       const pins = await Pin.find({
         $or:[
           {title: { "$regex": query, "$options": "i" }},

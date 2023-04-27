@@ -125,7 +125,7 @@ export const updatePin = createAsyncThunk(
   'pins/updatePin',
   async (pin: IPin, { rejectWithValue }) => {
     try {
-      const { _id, title, text, image, destination, postedBy } = pin
+      const { _id, title, text, image, destination, creatorId } = pin
 
       const response = await API.put('pins/' + _id, pin)
 

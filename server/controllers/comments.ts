@@ -37,10 +37,10 @@ export const getComments = async (req: Request, res: Response) => {
   
   export const createComment = async (req: Request, res: Response) => {
     const { id } = req.params
-    const { userCommenting, text, commentId} = req.body
+    const { commentingUserId, text, commentId} = req.body
 
   
-    let data = { pinId: id, userCommenting, text, date: new Date(), hearts: [], totalHearts: 0, replies: [] }    
+    let data = { pinId: id, commentingUserId, text, date: new Date(), hearts: [], totalHearts: 0, replies: [] }    
     const comment = new Comments(data)  
 
     comment.save()
@@ -53,12 +53,12 @@ export const getComments = async (req: Request, res: Response) => {
   
   export const createReply = async (req: Request, res: Response) => {
     const { id } = req.params
-    const { commentId, taggedUser, replyId, userCommenting, text} = req.body
+    const { commentId, taggedUser, replyId, commentingUserId, text} = req.body
     try {
 
       const prev = await Comments.findById(replyId)
       
-      let data = { pinId: id, parentId: commentId, userCommenting, text, hearts: [], taggedUser }
+      let data = { pinId: id, parentId: commentId, commentingUserId, text, hearts: [], taggedUser }
 
       const reply = new Comments(data)
       reply.save()

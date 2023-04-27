@@ -10,7 +10,6 @@ const EditProfile = ({profileUser}:any) => {
   const dispatch = useDispatch<AppDispatch>()   
   const navigate = useNavigate()
 
-  console.log(user)
 
   const handlePhotoUpload = async (e:any) => {
     let file = e.target.files[0]

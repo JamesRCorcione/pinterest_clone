@@ -19,6 +19,7 @@ import { ThemeProvider } from '@mui/material/styles';
     reducer: {
       pinsState: pinsReducer,
       commentsState: commentsReducer,
+      usersState: usersReducer,
     },
     middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

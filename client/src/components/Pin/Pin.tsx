@@ -8,7 +8,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 
 import useStyles from './styles'
 import { useDispatch } from 'react-redux'
-import { RemoveSavePin, SavePin } from '../../features/usersSlice'
+import { GetUserById, RemoveSavePin, SavePin } from '../../features/usersSlice'
 import { grey } from '@mui/material/colors'
 import { deletePin } from '../../features/pinsSlice'
 import { Divider } from '@material-ui/core'
@@ -21,13 +21,17 @@ interface PinProps {
 const Pin = ({ pin }:PinProps) => {
   let user = fetchUser()
   const [postHovered, setPostHovered] = useState(false)
+  
   const [savingPost, setSavingPost] = useState(false)
   const [openPinMenu, setOpenPinMenu] = useState(false)
   const [openMobileMenu, setOpenMobileMenu] = useState(false)
   const navigate = useNavigate()
   const { classes } = useStyles()
   const dispatch = useDispatch<AppDispatch>()
-  const { postedBy, image, _id, destination } = pin
+  const { creatorId, image, _id, destination } = pin
+  const [creatorUserName, setCreatorUserName] = useState('')
+  const [creatorUserImage, setCreatorUserImage] = useState('')
+
 
   let totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
   let saved = totalSaved?.length > 0 ? true : false
@@ -37,7 +41,14 @@ const Pin = ({ pin }:PinProps) => {
    user = fetchUser()
     totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
     saved = totalSaved?.length > 0 ? true : false
+    getCreatorUser()
   }, [])
+
+  const getCreatorUser = async () => {
+    let data = await dispatch(GetUserById(creatorId))
+    setCreatorUserName(data.payload.userName)
+    setCreatorUserImage(data.payload.image)
+  }
 
   const savePin = async (e:any) => {
     user = fetchUser()
@@ -51,6 +62,7 @@ const Pin = ({ pin }:PinProps) => {
       .catch((error:any) => console.log(error))
     }   
   }
+
 
   const removeSavePin = async (e:any) => {   
     user = fetchUser()
@@ -67,7 +79,7 @@ const Pin = ({ pin }:PinProps) => {
   
   const handleGoToProfile = () => {
     window.scrollTo(0, 0)
-    navigate(`/user-profile/${postedBy?.userId}`)    
+    navigate(`/user-profile/${creatorId}`)    
     window.location.reload();
   }
 
@@ -202,16 +214,20 @@ const Pin = ({ pin }:PinProps) => {
           onClick={handleGoToProfile}
           sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
         >
-          {postedBy?.image 
+          {creatorUserImage 
           ?
-            <img  
-              src={postedBy?.image}
-              alt="user-profile"
-            />
+            <Box sx={{borderRadius: 99, minWidth: 50, maxWidth: 50, minHeight: 50, maxHeight: 50, overflow: 'hidden'}}>
+              <img  
+                src={creatorUserImage}
+                width={50}
+                height={50}
+                alt="user-profile"
+              />
+            </Box>
           :
-            <Avatar sx={{minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{postedBy?.userName?.charAt(0)}</Avatar>
+            <Avatar sx={{minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{creatorUserName.charAt(0)}</Avatar>
           }
-          <Typography sx={{marginLeft:1, fontSize: 12, color: 'black', boxShadow: 'none', textDecoration: 'none'}}>{postedBy?.userName}</Typography>
+          <Typography sx={{marginLeft:1, fontSize: 12, color: 'black', boxShadow: 'none', textDecoration: 'none'}}>{creatorUserName}</Typography>
         </Button>
       </Box> 
 

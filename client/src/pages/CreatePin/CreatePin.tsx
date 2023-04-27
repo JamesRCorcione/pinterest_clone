@@ -18,7 +18,7 @@ const CreatePin = ({user}:CreatePinProps) => {
     const [tag, setTag] = useState<string>('')
     const [tags, setTags] = useState<string[]>([])
     const [dragActive, setDragActive] = useState<boolean>(false);
-    const [pin, setPin] = useState({ title: '', text: '', tags: tags, creatorId: user?.result._id, totalComments: 0, postedBy: {userId: user?.result._id,  userName: user?.result.userName, image: null}, image: '', destination: '' })    
+    const [pin, setPin] = useState({ title: '', text: '', tags: tags, creatorId: user?.result._id, totalComments: 0, image: '', destination: '' })    
     const [chips, setChips] = useState<string[]>([])
     const navigate = useNavigate()
     const { state } = useLocation()  
@@ -27,7 +27,8 @@ const CreatePin = ({user}:CreatePinProps) => {
     
     useEffect(() => {
       if (state) {
-        setPin({title: state.pin.title, text: state.pin.text, tags: state.pin.tags, creatorId: user?.result._id, totalComments: state.pin.totalComments, postedBy: state.pin.postedBy, image: state.pin.image, destination: state.pin.destination })    
+        setPin({title: state.pin.title, text: state.pin.text, tags: state.pin.tags, creatorId: user?.result._id, totalComments: state.pin.totalComments, image: state.pin.image, destination: state.pin.destination })    
+        //setPin({title: state.pin.title, text: state.pin.text, tags: state.pin.tags, creatorId: user?.result._id, totalComments: state.pin.totalComments, postedBy: state.pin.postedBy, image: state.pin.image, destination: state.pin.destination })    
         setChips(state.pin.tags)
       }
     }, [state])
@@ -37,7 +38,7 @@ const CreatePin = ({user}:CreatePinProps) => {
       pin.tags = chips
       try{
         await dispatch(createPin(pin)).unwrap()
-        setPin({ title: '', text: '', tags: [], creatorId: user?.result._id, totalComments: 0, postedBy: {userId: '', userName: '', image: null}, image: '', destination: '' })
+        setPin({ title: '', text: '', tags: [], creatorId: user?.result._id, totalComments: 0, image: '', destination: '' })
         navigate('/')
       } catch (error:any) {
         alert(error.message)

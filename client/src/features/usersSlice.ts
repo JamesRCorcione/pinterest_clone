@@ -34,7 +34,7 @@ API.interceptors.request.use((req) => {
 
 // this is an action creator
 export const SignUp = createAsyncThunk(
-  'users',
+  'users/signup',
   async (user: IUser, { rejectWithValue }) => {
     try {
       const response = await API.post(baseURL + 'users/signup', user)
@@ -52,7 +52,7 @@ export const SignUp = createAsyncThunk(
 )
 
 export const SignIn = createAsyncThunk(
-  'users',
+  'users/signin',
   async (user: IUser, { rejectWithValue }) => {
     try {
       const response = await API.post(baseURL + 'users/signin', user)
@@ -69,10 +69,8 @@ export const SignIn = createAsyncThunk(
   }
 )
 
-
-
 export const GoogleSignUp = createAsyncThunk(
-  'users',
+  'users/googleSignup',
   async (user: any, { rejectWithValue }) => {
     try {      
       const response = await API.post(baseURL + 'users/googleSignup', user)
@@ -90,7 +88,7 @@ export const GoogleSignUp = createAsyncThunk(
 )
 
 export const GoogleSignIn = createAsyncThunk(
-  'users',
+  'users/googleSignin',
   async (user:any, { rejectWithValue }) => {
     try {
       const response = await API.post(baseURL + 'users/googleSignin', user)
@@ -108,7 +106,7 @@ export const GoogleSignIn = createAsyncThunk(
 )
 
 export const FacebookSignUp = createAsyncThunk(
-  'users',
+  'users/facebookSignup',
   async (user: any, { rejectWithValue }) => {
     try {      
       const response = await API.post(baseURL + 'users/facebookSignup', user)
@@ -126,7 +124,7 @@ export const FacebookSignUp = createAsyncThunk(
 )
 
 export const FacebookSignIn = createAsyncThunk(
-  'users',
+  'users/facebookSignin',
   async (user:any, { rejectWithValue }) => {
     try {
       const response = await API.post(baseURL + 'users/facebookSignin', user)
@@ -144,7 +142,7 @@ export const FacebookSignIn = createAsyncThunk(
 )
 
 export const GetUserById = createAsyncThunk (
-    'users',
+    'users/getUserById',
     async (id: any = null, { rejectWithValue }) => {
       try {
         const response = await API.get(baseURL + `users/${id}`)
@@ -156,8 +154,26 @@ export const GetUserById = createAsyncThunk (
     }
 )
 
+export const getUsers = createAsyncThunk(
+  'users/getUsers',
+  
+  async (id:any = null, { rejectWithValue }) => {
+    try {
+      const response = await API.get(baseURL + `users`)
+      return response.data
+    } catch (err: any) {
+      let error: AxiosError<ValidationErrors> = err // cast the error for access
+      if (!error.response) {
+        throw err
+      }
+      // We got validation errors, let's return those so we can reference in our component and set form errors
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
 export const UpdateUser = createAsyncThunk (
-  'users',
+  'users/updateUser',
   async ({_id, userName, password, image}: any = null, { rejectWithValue }) => {
     try {
       const response = await API.put(baseURL + `users/${_id}`, {userName, password, image})
@@ -200,7 +216,7 @@ export const RemoveSavePin = createAsyncThunk (
 )
 
 export const Logout = createAsyncThunk(
-  'users',
+  'users/logout',
   async () => {
     try {
       localStorage.clear()
@@ -232,6 +248,9 @@ export const Logout = createAsyncThunk(
         .addCase(FacebookSignIn.fulfilled, (state, action) => {
           return { ...state, users: [action.payload, ...state.users], userStatus: 'success', userError: '' }
         }) 
+        .addCase(getUsers.fulfilled, (state, action) => {
+          return { ...state, users: action.payload, userStatus: 'success', userError: '' }
+        })  
         .addCase(GetUserById.fulfilled, (state, action) => {
           return { ...state, user: action.payload, pinStatus: 'success', pinError: '' }
         })
@@ -250,12 +269,12 @@ export const Logout = createAsyncThunk(
           )
           return { ...state, user: updatedUser, pinStatus: 'success', pinError: '' }
           }) 
-        .addMatcher(
-          isRejectedAction,
-          // `action` will be inferred as a RejectedAction due to isRejectedAction being defined as a type guard
-          (state, action) => {
-            return { ...state, userStatus: 'rejected', userError: action.payload }
-        })
+//        .addMatcher(
+//          isRejectedAction,
+//          // `action` will be inferred as a RejectedAction due to isRejectedAction being defined as a type guard
+//          (state, action) => {
+//            return { ...state, userStatus: 'rejected', userError: action.payload }
+//        })
         .addMatcher(
           isPendingAction,
           // `action` will be inferred as a RejectedAction due to isRejectedAction being defined as a type guard

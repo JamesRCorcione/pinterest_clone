@@ -11,6 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Spinner from '../Spinner/Spinner';
 import { Circles } from 'react-loader-spinner';
 import PinDetails from '../PinDetails/PinDetails';
+import { GetUserById } from '../../features/usersSlice';
 
 
 interface CommentProps {
@@ -33,6 +34,15 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
   const [updateHeadComment, setUpdateHeadComment] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isLoved, setIsLoved] = useState(false)
+  const commenterId = comment.commentingUserId
+  const [commenterUserName, setCommenterUserName] = useState('')
+  const [commenterUserImage, setCommenterUserImage] = useState('')
+
+  console.log(commenterUserName, commenterId)
+
+  useEffect(() => {
+    getCommenterUser()
+  }, [])
 
   useEffect(() => {
     if (comment.hearts?.includes(user.result._id)) {
@@ -43,6 +53,12 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
       setReplies(commentReplies)
     }  
  }, [comments, dispatch])
+
+  const getCommenterUser = async () => {
+  let data = await dispatch(GetUserById(commenterId))
+    setCommenterUserName(data.payload.userName)
+    setCommenterUserImage(data.payload.image)
+  }
 
   const handleReplying = () => {
     setReplying((reply:any) => !reply)
@@ -78,14 +94,10 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
     //setReplying(false)
     e.preventDefault()
     if (pinId) {
-      const userCommenting = {
-        userId: user.result._id,
-        userName: user?.result.userName,
-        userImage: user?.result.image
-      }      
+      const commenterId = user.result._id
       setLoading(true)
       // tagged needs to reference parentId, normal uses commentId normally
-      await dispatch(createReply({pinId, commentId: comment._id, replyId: null, text, userCommenting, taggedUser: comment.userCommenting.userName}))     
+      await dispatch(createReply({pinId, commentId: comment._id, replyId: null, text, commentingUserId: commenterId, taggedUser: commenterId}))
 
       setUpdateHeadComment(false)
       await dispatch(getComments(pinId))      
@@ -97,14 +109,10 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
     setReplying(false)
     e.preventDefault()
     if (pinId) {
-      const userCommenting = {
-        userId: user.result._id,
-        userName: user?.result.userName,
-        userImage: user?.result.image
-      }      
+      const commenterId = user.result._id      
       setLoading(true)
       // tagged needs to reference parentId, normal uses commentId normally
-      await dispatch(createReply({pinId, commentId: comment.parentId, replyId: null, text, userCommenting, taggedUser: comment.userCommenting.userName}))     
+      await dispatch(createReply({pinId, commentId: comment.parentId, replyId: null, text, commentingUserId: commenterId, taggedUser: commenterId}))     
 
       setUpdateHeadComment(false)
       await dispatch(getComments(pinId))      
@@ -147,7 +155,6 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
   let x = new Date(comment.createdAt).toString().split(' ')
   let c = x.slice(1,4)
   let y = c.join('-')
-  console.log(y)
 
   return (
     <>
@@ -175,8 +182,8 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
           {reply ?        
               <Box sx={{marginLeft: 5}}>
               <Box sx={{display: 'flex'}}>
-                <Avatar onClick={() => navigate(`/user-profile/${user?.userCommenting?.userId}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{comment?.commentingUser?.userName?.charAt(0)}</Avatar>
-                <Typography onClick={() => navigate(`/user-profile/${comment?.userCommenting?.userId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}> {comment?.userCommenting?.userName}</Typography>               
+                <Avatar onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{commenterUserName?.charAt(0)}</Avatar>
+                <Typography onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}> {commenterUserName}</Typography>               
               </Box>
 
               <Box><Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>{comment?.text}</Typography></Box>
@@ -209,7 +216,7 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
                     </Box>
                     }
                     </Box>
-                    {user?.result?._id === comment?.userCommenting?.userId &&
+                    {user?.result?._id === commenterId &&
                       <Box sx={{marginRight: 1}}><MoreHorizIcon onClick={handleOpenActionBar} sx={{cursor: 'pointer', marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} /></Box>
                     }
                   {actionBar &&
@@ -228,7 +235,7 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
                         <TextField      
                           onChange={(e:any) => setText(e.target.value)}             
                           placeholder='Reply'
-                          defaultValue={`@${comment.userCommenting.userName} `}
+                          defaultValue={`@${commenterUserName} `}
                           rows={2} 
                           sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
                         >
@@ -239,8 +246,8 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
             :
               <Box sx={{marginLeft: 0}}>
                 <Box sx={{display: 'flex'}}>
-                  <Avatar onClick={() => navigate(`/user-profile/${user?.userCommenting?.userId}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{comment?.commentingUser?.userName?.charAt(0)}</Avatar>
-                  <Typography onClick={() => navigate(`/user-profile/${comment?.userCommenting?.userId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}> {comment?.userCommenting?.userName}</Typography>               
+                  <Avatar onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{commenterUserName?.charAt(0)}</Avatar>
+                  <Typography onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}>{commenterUserName}</Typography>               
                 </Box>
 
                 <Box><Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>{comment?.text}</Typography></Box>
@@ -273,7 +280,7 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
                       </Box>
                       }
                       </Box>
-                      {user?.result?._id === comment?.userCommenting?.userId &&
+                      {user?.result?._id === commenterId &&
                         <Box sx={{marginRight: 1}}><MoreHorizIcon onClick={handleOpenActionBar} sx={{cursor: 'pointer', marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} /></Box>
                       }
                     {actionBar &&

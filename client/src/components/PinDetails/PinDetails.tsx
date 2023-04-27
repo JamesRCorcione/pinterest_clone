@@ -21,7 +21,7 @@ import Share from '../Share/Share'
 
 import Comment from '../Comment/Comment'
 import useStyle from './styles'
-import { RemoveSavePin, SavePin } from '../../features/usersSlice'
+import { GetUserById, RemoveSavePin, SavePin } from '../../features/usersSlice'
 import { fetchUser } from '../../utils/fetchUser'
 import { createComment, getComments } from '../../features/commentsSlice'
 import { Circles } from 'react-loader-spinner'
@@ -44,11 +44,16 @@ const PinDetails = () => {
   const [openShare, setOpenShare] = useState<boolean>(false)
   const { pinId } = useParams()
   const { classes } = useStyle()
+
+  const [commenterUserName, setCommenterUserName] = useState('')
+  const [commenterUserImage, setCommenterUserImage] = useState('')
   
   let totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
   let saved = totalSaved?.length > 0 ? true : false
 
-  console.log(saved, user.result.saves)
+  useEffect(() => {
+    getCommenterUser()
+  }, [])
 
   useEffect(() => {
     const getComment = async () => {
@@ -72,6 +77,12 @@ const PinDetails = () => {
     setLoading(true)
     await dispatch(getComments(pinId))
     setLoading(false)
+  }
+
+  const getCommenterUser = async () => {
+    let data = await dispatch(GetUserById(commenterId))
+    setCommenterUserName(data.payload.userName)
+    setCommenterUserImage(data.payload.image)
   }
 
   const savePin = async () => {
@@ -101,13 +112,9 @@ const PinDetails = () => {
   const handleComment = async (e:any) => {
     e.preventDefault()
     if (pinId) {
-      const userCommenting = {
-        userId: user.result._id,
-        userName: user?.result.userName,
-        userImage: user?.result.image
-      }
+      const commenterId = user.result._id
       setLoading(true)
-      await dispatch(createComment({ pinId, text, userCommenting }))
+      await dispatch(createComment({ pinId, text, commenterId }))
       getNewComment()
       setText('')
       e.target.reset()
@@ -279,8 +286,8 @@ const PinDetails = () => {
                 </Box>
               </Box>
               <Box sx={{display: 'flex',width: 'auto'}}>
-                {pin?.postedBy.image}
-                {pin?.postedBy.userName}
+                {creatorUserImage}
+                {creatorUserName}
                 {pin?.tags}
               </Box>
               <Box sx={{display: 'flex'}}>

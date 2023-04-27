@@ -46,11 +46,6 @@ interface ValidationErrors {
 interface IPin {
   _id?: mongoose.Types.ObjectId,
   creatorId: mongoose.Types.ObjectId
-  postedBy: {
-    userId: mongoose.Types.ObjectId
-    userName: String
-    image: null
-  },
   title: String,
   text: String
   tags: String[]
@@ -77,11 +72,7 @@ interface IComment {
   _id?: mongoose.Types.ObjectId,
   pinId: mongoose.Types.ObjectId
   parentId: mongoose.Types.ObjectId
-  userCommenting : {
-    userId: mongoose.Types.ObjectId
-    userName: String
-    userImage: String
-  }  
+  commentingUserId : mongoose.Types.ObjectId  
   taggedUser: String
   text: String
   hearts: mongoose.Types.ObjectId[]
@@ -97,11 +88,7 @@ interface IReply {
   _id?: mongoose.Types.ObjectId,
   pinId: mongoose.Types.ObjectId
   parentId: mongoose.Types.ObjectId
-  userCommenting : {
-    userId: mongoose.Types.ObjectId
-    userName: String
-    userImage: String
-  }  
+  commentingUserId : mongoose.Types.ObjectId  
   taggedUser: String
   text: String
   date: Date
