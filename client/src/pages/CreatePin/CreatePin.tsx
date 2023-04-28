@@ -228,7 +228,7 @@ const CreatePin = ({user}:CreatePinProps) => {
         
           {pin?.image &&
           <Box sx={{position: 'absolute', top: 100, right: 180}}>
-            <img src={pin?.image} width={'350px'} height={'100px'} border-radius={10}></img>
+            <img src={pin?.image} width={'350px'} height={'100%'} border-radius={10}></img>
           </Box>
           }
 

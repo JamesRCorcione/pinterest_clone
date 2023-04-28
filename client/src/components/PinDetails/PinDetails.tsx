@@ -119,7 +119,7 @@ const PinDetails = () => {
         <Box className={classes.pinContainer}>
 
           {/* Mobile view is rendered below */}
-          <img className={classes.mobileImage} src={pin?.image}></img>
+          <img className={classes.mobileImage} height={'100%'} width={'100%'} src={pin?.image}></img>
           <Box className={classes.topButtonsMobileContainer}>
               
             <Button className={classes.shareButton} onClick={(e) => handleDownload({e, pin})}>              
@@ -181,7 +181,7 @@ const PinDetails = () => {
           </Box>  
 
           {/* Non mobile dynamic view rendering below */}
-          <img className={classes.image} src={pin?.image}></img>
+          <img className={classes.image} height={'100%'} width={'100%'} src={pin?.image}></img>
           <Box className={classes.commentSectionContainer}>   
 
             {/* Action bar rendered below */}
