@@ -26,7 +26,9 @@ export default makeStyles()((theme) => {
       overflow: 'hidden',
       objectFit: 'cover',
       backgroundColor: 'black',
-      opacity: .6
+      opacity: .6,
+      height: 'auto',
+      width: 'auto',
     },
     onHoverImageContainer: {
       position: 'absolute', 
@@ -76,7 +78,9 @@ export default makeStyles()((theme) => {
     },
     imageOp: {
       overflow: 'hidden',
-      objectFit: 'cover',   
+      objectFit: 'cover', 
+      width: '100%',
+      height: '100%'  
     },
     shareImageButton: {
       '&:hover': { 

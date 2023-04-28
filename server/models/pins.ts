@@ -7,7 +7,7 @@ const pinSchema = new mongoose.Schema({
     tags: { type: [String] },
     image: { type: String, required: true},
     destination: { type: String },
-})
+}, {timestamps: true})
 
 const Pins = mongoose.model('Pins', pinSchema)
 

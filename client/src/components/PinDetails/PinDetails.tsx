@@ -21,7 +21,7 @@ import Share from '../Share/Share'
 import Comment from '../Comment/Comment'
 import useStyle from './styles'
 import { fetchUser } from '../../utils/fetchUser'
-import { createComment, getComments } from '../../features/commentsSlice'
+import { createComment, getComments, getCommentsByPin } from '../../features/commentsSlice'
 import { Circles } from 'react-loader-spinner'
 
 import { handleDownload, handleDeletePin, removeSavePin, savePin, } from '../../utils/pinUtils'
@@ -38,7 +38,6 @@ const PinDetails = () => {
   let { comments } = commentsState
   const pinsState = useSelector((state: RootState) => state.pinsState);
   let { pins } = pinsState
-
   const usersState = useSelector((state: RootState) => state.usersState);
   let { users } = usersState
 
@@ -55,9 +54,6 @@ const PinDetails = () => {
   const creatorId = pin?.creatorId
   const [creatorUserName, setCreatorUserName] = useState('Hi')
   const [creatorUserImage, setCreatorUserImage] = useState('Hi')
-
-  const creator = users.find((user:any) => user._id === creatorId)
-  console.log('creator', creator)
   
   let totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
   let saved = totalSaved?.length > 0 ? true : false 
@@ -78,7 +74,7 @@ const PinDetails = () => {
   }
 
   const getPinDetails = async () => {
-    window.scrollTo(0, 0)
+    //window.scrollTo(0, 0)
     //Need another loading screen for the whole pin
     setLoading(true)
     const data = await dispatch(getPin(pinId))
@@ -88,7 +84,9 @@ const PinDetails = () => {
 
   const getCommentsUpdate = async () => {
     setLoading(true)
-    await dispatch(getComments(pinId))
+    await dispatch(getCommentsByPin(pinId))
+    //comments = comments.find((comment:any) => user._id === creatorId)
+    //console.log('cs',comments)
     setLoading(false)
   }
 

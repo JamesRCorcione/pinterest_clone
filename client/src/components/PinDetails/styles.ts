@@ -44,6 +44,7 @@ export default makeStyles()((theme) => {
         justifyContent: 'start',
         alignItems: 'start',
         width: '100%',
+        height: 'auto',
         borderRadius: 40,
       }
     },    

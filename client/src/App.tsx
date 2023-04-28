@@ -15,9 +15,10 @@ import PinDetails from './components/PinDetails/PinDetails';
 import Search from './components/Search/Search';
 import { fetchUser } from './utils/fetchUser';
 import { useDispatch, useSelector } from 'react-redux';
-import { deletePin } from './features/pinsSlice';
+import { deletePin, getPins } from './features/pinsSlice';
 import NotFound from './pages/NotFound';
 import { getUsers } from './features/usersSlice';
+import { getComments } from './features/commentsSlice';
 
 function App() {
   const navigate = useNavigate()
@@ -25,18 +26,20 @@ function App() {
   let user = fetchUser()
   const pinsState = useSelector((state: RootState) => state.pinsState);
   const { pins } = pinsState
-
   const usersState = useSelector((state: RootState) => state.usersState);
   const { users } = usersState
-  //console.log(users)
+  const commentsState = useSelector((state: RootState) => state.commentsState);
+  let { comments } = commentsState
 
   useEffect(() => {
-    getAllUsers()
-    console.log('hi')
+   getAllUsers()
   }, [])
 
+
   const getAllUsers = async () => {
-    await dispatch(getUsers(null))
+    //await dispatch(getUsers(null))
+    //await dispatch(getPins(0))
+    //await dispatch(getComments(null))
   }
 
   useEffect(() => {

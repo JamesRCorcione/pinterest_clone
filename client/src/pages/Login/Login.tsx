@@ -34,7 +34,7 @@ const Login = () => {
           <Box sx={{display: 'flex', position: 'absolute', width: '100%', paddingBottom: 1, backgroundColor: grey[100], height: 50, overflowX: 'hidden', zIndex: 2}}>
             <Box>
               <IconButton sx={{position: 'absolute', top: 8, marginLeft: 1}} disableFocusRipple disableRipple>
-                <img src={pinterestLogo} alt='website icon' height='25px' />
+                <img src={pinterestLogo} alt='website icon' height='25px' width='25px' />
               </IconButton>
               <IconButton sx={{position: 'absolute', left: 35}} disableFocusRipple disableRipple>
                 <Typography sx={{color: red[700], marginTop: 1.2, marginLeft: 1}}>Pinterest</Typography>

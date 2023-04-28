@@ -21,6 +21,9 @@ function isPendingAction(action: Action) {
   return action.type.endsWith('pending')
 }
 
+export const API_DEFAULT_PARAMS = {
+  startIndex: 0
+}
 
 const API = axios.create({ baseURL })
 
@@ -53,9 +56,9 @@ export const createPin = createAsyncThunk(
 
 export const getPins = createAsyncThunk(
   'pins/getPins',
-  async (page: any = null, { rejectWithValue }) => {
+  async (startIndex: number, { rejectWithValue }) => {
     try {
-      const response = await API.get('pins')
+      const response = await API.get(`pins/?startIndex=${startIndex}`)
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access
@@ -189,7 +192,7 @@ const pinSlice = createSlice({
         return { ...state, pins: [action.payload, ...state.pins], pinStatus: 'success', pinError: '' }
       })
       .addCase(getPins.fulfilled, (state, action) => {
-        return { ...state, pins: action.payload, pinStatus: 'success', pinError: '' }
+        return { ...state.pins, pins: action.payload, pinStatus: 'success', pinError: '' }
       })
       .addCase(getPin.fulfilled, (state, action) => {
         return { ...state, pin: action.payload, pinStatus: 'success', pinError: '' }

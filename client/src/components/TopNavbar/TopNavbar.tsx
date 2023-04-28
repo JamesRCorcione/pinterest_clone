@@ -66,7 +66,7 @@ const TopNavbar = () => {
   }
 
   const handleGoToProfile = () => {
-    window.scrollTo(0, 0)
+    //window.scrollTo(0, 0)
     navigate(`/user-profile/${user?.result._id}`)    
     window.location.reload()
   }
@@ -78,7 +78,7 @@ const TopNavbar = () => {
   }
 
   const handleOpenSearch = () => {
-    window.scrollTo(0,0)
+    //window.scrollTo(0,0)
     setOpenMobileSearch((prev) => !prev)
     navigate('/')
   }
@@ -123,7 +123,7 @@ const TopNavbar = () => {
 
         <Box className={classes.leftSideContainer}>
           <IconButton  className={classes.logoButton} onClick={() => navigate('/')}>
-            <img src={pinterestLogo} alt='website icon' height='25px' />
+            <img src={pinterestLogo} alt='website icon' height='25px' width='25px' />
           </IconButton>
           <Box className={classes.boxList}>
           <Button className={classes.homeButton} onClick={() => navigate('/')}>

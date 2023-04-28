@@ -7,7 +7,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import UploadIcon from '@mui/icons-material/Upload';
 
 import useStyles from './styles'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { GetUserById, RemoveSavePin, SavePin } from '../../features/usersSlice'
 import { grey } from '@mui/material/colors'
 import { deletePin } from '../../features/pinsSlice'
@@ -16,6 +16,7 @@ import FileSaver from 'file-saver'
 
 import { handleDownload, handleDeletePin, removeSavePin, savePin } from '../../utils/pinUtils'
 import { handleGoToPin, handleGoToProfile } from '../../utils/navigationUtils'
+import Spinner from '../Spinner/Spinner'
 
 interface PinProps {
     pin: IPin
@@ -23,11 +24,15 @@ interface PinProps {
 
 const Pin = ({ pin }:PinProps) => {
   let user = fetchUser()
+  const [loading, setLoading] = useState(false)
   const [postHovered, setPostHovered] = useState(false)
   const navigate = useNavigate()
   const [savingPost, setSavingPost] = useState(false)
   const [openPinMenu, setOpenPinMenu] = useState(false)
   const [openMobileMenu, setOpenMobileMenu] = useState(false)
+  const usersState = useSelector((state: RootState) => state.usersState);
+  const { users } = usersState
+
   
   const { classes } = useStyles()
   const dispatch = useDispatch<AppDispatch>()
@@ -40,23 +45,29 @@ const Pin = ({ pin }:PinProps) => {
   let saved = totalSaved?.length > 0 ? true : false
 
   useEffect(() => {
-   setOpenMobileMenu(false)  
-   user = fetchUser()
+    setOpenMobileMenu(false)  
+    user = fetchUser()
     totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
     saved = totalSaved?.length > 0 ? true : false
-    getCreatorUser()
+    
   }, [])
 
+  useEffect(() => {
+    getCreatorUser()
+  }, [users])
+
   const getCreatorUser = async () => {
-    let data = await dispatch(GetUserById(creatorId))
-    setCreatorUserName(data.payload.userName)
-    setCreatorUserImage(data.payload.image)
+    //let data = await dispatch(GetUserById(creatorId))
+    if (users) {
+      const creatorUser = await users.find((user:any) => user._id === creatorId)
+      setCreatorUserName(creatorUser.userName)
+      setCreatorUserImage(creatorUser.image)
+    }
   }
 
-  return (  
-    <>
-    <Box>
 
+  return (  
+    <Box>
       {/* Handles on hover image -> Buttons display */}
       <Box
         className={classes.container} 
@@ -171,11 +182,11 @@ const Pin = ({ pin }:PinProps) => {
         >
           {creatorUserImage 
           ?
-            <Box sx={{borderRadius: 99, minWidth: 50, maxWidth: 50, minHeight: 50, maxHeight: 50, overflow: 'hidden'}}>
+            <Box sx={{borderRadius: 99, minWidth: 40, maxWidth: 40, minHeight: 40, maxHeight: 40, overflow: 'hidden'}}>
               <img  
                 src={creatorUserImage}
-                width={50}
-                height={50}
+                width={40}
+                height={40}
                 alt="user-profile"
               />
             </Box>
@@ -240,7 +251,6 @@ const Pin = ({ pin }:PinProps) => {
       }
 
     </Box>    
-    </>
   )
 }
 

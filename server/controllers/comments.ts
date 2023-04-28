@@ -24,6 +24,17 @@ export const createComment = async (req: Request, res: Response) => {
 export const getComments = async (req: Request, res: Response) => {
   const { id } = req.params
     try {
+        const comments = await Comments.find().sort({ createdAt: -1 })
+  
+        res.status(200).send(comments)
+      } catch (error) {
+        res.status(500).send("Error: " + error)
+      }
+}
+
+export const getCommentsByPin = async (req: Request, res: Response) => {
+  const { id } = req.params
+    try {
         const comments = await Comments.find({pinId: id}).sort({ createdAt: -1 })
   
         res.status(200).send(comments)

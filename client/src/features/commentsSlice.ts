@@ -67,7 +67,25 @@ interface CreateReplyProps {
 }
 
 export const getComments = createAsyncThunk(
-    'comments/getComments',
+  'comments/getComments',
+  
+  async (id:any = null, { rejectWithValue }) => {
+    try {
+      const response = await API.get(baseURL + `comments`)
+      return response.data
+    } catch (err: any) {
+      let error: AxiosError<ValidationErrors> = err // cast the error for access
+      if (!error.response) {
+        throw err
+      }
+      // We got validation errors, let's return those so we can reference in our component and set form errors
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const getCommentsByPin = createAsyncThunk(
+    'comments/getCommentsByPin',
     
     async (id:any = null, { rejectWithValue }) => {
       try {
@@ -237,8 +255,11 @@ const commentsSlice = createSlice({
     builder
       .addCase(createComment.fulfilled, (state, action) => {
         return { ...state, comments: [action.payload, ...state.comments], commentStatus: 'success', commentError: '' }
-      })    
+      })   
       .addCase(getComments.fulfilled, (state, action) => {
+        return { ...state, comments: action.payload, commentStatus: 'success', commentError: '' }
+      })   
+      .addCase(getCommentsByPin.fulfilled, (state, action) => {
         return { ...state, comments: action.payload, commentStatus: 'success', commentError: '' }
       })   
       .addCase(updateReply.fulfilled, (state, action) => {
