@@ -38,8 +38,8 @@ function App() {
 
   const getAllUsers = async () => {
     await dispatch(getUsers(null))
-    await dispatch(getPins(0))
-    await dispatch(getComments(null))
+    //await dispatch(getPins(0))
+    //await dispatch(getComments(null))
   }
 
   useEffect(() => {

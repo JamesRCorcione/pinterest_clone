@@ -29,7 +29,7 @@ export default makeStyles()((theme) => {
     },
     image: {
       width: 400,
-      height: '100%',
+      height: '100vw',
       borderTopLeftRadius: 40,
       borderBottomLeftRadius: 40,
       objectFit: 'cover',
@@ -43,8 +43,8 @@ export default makeStyles()((theme) => {
         display: 'flex',
         justifyContent: 'start',
         alignItems: 'start',
-        width: '100%',
-        height: 'auto',
+        width: '100vw',
+        height: '100vw',
         borderRadius: 40,
       }
     },    

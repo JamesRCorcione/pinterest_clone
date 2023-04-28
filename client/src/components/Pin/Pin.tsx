@@ -79,10 +79,10 @@ const Pin = ({ pin }:PinProps) => {
         {/* Switches rendering for if post is hovered with mouse */}
         {!postHovered 
           ?
-           <img className={classes.imageOp} height={'100%'} width={'100%'} alt="user-post" src={image}  /> 
+           <img className={classes.imageOp} height={'100vw'} width={'100vw'} alt="user-post" src={image}  /> 
           : 
           <>
-            <img className={classes.image} height={'100%'} width={'100%'} alt="user-post" src={image}  />
+            <img className={classes.image} height={'100vw'} width={'100vw'} alt="user-post" src={image}  />
             <Box className={classes.onHoverImageContainer}>
 
             {/* Save button logic and buttons */}
