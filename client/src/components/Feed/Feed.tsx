@@ -23,37 +23,38 @@ const Feed = ({pins}:any) => {
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch<AppDispatch>()
   const classes = useStyles()
-  const [totalPins, setTotalPins] = useState<number>(20)
+  const [totalPins, setTotalPins] = useState<number>(0)
 
 
 
   useEffect(() => {        
-    //loadPins()    
+    loadPins()    
     //window.addEventListener('scroll', handleScroll, { passive: true })
     //return () => {
     //    window.removeEventListener('scroll', handleScroll)
     //}
   }, [])
 
+  console.log(pins.length)
 
   async function loadPins() {
     //setLoading(true)
-    //await dispatch(getPins(20))
+    await dispatch(getPins(20))
     //setLoading(false)
   }
 
-  const handleScroll = (e:any) => {
-    window.addEventListener('scroll', 
-      function() {
-        if ((window.innerHeight + window.scrollY + 1) >= document.body.offsetHeight) {
-         console.log("you're at the bottom of the page");
-         // Show loading spinner and make fetch request to api         
-         loadPins()
-        }
-      },
-      { once: true }
-    )
-  }
+  //const handleScroll = (e:any) => {
+  //  window.addEventListener('scroll', 
+  //    function() {
+  //      if ((window.innerHeight + window.scrollY + 1) >= document.body.offsetHeight) {
+  //       console.log("you're at the bottom of the page");
+  //       // Show loading spinner and make fetch request to api         
+  //       loadPins()
+  //      }
+  //    },
+  //    { once: true }
+  //  )
+  //}
 
 
   
@@ -61,7 +62,7 @@ const Feed = ({pins}:any) => {
   if (pins?.length === 0) return <Box sx={{position: 'absolute', top: 80, left: 50}}><h2>No Pins Available</h2></Box>
 
   return (
-    <Box onScroll={handleScroll}>
+    <Box>
       <Masonry className={classes.pin} breakpointCols={breakpointObj}>
         {pins?.map((pin:IPin, i:number) => <Pin key={i} pin={pin} />)}        
       </Masonry>                       
