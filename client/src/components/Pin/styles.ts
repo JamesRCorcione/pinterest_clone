@@ -16,7 +16,7 @@ export default makeStyles()((theme) => {
       marginTop: 10,
       borderRadius: 10,
       height: 'auto',
-      width: 'auto',
+      width: '95%',
       cursor: "pointer",
       [theme.breakpoints.down(750)]: { 
         

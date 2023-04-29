@@ -5,7 +5,8 @@ export default makeStyles((theme) => ({
   pin: {
     display: 'flex',  
     //marginTop: 80, 
-    marginX: 'auto', 
+    marginX: '1', 
+    maxWidth: '100%',
     paddingTop: 80,
     '&:hover': {
       transition: 1,

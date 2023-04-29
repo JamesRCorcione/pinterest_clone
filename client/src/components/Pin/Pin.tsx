@@ -60,8 +60,8 @@ const Pin = ({ pin }:PinProps) => {
     //let data = await dispatch(GetUserById(creatorId))
     if (users) {
       const creatorUser = await users.find((user:any) => user._id === creatorId)
-      setCreatorUserName(creatorUser.userName)
-      setCreatorUserImage(creatorUser.image)
+      setCreatorUserName(creatorUser?.userName)
+      setCreatorUserImage(creatorUser?.image)
     }
   }
 
