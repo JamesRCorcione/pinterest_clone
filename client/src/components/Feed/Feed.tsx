@@ -23,40 +23,45 @@ const Feed = ({pins}:any) => {
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch<AppDispatch>()
   const classes = useStyles()
-  const [totalPins, setTotalPins] = useState<number>(0)
+  const [totalPins, setTotalPins] = useState<number>(20)
+  const [atBottom, setAtBottom] = useState<boolean>(false)
 
 
 
   useEffect(() => {        
     loadPins()    
-    //window.addEventListener('scroll', handleScroll, { passive: true })
-    //return () => {
-    //    window.removeEventListener('scroll', handleScroll)
-    //}
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+        window.removeEventListener('scroll', handleScroll)
+    }
   }, [])
 
-  console.log(pins.length)
+  useEffect(() => {
+    loadPins()
+    setAtBottom(false) 
+  }, [atBottom])
 
+
+  console.log('load pins', totalPins, pins.length)
   async function loadPins() {
     //setLoading(true)
-    await dispatch(getPins(20))
+    await dispatch(getPins(pins.length + 20))
     //setLoading(false)
   }
 
-  //const handleScroll = (e:any) => {
-  //  window.addEventListener('scroll', 
-  //    function() {
-  //      if ((window.innerHeight + window.scrollY + 1) >= document.body.offsetHeight) {
-  //       console.log("you're at the bottom of the page");
-  //       // Show loading spinner and make fetch request to api         
-  //       loadPins()
-  //      }
-  //    },
-  //    { once: true }
-  //  )
-  //}
-
-
+  const handleScroll = (e:any) => {
+    window.addEventListener('scroll', 
+      async function() {
+        if ((window.innerHeight + window.scrollY + 1) >= document.body.offsetHeight && !atBottom) {
+         //console.log("you're at the bottom of the page");
+         // Show loading spinner and make fetch request to api
+         setAtBottom(true)        
+        // setTotalPins((totalPins) => totalPins + 20)
+        }
+      },
+      { once: true }
+    )
+  }
   
   if (loading) return <Spinner message="We are adding pins to your feed!"/>
   if (pins?.length === 0) return <Box sx={{position: 'absolute', top: 80, left: 50}}><h2>No Pins Available</h2></Box>

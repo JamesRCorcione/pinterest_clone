@@ -66,11 +66,9 @@ const Pin = ({ pin }:PinProps) => {
     }
 
     await getImageDimensions(pin.image)
-      .then((d) => setImageDimensions(d))
-    
+      .then((d) => setImageDimensions(d))    
   }
 
-  console.log('imdim',imageDimensions)
   if (!imageDimensions) return <Spinner message="" />
 
   return (  
