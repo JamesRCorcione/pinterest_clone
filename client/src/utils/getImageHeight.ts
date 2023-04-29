@@ -7,3 +7,15 @@ export function getImageDimensions(file:any) {
       i.src = file
     })
 }
+
+//const img = new Image();
+//
+//img.src = 'https://via.placeholder.com/350x150';
+//
+//img.onload = function() {
+//  const imgWidth = img.naturalWidth;
+//  const imgHeight = img.naturalHeight;
+//
+//  console.log('imgWidth: ', imgWidth);
+//  console.log('imgHeight: ', imgHeight);
+//};

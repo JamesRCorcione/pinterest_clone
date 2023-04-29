@@ -71,7 +71,7 @@ const Pin = ({ pin }:PinProps) => {
   }
 
   console.log('imdim',imageDimensions)
-
+  if (!imageDimensions) return <Spinner message="" />
 
   return (  
     <Box>
@@ -84,9 +84,9 @@ const Pin = ({ pin }:PinProps) => {
       >
 
         {/* Switches rendering for if post is hovered with mouse */}
-        {!postHovered 
+        {(!postHovered)
           ?
-           <img className={classes.imageOp}  alt="user-post" src={image}  /> 
+           <img className={classes.imageOp} height={imageDimensions.h} width={imageDimensions.w} alt="user-post" src={image}  /> 
           : 
           <>
             <img className={classes.image} height={imageDimensions.h} width={imageDimensions.w} alt="user-post" src={image}  />

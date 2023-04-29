@@ -10,13 +10,13 @@ export default makeStyles()((theme) => {
       alignItems: 'center',
       overflow: 'hidden',
       backgroundColor: 'black',
-      marginLeft: 10,
-      marginRight: 10,
+      marginLeft: 4,
+      marginRight: 2,
       marginBottom: 5,
       marginTop: 10,
       borderRadius: 10,
       height: 'auto',
-      width: '95%',
+      width: '96%',
       cursor: "pointer",
       [theme.breakpoints.down(750)]: { 
         
