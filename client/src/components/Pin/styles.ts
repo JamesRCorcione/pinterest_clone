@@ -30,6 +30,12 @@ export default makeStyles()((theme) => {
       //height: 'auto',
       //width: 'auto',
     },
+    imageOp: {
+      overflow: 'hidden',
+      objectFit: 'cover', 
+      //width: '100%',
+      //height: '100%'  
+    },
     onHoverImageContainer: {
       position: 'absolute', 
       top:0, 
@@ -76,12 +82,7 @@ export default makeStyles()((theme) => {
     moreActionsButton: {
       '&:hover': { backgroundColor: grey[100], opacity: 1}, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30, backgroundColor: grey[200], borderRadius: 99, position: 'absolute', bottom: 15, right: 60, opacity: 0.9 
     },
-    imageOp: {
-      overflow: 'hidden',
-      objectFit: 'cover', 
-      //width: '100%',
-      //height: '100%'  
-    },
+    
     shareImageButton: {
       '&:hover': { 
         backgroundColor: grey[100], 

@@ -16,6 +16,7 @@ import FileSaver from 'file-saver'
 
 import { handleDownload, handleDeletePin, removeSavePin, savePin } from '../../utils/pinUtils'
 import { handleGoToPin, handleGoToProfile } from '../../utils/navigationUtils'
+import { getImageDimensions } from '../../utils/getImageHeight'
 import Spinner from '../Spinner/Spinner'
 
 interface PinProps {
@@ -39,6 +40,7 @@ const Pin = ({ pin }:PinProps) => {
   const { creatorId, image, _id, destination } = pin
   const [creatorUserName, setCreatorUserName] = useState('')
   const [creatorUserImage, setCreatorUserImage] = useState('')
+  const [imageDimensions, setImageDimensions] = useState<any>()
 
 
   let totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
@@ -48,8 +50,7 @@ const Pin = ({ pin }:PinProps) => {
     setOpenMobileMenu(false)  
     user = fetchUser()
     totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
-    saved = totalSaved?.length > 0 ? true : false
-    
+    saved = totalSaved?.length > 0 ? true : false    
   }, [])
 
   useEffect(() => {
@@ -63,7 +64,13 @@ const Pin = ({ pin }:PinProps) => {
       setCreatorUserName(creatorUser?.userName)
       setCreatorUserImage(creatorUser?.image)
     }
+
+    await getImageDimensions(pin.image)
+      .then((d) => setImageDimensions(d))
+    
   }
+
+  console.log('imdim',imageDimensions)
 
 
   return (  
@@ -79,10 +86,10 @@ const Pin = ({ pin }:PinProps) => {
         {/* Switches rendering for if post is hovered with mouse */}
         {!postHovered 
           ?
-           <img className={classes.imageOp} width={'100%'} aspect-ratio={16/10} alt="user-post" src={image}  /> 
+           <img className={classes.imageOp}  alt="user-post" src={image}  /> 
           : 
           <>
-            <img className={classes.image} width={'100%'} aspect-ratio={16/10} alt="user-post" src={image}  />
+            <img className={classes.image} height={imageDimensions.h} width={imageDimensions.w} alt="user-post" src={image}  />
             <Box className={classes.onHoverImageContainer}>
 
             {/* Save button logic and buttons */}
