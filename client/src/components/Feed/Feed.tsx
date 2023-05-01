@@ -2,6 +2,8 @@ import { useState, useEffect, useRef} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { getPins, getPinsByTags } from '../../features/pinsSlice'
+import { Circles } from 'react-loader-spinner'
+
 
 import useStyles from './styles'
 import Spinner from '../Spinner/Spinner'
@@ -25,6 +27,8 @@ const Feed = ({pins}:any) => {
   const classes = useStyles()
   const [totalPins, setTotalPins] = useState<number>(20)
   const [atBottom, setAtBottom] = useState<boolean>(false)
+  const usersState = useSelector((state: RootState) => state.usersState);
+  const { users } = usersState
 
 
 
@@ -42,11 +46,10 @@ const Feed = ({pins}:any) => {
   }, [atBottom])
 
 
-  console.log('load pins', totalPins, pins.length)
   async function loadPins() {
-    //setLoading(true)
+    setLoading(true)
     await dispatch(getPins(pins.length + 20))
-    //setLoading(false)
+    setLoading(false)
   }
 
   const handleScroll = (e:any) => {
@@ -62,16 +65,28 @@ const Feed = ({pins}:any) => {
       { once: true }
     )
   }
-  
-  if (loading) return <Spinner message="We are adding pins to your feed!"/>
-  if (pins?.length === 0) return <Box sx={{position: 'absolute', top: 80, left: 50}}><h2>No Pins Available</h2></Box>
+
+
+  //if (loading) return <Box sx={{position: 'relative', top: 0}}><Circles color="#00BFFF" height={50} width={200}/></Box>
+  if (pins?.length === 0 && !loading) return <Box sx={{position: 'relative', width: '90%', top: 80, left: 50}}><h2>No Pins Available</h2></Box>
 
   return (
-    <Box>
-      <Masonry className={classes.pin} breakpointCols={breakpointObj}>
-        {pins?.map((pin:IPin, i:number) => <Pin key={i} pin={pin} />)}        
-      </Masonry>                       
-    </Box>
+    <>
+    {loading &&
+      <Box sx={{position: 'relative'}}>
+        <Box sx={{position: 'absolute', top: 250, right: '50%', zIndex: 2}}>
+          <Box sx={{position: 'relative', }}>
+              <Circles color="#00BFFF" height={50} width={50}/>
+          </Box>
+        </Box>
+      </Box>
+    }
+      <Box>
+        <Masonry className={classes.pin} breakpointCols={breakpointObj}>
+          {pins?.map((pin:IPin, i:number) => <Pin key={i} pin={pin} />)}        
+        </Masonry>                       
+      </Box>
+    </>
   )
 }
 

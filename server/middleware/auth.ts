@@ -13,6 +13,7 @@ interface GoogleToken {
 
 const secret = process.env.SECRET as string
 
+
 //non-custom auth is just googleauth
 const auth = async (req: Request, res: Response, next: NextFunction) => {
     try {

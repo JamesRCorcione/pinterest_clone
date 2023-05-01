@@ -1,8 +1,8 @@
 import { Avatar, Box, Button, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { grey, blue } from '@mui/material/colors';
+import { grey, blue, red } from '@mui/material/colors';
 import { useDispatch, useSelector } from 'react-redux';
-import { createReply, deleteComment, getComments, heartCommentPin, unheartCommentPin, updateComment,  } from '../../features/commentsSlice'
+import { createReply, deleteComment, getCommentsByPin, heartCommentPin, unheartCommentPin, updateComment,  } from '../../features/commentsSlice'
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -15,6 +15,7 @@ import { GetUserById } from '../../features/usersSlice';
 
 
 interface CommentProps {
+  index: any
   user: any, 
   pinId: any, 
   comment: any
@@ -22,9 +23,11 @@ interface CommentProps {
 }
 
 
-const Comment = ({user, pinId, comment, reply}:CommentProps) => {
+const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
+  const usersState = useSelector((state: RootState) => state.usersState);
+  let { users } = usersState
   const commentsState = useSelector((state: RootState) => state.commentsState);
   let { comments } = commentsState
   const [replying, setReplying] = useState(false)
@@ -33,6 +36,8 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
   const [actionBar, setActionBar] = useState(false)
   const [updateHeadComment, setUpdateHeadComment] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [updating, setUpdating] = useState(false)
+  const [heartLoading, setHeartLoading] = useState(false)
   const [isLoved, setIsLoved] = useState(false)
   const commenterId = comment.commentingUserId
   const [commenterUserName, setCommenterUserName] = useState('')
@@ -53,6 +58,18 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
  }, [comments])
 
 
+ function reply_click()
+ {
+     //alert(`action-bar-${comment._id}`)
+     console.log(comments.length)
+     setActionBar((prev) => !prev)
+ }
+
+ useEffect(() => {
+  //const el = document.getElementById(`action-bar-${comment._id}`)
+  //el.onclick = function () { alert('hi')}
+ }, [actionBar])
+
   const handleCreateComment = async ({e, taggedUser}:any) => {
     setReplying(false)
     e.preventDefault()
@@ -66,59 +83,70 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
       } else {
         await dispatch(createReply({pinId, commentId: comment._id, replyId: null, text, commentingUserId: commenterId, taggedUser: commenterId}))
       }
+      let removeText = (document.getElementById('commentInput') as HTMLInputElement).value = ''
+      setText(removeText)
       setUpdateHeadComment(false)
-      await dispatch(getComments(pinId))      
+      await dispatch(getCommentsByPin(pinId))      
       setLoading(false)
     }
   }
 
   const getCommenterUser = async () => {
-  let data = await dispatch(GetUserById(commenterId))
-    setCommenterUserName(data.payload.userName)
-    setCommenterUserImage(data.payload.image)
+    //let data = await dispatch(GetUserById(commenterId))
+    //setCommenterUserName(data.payload.userName)
+    //setCommenterUserImage(data.payload.image)
+    if (users) {
+      const creatorUser = await users.find((user:any) => user._id === commenterId)
+      setCommenterUserName(creatorUser?.userName)
+      setCommenterUserImage(creatorUser?.image)
+    }
+    
   }
 
   const handleUpdateComment = async (e:any) => {
     setReplying(false)
-    e.preventDefault()
+    //e.preventDefault()
     if (pinId) {
-      setLoading(true)
-      await dispatch(updateComment({pinId, commentId: comment._id, replyId: comment._id, text}))
-      await dispatch(getComments(pinId))
-      setUpdateHeadComment(false)
       setActionBar(false)
-      setLoading(false)
+      setUpdateHeadComment(false)
+      setUpdating(true)
+      await dispatch(updateComment({pinId, commentId: comment._id, replyId: comment._id, text}))
+      await dispatch(getCommentsByPin(pinId))     
+      
+      setUpdating(false)
     }
   }
 
   const handleDeleteComment = async (e:any) => {
     //e.preventDefault()
     if (pinId) {
+      setUpdating(true)
       await dispatch(deleteComment({pinId, commentId: comment._id, replyId: comment._id}))
       setActionBar(false)
-      await dispatch(getComments(pinId))
+      await dispatch(getCommentsByPin(pinId))
+      setUpdating(false)
     }
   }
 
   const handleHeartPin = async (e:any) => {
     e.preventDefault()
     if (pinId) {      
-      //setLoading(true)
+      setHeartLoading(true)
       await dispatch(heartCommentPin({pinId, commentId: comment._id, userId: user.result._id, replyId: comment._id }))
       setIsLoved(true)
-      await dispatch(getComments(pinId))
-      //setLoading(false)
+      await dispatch(getCommentsByPin(pinId))
+      setHeartLoading(false)
     }
   }
 
   const handleUnHeartPin = async (e:any) => {
     e.preventDefault()
     if (pinId) {      
-      //setLoading(true)
+      setHeartLoading(true)
       await dispatch(unheartCommentPin({pinId, commentId: comment._id, userId: user.result._id, replyId: comment._id }))
       setIsLoved(false)
-      await dispatch(getComments(pinId))
-      //setLoading(false)
+      await dispatch(getCommentsByPin(pinId))
+      setHeartLoading(false)
     }
   }
 
@@ -127,87 +155,113 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
   }
 
   const handleOpenActionBar = () => {
-    setActionBar((prev) => !prev)
+    setActionBar(true)
   }
 
   const getElapsedTime = () => {
     console.log(((new Date().getTime() - new Date(comment.createdAt).getTime()) / 1000) / 60, 'minutes')
   }
 
-  const renderReply = () => (
-    <Box sx={{marginLeft: 5}}>
-      <Box sx={{display: 'flex'}}>
-        <Avatar onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{commenterUserName?.charAt(0)}</Avatar>
-        <Typography onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}> {commenterUserName}</Typography>               
-      </Box>
-      <Box><Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>{comment?.text}</Typography></Box>
-      <Box sx={{display: 'flex', marginLeft: 4.5, marginBottom: 2}}>
-          <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>{y}</Typography>
-          <Box sx={{marginRight: 1, size: 'small'}}>
-            <Button 
-              variant='text'
-              disableElevation
-              disableRipple
-              sx={{marginLeft: 1, minHeight: 0, maxHeight: 0, minWidth: 0, maxWidth: 0}}
-              onClick={handleOpenReplying}
-            >
-              <Typography sx={{fontWeight: 500, textTransform: 'capitalize', color: 'black', fontSize: 12, marginRight: 3.5}}>Reply</Typography>
-            </Button>
-          </Box>
-          <Box sx={{marginRight: 1}}>
-            {(isLoved && comment.hearts?.length > 0)
-            ?
-            <Box sx={{display: 'flex'}}>
-              <FavoriteRoundedIcon onClick={(e) => handleUnHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
-              <Typography>{comment.hearts?.length}</Typography>
-            </Box>
-            :
-            <Box sx={{display: 'flex'}}>
-              <FavoriteBorderRoundedIcon onClick={(e) => handleHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
-              {comment.hearts?.length > 0 &&
-                <Typography>{comment.hearts.length}</Typography>
-              }
-            </Box>
-            }
-            </Box>
-            {user?.result?._id === commenterId &&
-              <Box sx={{marginRight: 1}}><MoreHorizIcon onClick={handleOpenActionBar} sx={{cursor: 'pointer', marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} /></Box>
-            }
-          {actionBar &&
-            <Box sx={{position: 'relative', height: 150}}>
-              <Box sx={{position: 'absolute', borderRadius: 2, backgroundColor: 'white', height: 100, width: 150, top: 30, right: -50, boxShadow:2, zIndex:2}}>
-                <Box sx={{display: 'flex', flexDirection: 'column'}}>
-                  <Button onClick={() => setUpdateHeadComment((prev) => !prev)}>Edit</Button>
-                  <Button onClick={(e) => handleDeleteComment(pinId)}>Delete</Button>
-                </Box>
-              </Box>
-            </Box>
-          }
-      </Box>
-        {replying && 
-              <form onSubmit={(e) => handleCreateComment({e, taggedUser: true})}>
-                <TextField      
-                  onChange={(e:any) => setText(e.target.value)}             
-                  placeholder='Reply'
-                  defaultValue={`@${commenterUserName} `}
-                  multiline
-                  maxRows={10} 
-                  sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
-                >
-              </TextField>        
-            </form>  
-        }      
-    </Box>
-  )
+  const handleGoToProfile = () => {
+    //window.scrollTo(0, 0)
+    //setOpenMobileSearch(false)
+    navigate(`/user-profile/${user?.result._id}`)    
+    window.location.reload()
+  }
 
-  const renderHeadComment = () => (
-    <Box sx={{marginLeft: 0}}>
+
+  const renderHeart = () => (
+    <Box sx={{marginRight: 1}}>
+      {(isLoved && comment.hearts?.length > 0) ?
+        <>
+        {!heartLoading ?
+          <Box sx={{display: 'flex'}}>
+            <FavoriteRoundedIcon onClick={(e) => handleUnHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
+            <Typography>{comment.hearts?.length}</Typography>
+          </Box>
+          :
+          <Circles color={red[400]} height={15} width={15} />
+          }
+        </>
+      :
+        <>
+          {!heartLoading ?
+          <Box sx={{display: 'flex'}}>
+            <FavoriteBorderRoundedIcon onClick={(e) => handleHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
+            {comment.hearts?.length > 0 &&
+              <Typography>{comment.hearts.length}</Typography>
+            }
+          </Box>
+          :
+          <Circles color={red[400]} height={15} width={15} />
+          }
+        </>
+      }
+    </Box>
+  ) 
+
+  const renderComment = ({margin, taggedUser}:any) => (
+    <Box sx={{marginLeft: margin}}>
       <Box sx={{display: 'flex'}}>
-        <Avatar onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>{commenterUserName?.charAt(0)}</Avatar>
+      <Button 
+            onClick={handleGoToProfile}
+          >
+        {commenterUserImage ?
+          <Box sx={{borderRadius: 99, minWidth: 40, maxWidth: 40, minHeight: 40, maxHeight: 40, overflow: 'hidden'}}>
+            <img  
+              src={commenterUserImage}
+              width={40}
+              height={40}
+              alt="user-profile"
+            />
+          </Box>
+        :
+          <Avatar onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', marginRight: 1, minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30}}>
+            {commenterUserName?.charAt(0)}
+          </Avatar>
+        }
+        </Button>
         <Typography onClick={() => navigate(`/user-profile/${commenterId}`)} sx={{cursor: 'pointer', fontWeight: 'bold', wordBreak: 'break-word', fontSize: 14, marginRight: 1, marginTop: 0.5 }}>{commenterUserName}</Typography>               
       </Box>
-      <Box><Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>{comment?.text}</Typography></Box>
-      <Box sx={{display: 'flex', marginLeft: 4.5, marginBottom: 2}}>
+      
+      {updateHeadComment ?
+        /* Head comment reply box */
+        <>            
+          <form onSubmit={handleUpdateComment}>
+              <TextField      
+                id={'edit-reply'}
+                onChange={(e:any) => setText(e.target.value)}             
+                placeholder='Edit Reply'
+                defaultValue={comment.text}
+                multiline
+                rows={comment.text.length/40}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    handleUpdateComment({e})
+                  }
+                }}
+                sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
+                InputProps={{endAdornment: <Button onClick={(e) => handleUpdateComment(e)}>Submit</Button>}}
+
+              >
+            </TextField>        
+          </form>              
+        </>
+        :     
+        /* Comment text */     
+        <>
+        {updating ?
+          <Box sx={{position: 'relative', height: 60, marginLeft: 15, marginTop: 3}}><Circles color={grey[400]} height={30} width={30} /></Box>
+        :
+          <Typography sx={{ wordBreak: 'break-word', fontSize: 14, marginTop: 0.5, marginX: 5 }}>
+            {comment?.text}
+          </Typography>
+        }
+        </>
+      }
+      {/* info and menus under the comment */}
+      <>
+        <Box id='comment-container' sx={{display: 'flex', marginLeft: 4.5, marginBottom: 2}}>
           <Typography sx={{fontSize: 12, marginTop: 0.5, marginRight: 3}}>{y}</Typography>
           <Box sx={{marginRight: 1, size: 'small'}}>
             <Button 
@@ -220,49 +274,49 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
               <Typography sx={{fontWeight: 500, textTransform: 'capitalize', color: 'black', fontSize: 12, marginRight: 3.5}}>Reply</Typography>
             </Button>
           </Box>
-          <Box sx={{marginRight: 1}}>
-            {(isLoved && comment.hearts?.length > 0)
-            ?
-            <Box sx={{display: 'flex'}}>
-              <FavoriteRoundedIcon onClick={(e) => handleUnHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
-              <Typography>{comment.hearts?.length}</Typography>
-            </Box>
-            :
-            <Box sx={{display: 'flex'}}>
-              <FavoriteBorderRoundedIcon onClick={(e) => handleHeartPin(e)} sx={{cursor: 'pointer', color: 'red', marginRight: 1,marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} />              
-              {comment.hearts?.length > 0 &&
-                <Typography>{comment.hearts.length}</Typography>
-              }
-            </Box>
-            }
-            </Box>
-            {user?.result?._id === commenterId &&
-              <Box sx={{marginRight: 1}}><MoreHorizIcon onClick={handleOpenActionBar} sx={{cursor: 'pointer', marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} /></Box>
-            }
+
+          {renderHeart()}
+          {user?.result?._id === commenterId &&
+            <Box sx={{marginRight: 1}}><MoreHorizIcon id={`action-bar-${comment._id}`} onClick={reply_click} sx={{cursor: 'pointer', marginTop: 0.75, minHeight: 15, maxHeight: 15, minWidth: 15, maxWidth: 15}} /></Box>
+          }
           {actionBar &&
             <Box sx={{position: 'relative', height: 150}}>
-              <Box sx={{position: 'absolute', borderRadius: 2, backgroundColor: 'white', height: 100, width: 150, top: 30, right: -50, boxShadow:2, zIndex:2}}>
-                <Box sx={{display: 'flex', flexDirection: 'column'}}>
-                  <Button onClick={() => setUpdateHeadComment((prev) => !prev)}>Edit</Button>
-                  <Button onClick={(e) => handleDeleteComment(e)}>Delete</Button>
-                </Box>
-              </Box>
+                  <Box sx={{position: 'absolute', borderRadius: 2, backgroundColor: 'white', height: 100, width: 150, top: 30, right: -50, boxShadow:2, zIndex:2}}>
+                    <Box sx={{display: 'flex', flexDirection: 'column'}}>
+                      <Button onClick={() => {
+                        setActionBar(false)
+                        setUpdateHeadComment((prev) => !prev)}}
+                      >
+                        Edit
+                      </Button>
+                      <Button onClick={(e) => handleDeleteComment(e)}>Delete</Button>
+                    </Box>
+                  </Box>
             </Box>
+          }            
+        </Box>
+
+          {replying && 
+            <form onSubmit={(e) => handleCreateComment({e, taggedUser: taggedUser})}>
+                    <TextField      
+                      id={'reply'}
+                      onChange={(e:any) => setText(e.target.value)}             
+                      placeholder='Reply'
+                      multiline                  
+                      maxRows={10}  
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          handleCreateComment({e, taggedUser: taggedUser})
+                        }
+                      }}
+                      sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
+                      InputProps={{endAdornment: <Button onClick={(e) => handleUpdateComment({e, taggedUser: taggedUser})}>Submit</Button>}}
+                    >                      
+                  </TextField>
+            </form>
           }
-        
-      </Box>
-        {replying && 
-              <form onSubmit={(e) => handleCreateComment({e, taggedUser: false})}>
-                <TextField      
-                  onChange={(e:any) => setText(e.target.value)}             
-                  placeholder='Reply'
-                  multiline
-                  maxRows={10}  
-                  sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
-                >
-              </TextField>        
-            </form>  
-        }      
+      </>
+         
     </Box>
   )
 
@@ -277,52 +331,26 @@ const Comment = ({user, pinId, comment, reply}:CommentProps) => {
   }
 
   return (
-    <>
-      {!loading ?
+    <>    
+      {/* Head comment rendering and Reply indented rendering */}
+      {reply ?       
+      /* load over */ 
+      <>
+        {renderComment({margin: 5, taggedUser: true})}
+        {loading && <Box sx={{position: 'relative', height: 60, marginLeft: 15, marginTop: 3}}><Circles color={grey[400]} height={30} width={30} /></Box>}
+      </>
+      :            
+        /* load under */
         <>
-          {updateHeadComment
-          ?
-            /* Head comment reply box */
-            <>            
-              <form onSubmit={handleUpdateComment}>
-                  <TextField      
-                    onChange={(e:any) => setText(e.target.value)}             
-                    placeholder='Reply'
-                    defaultValue={comment.text}
-                    multiline
-                    maxRows={10} 
-                    sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
-                  >
-                </TextField>        
-              </form>              
-              <Button onClick={() => setUpdateHeadComment((prev) => !prev)}>Cancel</Button>
-            </>
-          :
-            /* Head comment rendering and Reply indented rendering */
-            <>            
-              {reply ?        
-                renderReply()
-              :            
-                renderHeadComment()            
-              }
-            </>            
-          }
+        {renderComment({margin: 0, taggedUser: false})    }
+        {loading && <Box sx={{position: 'relative', height: 60, marginLeft: 15, marginTop: 3}}><Circles color={grey[400]} height={30} width={30} /></Box>}        
         </>
-      :
-        /* Loading annimation below */
-        <Box sx={{position: 'relative', height: 60, paddingTop: 3, paddingLeft: 12, marginRight: 7 }}>
-          <Circles 
-              color={grey[400]}
-              height={30}
-              width={150}
-          />
-        </Box>    
-      }
+      } 
 
       {/* Nested replies below */}
       {replies?.length > 0 && (      
         replies.map((reply:any, i:number) => ( 
-          <Comment key={i} user={user} pinId={pinId} comment={reply} reply={true} />
+          <Comment key={i} index={i} user={user} pinId={pinId} comment={reply} reply={true} />
         ))
       )}
     </>

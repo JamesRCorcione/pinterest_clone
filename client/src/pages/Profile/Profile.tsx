@@ -14,6 +14,7 @@ import Spinner from '../../components/Spinner/Spinner'
 import TopNavbar from '../../components/TopNavbar/TopNavbar'
 import Share from '../../components/Share/Share'
 import EditProfile from '../../components/EditProfile/EditProfile'
+import { Circles } from 'react-loader-spinner'
 
 const Profile = () => {
   const { userId } = useParams()
@@ -25,11 +26,11 @@ const Profile = () => {
   const location = useLocation()
   const [createdPins, setCreatedPins] = useState<IPin>()
   const [isSavedTab, setIsSavedTab] = useState<boolean>(true)
-  const [loading, setLoading] = useState(false)
   const { classes } = useStyles()
   const navigate = useNavigate()
   const [openShare, setOpenShare] = useState<boolean>(false)
   const [openEditProfile, setOpenEditProfile] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
 
   useEffect(() => {    
@@ -37,29 +38,56 @@ const Profile = () => {
   }, [])
 
   async function getUserProfile() {
+    setLoading(true)
     await dispatch(GetUserById(userId))
       .then((userData:any) => setProfileUser({result: userData.payload}))
     await dispatch(getPinsByCreator(userId))
       .then((jsonData:any) => setCreatedPins(jsonData.payload))    
-    await dispatch(getPins(0))    
+    //await dispatch(getPins(0))    
+    setLoading(false)
   }
 
-  const logoutUser = () => {
+  const logoutUser = async () => {
     dispatch(Logout())
     //setProfileUser(null)
     navigate('/login')    
   }
+
+  console.log(profileUser?.result.image)
   
   return (
     <>
+    {loading &&
+      <Box sx={{position: 'relative'}}>
+        <Box sx={{position: 'absolute', top: 140, right: '50%', zIndex: 2}}>
+          <Box sx={{position: 'relative', right: '-50%'}}>
+              <Circles color="#00BFFF" height={50} width={50}/>
+          </Box>
+        </Box>
+      </Box>
+    }
     {profileUser &&
       <>
       <Box className={classes.topContainer}>
         <Box sx={{position: 'absolute', left: '50%',}}>
           <Box sx={{position: 'relative', left: '-50%'}}>
-            <Avatar className={classes.profileImage}>
-              <Typography className={classes.userNameInitial}>{profileUser?.result.userName.charAt(0)}</Typography>
-            </Avatar>          
+          {profileUser?.result.image 
+          ?
+            <Box className={classes.profileImage} sx={{borderRadius: 99, overflow: 'hidden'}}>
+              <Box sx={{paddingTop: 0}}>
+                <img  
+                  src={profileUser?.result.image}
+                  width={'200px'}
+                  height={'auto'}                
+                  alt="user-profile"
+                />
+              </Box>
+            </Box>
+          :
+            <Avatar className={classes.profileImage} >
+              <Typography className={classes.userNameInitial} >{profileUser?.result.userName.charAt(0)}</Typography>
+            </Avatar>
+          }         
             <Typography className={classes.userName}>@{profileUser?.result.userName.split(' ').join('')}</Typography>
           </Box>
         </Box>
@@ -81,7 +109,7 @@ const Profile = () => {
 
         <Box className={classes.editProfileButton}>
           {openEditProfile &&
-            <Box sx={{position: 'absolute', top: 60,  zIndex: 2}}>
+            <Box sx={{position: 'absolute', top: 60, zIndex: 2}}>
               <EditProfile profileUser={profileUser} />
             </Box>
           }

@@ -18,9 +18,7 @@ export const getUser = async (req: Request, res: Response) => {
 
   try {
       const user = await User.findById(id)
-      
       console.log(user?.userName, id)
-
       res.status(200).json(user)
   } catch (error) {
       res.status(404).json({ message: error })
@@ -214,4 +212,17 @@ export const updateUser = async (req: Request, res: Response) => {
   } catch (err) {
     res.status(500).json({ message: "Something went wrong" })
   }
+}
+
+
+//Delete
+export const deleteUser = async (req: Request, res: Response) => {
+  console.log('hi')
+  const user = await User.findById(req.params.id)
+
+  if (!user) return res.status(404).send("Pin not found...")
+
+  const deletedPost = await User.findByIdAndDelete(req.params.id)
+
+  res.send(deletedPost)
 }

@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography, Link, Divider, IconButton } from '@mui/material'
+import { Box, Button, TextField, Typography, Link, Divider, IconButton, InputAdornment, FilledInput } from '@mui/material'
 import { useDispatch } from 'react-redux'
 import React, { useState } from 'react'
 import Dialog from '@mui/material/Dialog';
@@ -11,6 +11,9 @@ import { grey, red } from '@mui/material/colors'
 import useStyle from './styles'
 import { useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
+
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
@@ -28,6 +31,9 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
     const [loading, setLoading] = useState<boolean>(false)
     const [switchLogin, setSwitchLogin] = useState<boolean>(isSignUp)
     const [switchSignup, setSwitchSignup] = useState<boolean>(true)
+
+    const [showPassword, setShowPassword] = useState(false)
+    const handleShowPassword = () => setShowPassword(!showPassword)
 
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -214,7 +220,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
         <>
             <Box className={classes.login}>
                 <Typography className={classes.popupTitle} sx={{marginBottom: 0.5}}>Log In</Typography>
-                <Typography className={classes.serviceAgreement}>By continuing, you are setting up a Pinterest Clone account and agree to our <Link>User Agreement</Link> and <Link>Privacy Policy</Link>.</Typography>
+                <Typography className={classes.serviceAgreement}>By continuing, you are setting up a Pinterest Clone account and agree to our <Link href={'#/agreementAndPolicy'}>User Agreement</Link> and <Link href={'/#/agreementAndPolicy'}>Privacy Policy</Link>.</Typography>
             </Box>
             <Box className={classes.externalLogin} sx={{marginTop: 23}}>
                 <Button 
@@ -245,9 +251,29 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
             <Box className={classes.formContainer} sx={{marginTop: 3}}>
                 <form autoComplete='off' noValidate >  
                     <TextField className={classes.inputTextLogin} name="username" variant="outlined" label="Username" fullWidth onChange={(e) => setForm({ ...form, userName: e.target.value })} />
-                    <TextField className={classes.inputTextLogin} name="password" variant="outlined" type='password' label="Password" fullWidth onChange={(e) => setForm({ ...form, password: e.target.value })} />
+                    <FilledInput 
+                        className={classes.inputTextLogin} 
+                        name="password" 
+                        fullWidth 
+                        disableUnderline
+                        type={showPassword ? 'text' : 'password'} 
+                        endAdornment={
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleShowPassword}
+                                edge="end"
+                              >
+                                {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                              </IconButton>
+                            </InputAdornment>
+                        }
+                        onChange={(e:any) => setForm({ ...form, password: e.target.value })} 
+                    />
                     
-                    
+
+                    {/* Password and Username recovery. Will implement correctly at a later date */}
+                    {false &&
                     <Box sx={{display: 'flex', marginTop: 0.5}}>
                         <Typography sx={{fontStyle: 'sans', fontSize: '12px', marginTop: 1,}}>Forgot your</Typography>
                         <Button onClick={() => {}} className={classes.userNameLink}>
@@ -259,6 +285,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                         </Button>
                         <Typography sx={{fontStyle: 'sans', fontSize: '12px', marginTop: 1, marginLeft: 7.75}}>?</Typography>
                     </Box>
+                    }
 
 
                     <Button onClick={handleSignIn} className={classes.buttonSubmit} sx={{borderRadius: 99, marginTop: 3, backgroundColor: red[700], '&:hover': { backgroundColor: red[900] }}} variant="contained" color="primary" size="large" type="submit" fullWidth>
@@ -279,7 +306,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
             <>
                 <Box className={classes.signup}>
                     <Typography className={classes.popupTitle} sx={{marginBottom: 0.5}}>Sign Up</Typography>
-                    <Typography className={classes.serviceAgreement}>By continuing, you are setting up a Pinterest Clone account and agree to our <Link>User Agreement</Link> and <Link>Privacy Policy</Link>.</Typography>
+                    <Typography className={classes.serviceAgreement}>By continuing, you are setting up a Pinterest Clone account and agree to our <Link href={'/#/agreementAndPolicy'}>User Agreement</Link> and <Link href={'/#/agreementAndPolicy'}>Privacy Policy</Link>.</Typography>
                 </Box>
                 <Box className={classes.externalLogin} sx={{marginTop: 28.5,}}>
                     <Button 

@@ -18,6 +18,7 @@ import { handleDownload, handleDeletePin, removeSavePin, savePin } from '../../u
 import { handleGoToPin, handleGoToProfile } from '../../utils/navigationUtils'
 import { getImageDimensions } from '../../utils/getImageHeight'
 import Spinner from '../Spinner/Spinner'
+import { Circles } from 'react-loader-spinner'
 
 interface PinProps {
     pin: IPin
@@ -61,7 +62,8 @@ const Pin = ({ pin }:PinProps) => {
     //let data = await dispatch(GetUserById(creatorId))
     if (users) {
       const creatorUser = await users.find((user:any) => user._id === creatorId)
-      setCreatorUserName(creatorUser?.userName)
+      console.log('er',creatorUser)
+      setCreatorUserName(creatorUser.userName)
       setCreatorUserImage(creatorUser?.image)
     }
 
@@ -69,7 +71,7 @@ const Pin = ({ pin }:PinProps) => {
       .then((d) => setImageDimensions(d))    
   }
 
-  if (!imageDimensions) return <Spinner message="" />
+  if (!imageDimensions) return <></>//<Box sx={{position: 'relative', top: 0}}><Circles /></Box>
 
   return (  
     <Box>
@@ -243,14 +245,23 @@ const Pin = ({ pin }:PinProps) => {
       {openMobileMenu &&
         <Box sx={{position: 'relative'}}>
           <Box className={classes.mobileActionMenu}>
-            <Button
-                style={{ backgroundColor: 'transparent' }} 
-                onClick={(e) => savePin({e, user, pin, saved, dispatch})}
-                sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
-            >
-                <Typography sx={{marginLeft: 2}}>Save Pin</Typography>
-            </Button>
-
+            {saved ?
+              <Button
+                  style={{ backgroundColor: 'transparent' }} 
+                  onClick={(e) => removeSavePin({e, user, pin, saved, dispatch})}
+                  sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
+              >
+                  <Typography sx={{marginLeft: 0}}>Unsave Pin</Typography>
+              </Button>
+            :
+              <Button
+                  style={{ backgroundColor: 'transparent' }} 
+                  onClick={(e) => savePin({e, user, pin, saved, dispatch})}
+                  sx={{marginLeft: 0.5, textTransform: 'capitalize'}}
+              >
+                  <Typography sx={{marginLeft: 2}}>Save Pin</Typography>
+              </Button>
+            }
           </Box>
       </Box>
       }

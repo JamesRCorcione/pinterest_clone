@@ -26,6 +26,8 @@ import { Circles } from 'react-loader-spinner'
 
 import { handleDownload, handleDeletePin, removeSavePin, savePin, } from '../../utils/pinUtils'
 import { GetUserById } from '../../features/usersSlice'
+import { getImageDimensions } from '../../utils/getImageHeight'
+import Spinner from '../Spinner/Spinner'
 
 const PinDetails = () => {
   let user = fetchUser()
@@ -46,14 +48,16 @@ const PinDetails = () => {
   const [pin, setPin] = useState<IPin>()  
   const [openPinMenu, setOpenPinMenu] = useState(false)
   const [savingPost, setSavingPost] = useState(false)
-  const [expandComments, setExpandComments] = useState(true)
+  const [expandComments, setExpandComments] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [loadingComment, setLoadingComment] = useState(false)
   const [text, setText] = useState<string>('')
   const [openShare, setOpenShare] = useState<boolean>(false)
   
   const creatorId = pin?.creatorId
   const [creatorUserName, setCreatorUserName] = useState('Hi')
   const [creatorUserImage, setCreatorUserImage] = useState('Hi')
+  const [imageDimensions, setImageDimensions] = useState<any>()
   
   let totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
   let saved = totalSaved?.length > 0 ? true : false 
@@ -63,42 +67,52 @@ const PinDetails = () => {
       getPinDetails()
       getCommentsUpdate()      
     }
+    setLoading(true)
     updatePinDetials()
-    getCreatorUser()
+    setLoading(false)
   }, [])
 
+  useEffect(() => {
+    getCreatorUser()
+  }, [users])
+
   const getCreatorUser = async () => {
-    let data = await dispatch(GetUserById(creatorId))
-    setCreatorUserName(data.payload.userName)
-    setCreatorUserImage(data.payload.image)
+    if (users) {
+      const creatorUser = await users.find((user:any) => user._id === creatorId)
+      setCreatorUserName(creatorUser?.userName)
+      setCreatorUserImage(creatorUser?.image)
+    }
+    //let data = await dispatch(GetUserById(creatorId))
+    //setCreatorUserName(data.payload.userName)
+    //setCreatorUserImage(data.payload.image)
+
+    await getImageDimensions(pin?.image)
+      .then((d) => setImageDimensions(d))  
   }
 
   const getPinDetails = async () => {
     //window.scrollTo(0, 0)
     //Need another loading screen for the whole pin
-    setLoading(true)
+    //setLoading(true)
     const data = await dispatch(getPin(pinId))
     setPin(data.payload)
-    setLoading(false)  
+    
+    //setLoading(false)  
   }
 
   const getCommentsUpdate = async () => {
-    setLoading(true)
     await dispatch(getCommentsByPin(pinId))
-    //comments = comments.find((comment:any) => user._id === creatorId)
-    //console.log('cs',comments)
-    setLoading(false)
   }
 
   const handleComment = async (e:any) => {
     e.preventDefault()
     if (pinId) {
-      setLoading(true)
+      setLoadingComment(true)
       await dispatch(createComment({ pinId, text, commentingUserId: user.result._id }))
-      getCommentsUpdate()
-      setText('')
-      e.target.reset()
-      setLoading(false)
+      await dispatch(getCommentsByPin(pinId))     
+      let removeText = (document.getElementById('commentInput') as HTMLInputElement).value = ''
+      setText(removeText)
+      setLoadingComment(false)      
     }
   }
 
@@ -113,13 +127,32 @@ const PinDetails = () => {
     setExpandComments((expand) => !expand)
   }  
 
+  const handleGoToProfile = () => {
+    //window.scrollTo(0, 0)
+    //setOpenMobileSearch(false)
+    navigate(`/user-profile/${user?.result._id}`)    
+    window.location.reload()
+  }
+
+
   return (
     <>
+    {(loading || !imageDimensions) && 
+      <Box sx={{position: 'relative'}}>
+      <Box sx={{position: 'absolute', top: 140, right: '50%', zIndex: 2}}>
+        <Box sx={{position: 'relative', right: '-50%'}}>
+            <Circles color="#00BFFF" height={50} width={50}/>
+        </Box>
+      </Box>
+    </Box>
+    }
+    {imageDimensions &&
+    <>
       <Box className={classes.pageContainer}>
-        <Box className={classes.pinContainer}>
+        <Box className={classes.pinContainer} sx={{height: imageDimensions.h}}>
 
           {/* Mobile view is rendered below */}
-          <img className={classes.mobileImage} height={'100vw'} width={'100vw'} src={pin?.image}></img>
+          <img className={classes.mobileImage} width={'100vw'} height={'auto'} src={pin?.image}></img>
           <Box className={classes.topButtonsMobileContainer}>
               
             <Button className={classes.shareButton} onClick={(e) => handleDownload({e, pin})}>              
@@ -159,7 +192,7 @@ const PinDetails = () => {
                     variant="contained" 
                     onClick={(e) => {
                       e.stopPropagation()
-                      savePin({e, user, pin, saved, dispatch})
+                      removeSavePin({e, user, pin, saved, dispatch})
                     }}
                   >
                     Saved
@@ -181,7 +214,7 @@ const PinDetails = () => {
           </Box>  
 
           {/* Non mobile dynamic view rendering below */}
-          <img className={classes.image} height={'100vw'} width={'100vw'} src={pin?.image}></img>
+          <img className={classes.image} width={400} height={'auto'} src={pin?.image}></img>
           <Box className={classes.commentSectionContainer}>   
 
             {/* Action bar rendered below */}
@@ -255,7 +288,18 @@ const PinDetails = () => {
                 </Box>
               </Box>
               <Box sx={{display: 'flex', width: 'auto'}}>
-                {creatorUserImage}
+              <Button 
+                onClick={handleGoToProfile}
+              >
+              <Box sx={{borderRadius: 99, minWidth: 40, maxWidth: 40, minHeight: 40, maxHeight: 40, overflow: 'hidden'}}>
+                <img  
+                  src={creatorUserImage}
+                  width={40}
+                  height={40}
+                  alt="user-profile"
+                />
+              </Box>
+              </Button>
                 {creatorUserName}
                 {pin?.tags}
               </Box>
@@ -272,7 +316,7 @@ const PinDetails = () => {
                   }
                 </Button>
               </Box>
-              {loading &&
+              {loadingComment &&
                 <Box sx={{position: 'relative', marginLeft: 8, marginTop: 3, marginBottom: 3}}>
                 <Circles 
                     color={grey[400]}
@@ -289,7 +333,7 @@ const PinDetails = () => {
                 <Box className={classes.commentSection}>
                   {comments &&
                     comments.map((comment:IComment, i:number) => (
-                      <Comment key={i} pinId={pinId} user={user} comment={comment} reply={false} />
+                      <Comment key={i} index={i} pinId={pinId} user={user} comment={comment} reply={false} />
                     ))
                   }
                 </Box>
@@ -309,13 +353,21 @@ const PinDetails = () => {
                 <Box sx={{marginTop: 1, marginRight: 5}} className={classes.inputBar}>
                   <form onSubmit={handleComment}>
                     <TextField
+                      id={'commentInput'}
                       className={classes.input}
                       onChange={(e:any) => setText(e.target.value)}
                       placeholder='Add a comment'
                       multiline
                       maxRows={10} 
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          handleComment(e)
+                        }
+                      }}
+                      InputProps={{endAdornment: <Button onClick={handleComment}>Submit</Button>}}
                     />
                   </form>
+                                   
                 </Box>
               </Box>
             </Box>
@@ -323,8 +375,7 @@ const PinDetails = () => {
             
           </Box>
         </Box>
-      </Box>      
-
+      </Box> 
 
       {/* Text and Spacing rendered below */}
       <Box sx={{display: 'flex', justifyContent: 'center', width: '100%', paddingTop: 10}}>
@@ -335,6 +386,8 @@ const PinDetails = () => {
       <Box sx={{width: '100%'}}>
         <Feed pins={pins} />
       </Box>
+    </>
+    }
     </>
   )
 }

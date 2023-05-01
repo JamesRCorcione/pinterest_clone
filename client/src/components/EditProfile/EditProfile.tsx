@@ -1,8 +1,12 @@
-import { Box, Button, Input, TextField, Typography } from '@mui/material'
+import { Box, Button, FilledInput, IconButton, Input, InputAdornment, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { UpdateUser } from '../../features/usersSlice';
+import { DeleteUser, Logout, UpdateUser } from '../../features/usersSlice';
+import { red } from '@mui/material/colors';
+
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
 const EditProfile = ({profileUser}:any) => {
   const [user, setUser] = useState<any>({userName: profileUser.result.userName, image: profileUser.result.image, password: profileUser.result.password})
@@ -10,6 +14,8 @@ const EditProfile = ({profileUser}:any) => {
   const dispatch = useDispatch<AppDispatch>()   
   const navigate = useNavigate()
 
+  const [showPassword, setShowPassword] = useState(false)
+  const handleShowPassword = () => setShowPassword(!showPassword)
 
   const handlePhotoUpload = async (e:any) => {
     let file = e.target.files[0]
@@ -82,8 +88,18 @@ const EditProfile = ({profileUser}:any) => {
       }
   }
 
+  const handleDeleteProfile = async () => {
+    try{
+      await dispatch(DeleteUser({userId: profileUser.result._id})).unwrap()
+      await dispatch(Logout())
+      navigate('/login')
+    } catch (error:any) {
+      alert(error.message)
+    }
+  }
+
   return (
-    <Box sx={{display: 'flex', flexDirection:'column', width: 200, backgroundColor: 'white', boxShadow: 2, borderRadius: 5}}>
+    <Box sx={{display: 'flex', flexDirection:'column', width: 500, backgroundColor: 'white', boxShadow: 2, borderRadius: 5}}>
         <Typography sx={{display: 'flex',  justifyContent: 'center', marginTop: 1}}>Edit Profile</Typography>
         <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', margin: 2}}>
         <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
@@ -139,31 +155,60 @@ const EditProfile = ({profileUser}:any) => {
           <br />
           <br />
           <label>New Password</label>
-          <TextField
-            sx={{backgroundColor: 'white'}}
-            type="text"
-            placeholder="new password"
-            fullWidth
-            onChange={(e) => setUser({ ...user, password: e.target.value })}
+          <FilledInput 
+              name="password" 
+              fullWidth 
+              disableUnderline
+              type={showPassword ? 'text' : 'password'} 
+              endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleShowPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                  </InputAdornment>
+              }
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
           />
+
           <div className="flex flex-col">
             <div>
               <p className="mb-2 font-semibold text-lg sm:text-xl">Choose Pin Category</p>
             </div>
           </div>
+          </form>  
+          <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+            <Button
+              type="submit"
+              variant="contained"
+              size="small"
+              sx={{
+                margin: "0.9rem 0rem",
+                fontFamily: "'Abel', 'sansSerif'",
+              }}
+              onClick={handleUpdateUser}
+            >
+                Update Profile         
+            </Button>     
+            <Button
+              type="submit"
+              variant="contained"
+              size="small"
+              sx={{
+                backgroundColor: red[400],
+                margin: "0.9rem 0rem",
+                fontFamily: "'Abel', 'sansSerif'",
+              }}
+              onClick={handleDeleteProfile}
+            >
+                Delete Profile         
+            </Button>    
+          </Box>  
 
-          <Button
-            type="submit"
-            variant="contained"
-            size="small"
-            sx={{
-              margin: "0.9rem 0rem",
-              fontFamily: "'Abel', 'sansSerif'",
-            }}
-          >
-              Add Post         
-          </Button>          
-        </form>          
+                
         </Box>
     </Box>
   )

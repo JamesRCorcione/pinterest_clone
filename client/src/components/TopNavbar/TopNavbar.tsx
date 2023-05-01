@@ -40,17 +40,23 @@ const TopNavbar = () => {
 
   const query = useQuery()
 
-  useEffect(() => {
+  useEffect(() => {    
     const token = user?.token
       if(token) {
           const decodedToken = decode<MyToken>(token)  
-          if(decodedToken.exp * 1000 < new Date().getTime()) {
+          if(decodedToken.exp * 1000 < new Date().getTime()) {       
+            console.log('navbar effect')     
             logoutUser()
-            navigate('/')
           }
       }
     setUser(fetchUser())
   }, [location])
+  
+  const logoutUser = async () => {    
+    setOpenMobileSearch(false)
+    navigate('/login')
+    await dispatch(Logout())
+  }
 
   async function search() {
     navigate(`/search?query=${searchTerm}`)        
@@ -67,15 +73,18 @@ const TopNavbar = () => {
 
   const handleGoToProfile = () => {
     //window.scrollTo(0, 0)
+    setOpenMobileSearch(false)
     navigate(`/user-profile/${user?.result._id}`)    
     window.location.reload()
   }
 
-  const logoutUser = () => {
-    dispatch(Logout())
-    setUser(null)
-    navigate('/login')    
+  const handleGoToCreatePin = () => {
+    //window.scrollTo(0, 0)
+    setOpenMobileSearch(false)
+    navigate(`/createPin`)    
+    window.location.reload()
   }
+
 
   const handleOpenSearch = () => {
     //window.scrollTo(0,0)
@@ -112,11 +121,11 @@ const TopNavbar = () => {
           <SearchIcon className={classes.mobileIconSize}/>
           <Typography className={classes.mobileButtonText}>Search</Typography>
         </Button>
-        <Button className={classes.mobileHomeButton} onClick={() => navigate('/createPin')}>
+        <Button className={classes.mobileHomeButton} onClick={handleGoToCreatePin}>
           <AddCircleIcon className={classes.mobileIconSize}/>
           <Typography className={classes.mobileButtonText}>Create</Typography>
         </Button>
-        <Button className={classes.mobileHomeButton} onClick={() => navigate(`/user-profile/${user.result._id}`)}>
+        <Button className={classes.mobileHomeButton} onClick={handleGoToProfile}>
           <PersonIcon className={classes.mobileIconSize}/>
           <Typography className={classes.mobileButtonText}>Profile</Typography>
         </Button>
@@ -134,7 +143,7 @@ const TopNavbar = () => {
           
           </Box>
           <Box className={classes.boxList}>
-            <Button className={classes.createButton} onClick={() => navigate('/createPin')}>
+            <Button className={classes.createButton} onClick={handleGoToCreatePin}>
               <Typography sx={{fontFamily: 'sans-serif'}} color='black'>
                 Create            
               </Typography>          
@@ -158,7 +167,15 @@ const TopNavbar = () => {
             className={classes.profileButton} 
             onClick={handleGoToProfile}
           >
-            <Avatar sx={{maxWidth: '25px', maxHeight: '25px', minWidth: '25px', minHeight: '25px'}} />
+            {user?.result.image ?
+            <Box sx={{borderRadius: 99, overflow: 'hidden', maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px'}}>
+              <Box>
+                <img width={'45px'} height={'auto'} src={user?.result.image} />
+              </Box>
+            </Box>
+            :
+              <Avatar sx={{maxWidth: '25px', maxHeight: '25px', minWidth: '25px', minHeight: '25px'}} />
+            }
           </Button>
           <Button     
             className={classes.dropDownButton}

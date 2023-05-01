@@ -7,6 +7,7 @@ export default makeStyles((theme) => ({
     //marginTop: 80, 
     width: '100%',
     paddingTop: 80,
+    paddingBottom: 70,
     '&:hover': {
       //transition: 1,
       //left: 0

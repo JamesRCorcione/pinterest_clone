@@ -62,6 +62,15 @@ export default makeStyles()((theme) => {
         marginRight: '15%',        
       }, 
       inputTextLogin: {
+        borderRadius: '30px',
+        marginBottom: 3,          
+        height: 50,
+        backgroundColor: 'white',
+        border: 1,
+        borderColor: grey[300],
+        '&:hover': {
+          backgroundColor: 'white',
+        },
         '& label': {
           fontStyle: 'sans', fontSize: '13px', fontWeight: 'bold'
         },

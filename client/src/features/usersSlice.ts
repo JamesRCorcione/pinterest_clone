@@ -187,6 +187,24 @@ export const UpdateUser = createAsyncThunk (
   }
 )
 
+export const DeleteUser = createAsyncThunk(
+  'users/deleteUser',
+  async ({userId}: any, { rejectWithValue }) => {
+    try {
+      const response = await API.delete('users/' + userId)
+      console.log('responser', response.data)
+      return response.data
+    } catch (err: any) {
+      let error: AxiosError<ValidationErrors> = err // cast the error for access
+      if (!error.response) {
+        throw err
+      }
+      // We got validation errors, let's return those so we can reference in our component and set form errors
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
 export const SavePin = createAsyncThunk (
   'users/savePin',
   async ({user, pin}:SavePinProps, { rejectWithValue }) => {
@@ -252,22 +270,28 @@ export const Logout = createAsyncThunk(
           return { ...state, users: action.payload, userStatus: 'success', userError: '' }
         })  
         .addCase(GetUserById.fulfilled, (state, action) => {
-          return { ...state, user: action.payload, pinStatus: 'success', pinError: '' }
+          return { ...state, user: action.payload, userStatus: 'success', userError: '' }
         })
         .addCase(UpdateUser.fulfilled, (state, action) => {
-          return { ...state, user: action.payload, pinStatus: 'success', pinError: '' }
+          return { ...state, user: action.payload, userStatus: 'success', userError: '' }
+        })
+        .addCase(DeleteUser.fulfilled, (state, action) => {
+          const currentUsers = state.users.filter(
+            (user) => user._id !== action.payload._id
+          )
+          return { ...state, users: currentUsers, userStatus: 'success', userError: '' }
         })
         .addCase(SavePin.fulfilled, (state, action) => {
           const updatedUser = state.users.map((user) =>
           user._id === action.payload._id ? action.payload : user
           )
-          return { ...state, user: updatedUser, pinStatus: 'success', pinError: '' }
+          return { ...state, user: updatedUser, userStatus: 'success', userError: '' }
           }) 
         .addCase(RemoveSavePin.fulfilled, (state, action) => {
           const updatedUser = state.users.filter((user) =>
           user._id === action.payload._id ? action.payload : user
           )
-          return { ...state, user: updatedUser, pinStatus: 'success', pinError: '' }
+          return { ...state, user: updatedUser, userStatus: 'success', userError: '' }
           }) 
 //        .addMatcher(
 //          isRejectedAction,

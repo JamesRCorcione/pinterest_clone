@@ -8,6 +8,8 @@ export default makeStyles()((theme) => {
       justifyContent: 'center', 
       alignItems: 'center', 
       marginY: 2, 
+      width: '100%',
+      height: 'auto',
       paddingTop: 80,
       [theme.breakpoints.down(750)]: { 
         width: '100%',
@@ -29,7 +31,7 @@ export default makeStyles()((theme) => {
     },
     image: {
       width: 400,
-      height: '100vw',
+      height: '100%',
       borderTopLeftRadius: 40,
       borderBottomLeftRadius: 40,
       objectFit: 'cover',
@@ -43,13 +45,13 @@ export default makeStyles()((theme) => {
         display: 'flex',
         justifyContent: 'start',
         alignItems: 'start',
-        width: '100vw',
-        height: '100vw',
+        width: '100%',
+        height: 'auto',
         borderRadius: 40,
       }
     },    
     topButtonsContainer: {
-      display: 'flex', width: '100%', paddingBottom: 50,
+      display: 'flex', width: '100%',// paddingBottom: 50,
       [theme.breakpoints.down(750)]: { 
         display: 'none'
         
@@ -62,7 +64,6 @@ export default makeStyles()((theme) => {
         position: 'relative', 
         width: '100%',
         paddingBottom: 40     
-
       }
     },
     saveButtonContainer: {
