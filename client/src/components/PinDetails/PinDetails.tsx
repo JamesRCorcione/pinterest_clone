@@ -1,5 +1,5 @@
 import Feed from '../Feed/Feed'
-import { Box, Button, Typography, Link, TextField, Input, Avatar } from '@mui/material'
+import { Box, Button, Typography, Link, TextField, Input, Avatar, LinearProgress } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { deletePin, getPin } from '../../features/pinsSlice'
@@ -9,7 +9,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import SearchIcon from '@mui/icons-material/Search';
 import { Divider } from '@mui/material';
-import { grey, blue } from '@mui/material/colors';
+import { grey, blue, red } from '@mui/material/colors';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import LinkIcon from '@mui/icons-material/Link';
@@ -31,6 +31,7 @@ import Spinner from '../Spinner/Spinner'
 
 const PinDetails = () => {
   let user = fetchUser()
+  const location = useLocation()
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
 
@@ -62,20 +63,24 @@ const PinDetails = () => {
   let totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
   let saved = totalSaved?.length > 0 ? true : false 
 
-  useEffect(() => {
+  useEffect(() => {    
     const updatePinDetials = async () => {
       getPinDetails()
-      getCommentsUpdate()      
+      getCommentsUpdate()
+         
     }
     setLoading(true)
     updatePinDetials()
     setLoading(false)
+    console.log('hi')
   }, [])
+
+
 
   useEffect(() => {
     getCreatorUser()
   }, [users])
-
+  
   const getCreatorUser = async () => {
     if (users) {
       const creatorUser = await users.find((user:any) => user._id === creatorId)
@@ -92,12 +97,10 @@ const PinDetails = () => {
 
   const getPinDetails = async () => {
     //window.scrollTo(0, 0)
-    //Need another loading screen for the whole pin
-    //setLoading(true)
+
+    console.log('hi')
     const data = await dispatch(getPin(pinId))
     setPin(data.payload)
-    
-    //setLoading(false)  
   }
 
   const getCommentsUpdate = async () => {
@@ -134,18 +137,15 @@ const PinDetails = () => {
     window.location.reload()
   }
 
+  if (loading) (
+    <Box sx={{position: 'absolute', top: 70, width: '100%', color: red[400]}}>
+      <LinearProgress color='inherit' />
+    </Box>
+  )
+
 
   return (
     <>
-    {(loading || !imageDimensions) && 
-      <Box sx={{position: 'relative'}}>
-      <Box sx={{position: 'absolute', top: 140, right: '50%', zIndex: 2}}>
-        <Box sx={{position: 'relative', right: '-50%'}}>
-            <Circles color="#00BFFF" height={50} width={50}/>
-        </Box>
-      </Box>
-    </Box>
-    }
     {imageDimensions &&
     <>
       <Box className={classes.pageContainer}>
@@ -291,14 +291,20 @@ const PinDetails = () => {
               <Button 
                 onClick={handleGoToProfile}
               >
-              <Box sx={{borderRadius: 99, minWidth: 40, maxWidth: 40, minHeight: 40, maxHeight: 40, overflow: 'hidden'}}>
-                <img  
-                  src={creatorUserImage}
-                  width={40}
-                  height={40}
-                  alt="user-profile"
-                />
-              </Box>
+              {creatorUserImage ?
+                <Box sx={{borderRadius: 99, minWidth: 40, maxWidth: 40, minHeight: 40, maxHeight: 40, overflow: 'hidden'}}>
+                  <img  
+                    src={creatorUserImage}
+                    width={40}
+                    height={40}
+                    alt="user-profile"
+                  />
+                </Box>
+              :
+                <Avatar sx={{marginBottom: 1, marginLeft: 2, marginRight: 2}}>
+                  {user?.result.userName.charAt(0)}
+                </Avatar>
+              }
               </Button>
                 {creatorUserName}
                 {pin?.tags}
@@ -316,15 +322,6 @@ const PinDetails = () => {
                   }
                 </Button>
               </Box>
-              {loadingComment &&
-                <Box sx={{position: 'relative', marginLeft: 8, marginTop: 3, marginBottom: 3}}>
-                <Circles 
-                    color={grey[400]}
-                    height={30}
-                    width={150}
-                />
-              </Box>
-              }
             </Box> 
 
             {/* Comments are expanded and rendering below*/}

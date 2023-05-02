@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography, Link, Divider, IconButton, InputAdornment, FilledInput } from '@mui/material'
+import { Box, Button, TextField, Typography, Link, Divider, IconButton, InputAdornment, FilledInput, LinearProgress } from '@mui/material'
 import { useDispatch } from 'react-redux'
 import React, { useState } from 'react'
 import Dialog from '@mui/material/Dialog';
@@ -18,7 +18,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
 import axios from 'axios';
-import { Circles } from 'react-loader-spinner';
+import { InputLabel } from '@mui/material';
 
 
 
@@ -204,15 +204,16 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
         /> 
     )
 
+
+
   return (
     <>
-    {loading ?
-    
-    <Dialog open={true}>
-        <Circles color="#00BFFF" height={100} width={100}></Circles>
-    </Dialog>     
-    :
     <Dialog className={classes.dialog} onClose={handleClose} open={true} >     
+        {loading && 
+            <Box sx={{position: 'absolute', top: 0, width: '100%', color: red[400], zIndex: 50000}}>
+                <LinearProgress color='inherit' />
+            </Box> 
+        }
         <Box className={classes.popup}>   
         <IconButton className={classes.exitButton} size='small' onClick={() => handleClose()} ><CloseIcon /></IconButton>
         {switchLogin 
@@ -250,11 +251,12 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
             
             <Box className={classes.formContainer} sx={{marginTop: 3}}>
                 <form autoComplete='off' noValidate >  
-                    <TextField className={classes.inputTextLogin} name="username" variant="outlined" label="Username" fullWidth onChange={(e) => setForm({ ...form, userName: e.target.value })} />
+                    <TextField className={classes.inputTextLogin} name="username" variant="outlined" label="Username" fullWidth onChange={(e) => setForm({ ...form, userName: e.target.value })} />                    
                     <FilledInput 
-                        className={classes.inputTextLogin} 
+                        className={classes.inputPassword} 
                         name="password" 
                         fullWidth 
+                        placeholder={'Password'}
                         disableUnderline
                         type={showPassword ? 'text' : 'password'} 
                         endAdornment={
@@ -270,7 +272,6 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                         }
                         onChange={(e:any) => setForm({ ...form, password: e.target.value })} 
                     />
-                    
 
                     {/* Password and Username recovery. Will implement correctly at a later date */}
                     {false &&
@@ -358,7 +359,26 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
                 <Box className={classes.formContainer} sx={{marginTop: 35}}>
                     <form autoComplete='off' noValidate onSubmit={handleSignUp}>  
                         <TextField className={classes.inputTextSignupFinal} name="username" variant="outlined" label="Username" fullWidth onChange={(e) => setForm({ ...form, userName: e.target.value })} />
-                        <TextField className={classes.inputTextSignupFinal} name="password" variant="outlined" type='password' label="Password" fullWidth onChange={(e) => setForm({ ...form, password: e.target.value })} />
+                        <FilledInput 
+                            className={classes.inputPassword} 
+                            name="password" 
+                            placeholder={'Password'}
+                            fullWidth 
+                            disableUnderline
+                            type={showPassword ? 'text' : 'password'} 
+                            endAdornment={
+                                <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleShowPassword}
+                                    edge="end"
+                                >
+                                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                </IconButton>
+                                </InputAdornment>
+                            }
+                            onChange={(e:any) => setForm({ ...form, password: e.target.value })} 
+                        />
 
                         <Button  sx={{borderRadius: 10, height: 40, marginTop: 0, backgroundColor: red[700], '&:hover': { backgroundColor: red[900] }}} variant="contained" color="primary" size="large" type="submit" fullWidth>
                             <Typography sx={{fontStyle: 'sans', fontSize: '14px'}}>Sign Up</Typography>
@@ -371,7 +391,7 @@ const LoginSignup = ({ isSignUp, setOpenLogin }:any) => {
         }        
         </Box>            
     </Dialog>
-    }
+    
     </>
   )
 }

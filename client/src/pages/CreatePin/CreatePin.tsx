@@ -1,11 +1,11 @@
-import { Box, Button, Chip, Input, TextField } from '@mui/material'
+import { Box, Button, Chip, Input, LinearProgress, TextField } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { createPin } from '../../features/pinsSlice'
 import FileBase from 'react-file-base64'
 import { FileUploader } from "react-drag-drop-files"
-import { grey } from '@mui/material/colors'
+import { grey, red } from '@mui/material/colors'
 import useStyles from './styles'
 
 interface CreatePinProps {
@@ -20,6 +20,7 @@ const CreatePin = ({user}:CreatePinProps) => {
     const [dragActive, setDragActive] = useState<boolean>(false);
     const [pin, setPin] = useState({ title: '', text: '', tags: tags, creatorId: user?.result._id, totalComments: 0, image: '', destination: '' })    
     const [chips, setChips] = useState<string[]>([])
+    const [loading, setLoading] = useState<boolean>(false)
     const navigate = useNavigate()
     const { state } = useLocation()  
     const { classes } = useStyles()
@@ -37,7 +38,9 @@ const CreatePin = ({user}:CreatePinProps) => {
       e.preventDefault()
       pin.tags = chips
       try{
+        setLoading(true)
         await dispatch(createPin(pin)).unwrap()
+        setLoading(false)
         setPin({ title: '', text: '', tags: [], creatorId: user?.result._id, totalComments: 0, image: '', destination: '' })
         navigate('/')
       } catch (error:any) {
@@ -124,6 +127,12 @@ const CreatePin = ({user}:CreatePinProps) => {
       
       }
     };
+
+    if (loading) return (
+      <Box sx={{position: 'absolute', top: 70, width: '100%', color: red[400]}}>
+        <LinearProgress color='inherit' />
+      </Box>
+    )
 
   return (
     <Box className={classes.background}>

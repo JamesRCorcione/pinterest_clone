@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { GetUserById, Logout, RemoveSavePin } from '../../features/usersSlice'
 
-import { grey } from '@mui/material/colors';
+import { grey, red } from '@mui/material/colors';
 import Pin from '../../components/Pin/Pin'
 import Feed from '../../components/Feed/Feed'
 import { deletePin, getPins, getPinsByCreator, getPinsByTags } from '../../features/pinsSlice'
@@ -15,6 +15,8 @@ import TopNavbar from '../../components/TopNavbar/TopNavbar'
 import Share from '../../components/Share/Share'
 import EditProfile from '../../components/EditProfile/EditProfile'
 import { Circles } from 'react-loader-spinner'
+import LinearProgress from '@mui/material/LinearProgress';
+
 
 const Profile = () => {
   const { userId } = useParams()
@@ -22,6 +24,8 @@ const Profile = () => {
   const dispatch = useDispatch<AppDispatch>()
   const pinsState = useSelector((state: RootState) => state.pinsState);
   const { pins } = pinsState
+  const usersState = useSelector((state: RootState) => state.usersState);
+  const { users } = usersState
   const [profileUser, setProfileUser] = useState<any>()
   const location = useLocation()
   const [createdPins, setCreatedPins] = useState<IPin>()
@@ -33,17 +37,20 @@ const Profile = () => {
   const [loading, setLoading] = useState<boolean>(false)
 
 
-  useEffect(() => {    
-    getUserProfile() 
-  }, [])
+  useEffect(() => {  
+    if (!profileUser)  {
+      getUserProfile() 
+    }
+  }, [users])
 
   async function getUserProfile() {
     setLoading(true)
-    await dispatch(GetUserById(userId))
-      .then((userData:any) => setProfileUser({result: userData.payload}))
+    if (users) {
+      const proUser = await users.find((user:any) => user._id === userId)
+      setProfileUser(proUser)
+    }
     await dispatch(getPinsByCreator(userId))
       .then((jsonData:any) => setCreatedPins(jsonData.payload))    
-    //await dispatch(getPins(0))    
     setLoading(false)
   }
 
@@ -53,42 +60,35 @@ const Profile = () => {
     navigate('/login')    
   }
 
-  console.log(profileUser?.result.image)
+  if (loading) (
+    <Box sx={{position: 'absolute', top: 70, width: '100%', color: red[400]}}>
+      <LinearProgress color='inherit' />
+    </Box>
+  )
   
   return (
     <>
-    {loading &&
-      <Box sx={{position: 'relative'}}>
-        <Box sx={{position: 'absolute', top: 140, right: '50%', zIndex: 2}}>
-          <Box sx={{position: 'relative', right: '-50%'}}>
-              <Circles color="#00BFFF" height={50} width={50}/>
-          </Box>
-        </Box>
-      </Box>
-    }
     {profileUser &&
       <>
       <Box className={classes.topContainer}>
         <Box sx={{position: 'absolute', left: '50%',}}>
           <Box sx={{position: 'relative', left: '-50%'}}>
-          {profileUser?.result.image 
+          {profileUser?.image 
           ?
             <Box className={classes.profileImage} sx={{borderRadius: 99, overflow: 'hidden'}}>
-              <Box sx={{paddingTop: 0}}>
                 <img  
-                  src={profileUser?.result.image}
+                  src={profileUser?.image}
                   width={'200px'}
-                  height={'auto'}                
+                  height={'auto'}
                   alt="user-profile"
                 />
-              </Box>
             </Box>
           :
             <Avatar className={classes.profileImage} >
-              <Typography className={classes.userNameInitial} >{profileUser?.result.userName.charAt(0)}</Typography>
+              <Typography className={classes.userNameInitial} >{profileUser?.userName.charAt(0)}</Typography>
             </Avatar>
           }         
-            <Typography className={classes.userName}>@{profileUser?.result.userName.split(' ').join('')}</Typography>
+            <Typography className={classes.userName}>@{profileUser?.userName.split(' ').join('')}</Typography>
           </Box>
         </Box>
       </Box>        
@@ -102,7 +102,7 @@ const Profile = () => {
         <Box className={classes.shareButton}>
           {openShare &&
             <Box sx={{position: 'absolute', top: 60,  zIndex: 2}}>
-              <Share image={profileUser.result.image} />
+              <Share image={profileUser?.image} />
             </Box>
           }
         </Box>
@@ -119,7 +119,7 @@ const Profile = () => {
           <Typography sx={{fontSize: 14, color: 'black'}}>Share</Typography>
         </Button>        
         
-        {currentUser.result._id === profileUser.result._id &&
+        {currentUser.result._id === profileUser?._id &&
           <Button className={classes.editProfileButton} onClick={() => setOpenEditProfile((prev) => !prev)} variant='outlined'>
             <Typography sx={{fontSize: 14, color: 'black'}}>Edit Profile</Typography>
           </Button>
@@ -140,7 +140,7 @@ const Profile = () => {
               <h2>No Pins Available</h2>
             :
               <Box sx={{width: '100%'}}>
-                <Feed pins={profileUser.result.saves} />
+                <Feed pins={profileUser?.saves} />
               </Box>
             } 
             </>

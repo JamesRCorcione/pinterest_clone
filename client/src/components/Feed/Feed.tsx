@@ -4,6 +4,7 @@ import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { getPins, getPinsByTags } from '../../features/pinsSlice'
 import { Circles } from 'react-loader-spinner'
 
+import LinearProgress from '@mui/material/LinearProgress';
 
 import useStyles from './styles'
 import Spinner from '../Spinner/Spinner'
@@ -11,6 +12,7 @@ import { Box } from '@mui/material'
 import Masonry from 'react-masonry-css'
 import Pin from '../Pin/Pin'
 import { fetchUser } from '../../utils/fetchUser'
+import { red } from '@mui/material/colors'
 
 const breakpointObj = {
   default: 3,
@@ -27,8 +29,10 @@ const Feed = ({pins}:any) => {
   const classes = useStyles()
   const [totalPins, setTotalPins] = useState<number>(20)
   const [atBottom, setAtBottom] = useState<boolean>(false)
+  const [prevBottom, setPrevBottom] = useState<number>(0)
   const usersState = useSelector((state: RootState) => state.usersState);
   const { users } = usersState
+  let scrollBefore = 0
 
 
 
@@ -48,19 +52,27 @@ const Feed = ({pins}:any) => {
 
   async function loadPins() {
     setLoading(true)
-    await dispatch(getPins(pins.length + 20))
+    setPrevBottom(document.body.offsetHeight)
+    await dispatch(getPins(pins.length + 20))    
     setLoading(false)
   }
+
+  console.log('f')
+  
 
   const handleScroll = (e:any) => {
     window.addEventListener('scroll', 
       async function() {
-        if ((window.innerHeight + window.scrollY + 1) >= document.body.offsetHeight && !atBottom) {
-         //console.log("you're at the bottom of the page");
-         // Show loading spinner and make fetch request to api
-         setAtBottom(true)        
-        // setTotalPins((totalPins) => totalPins + 20)
-        }
+        const scrolled = window.scrollY;
+
+        if(scrollBefore < scrolled){
+            scrollBefore = scrolled            
+            if ((window.innerHeight + window.scrollY + 1) >= document.body.offsetHeight 
+              && !atBottom
+              && (prevBottom !== document.body.offsetHeight)) {
+                  setAtBottom(true)                
+            }
+        }        
       },
       { once: true }
     )
@@ -73,20 +85,18 @@ const Feed = ({pins}:any) => {
   return (
     <>
     {loading &&
-      <Box sx={{position: 'relative'}}>
-        <Box sx={{position: 'absolute', top: 250, right: '50%', zIndex: 2}}>
-          <Box sx={{position: 'relative', }}>
-              <Circles color="#00BFFF" height={50} width={50}/>
-          </Box>
-        </Box>
+      <Box className={classes.loading} >
+        <LinearProgress color='inherit' />
       </Box>
     }
-      <Box>
+      <Box>        
         <Masonry className={classes.pin} breakpointCols={breakpointObj}>
           {pins?.map((pin:IPin, i:number) => <Pin key={i} pin={pin} />)}        
         </Masonry>                       
       </Box>
     </>
+
+    
   )
 }
 

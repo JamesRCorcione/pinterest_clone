@@ -62,9 +62,13 @@ const Pin = ({ pin }:PinProps) => {
     //let data = await dispatch(GetUserById(creatorId))
     if (users) {
       const creatorUser = await users.find((user:any) => user._id === creatorId)
-      console.log('er',creatorUser)
-      setCreatorUserName(creatorUser.userName)
-      setCreatorUserImage(creatorUser?.image)
+      if (creatorUser) {      
+        setCreatorUserName(creatorUser.userName)
+        setCreatorUserImage(creatorUser?.image)
+      } 
+      else {
+        //Set something here for deleted users pins to be displayed still
+      }
     }
 
     await getImageDimensions(pin.image)

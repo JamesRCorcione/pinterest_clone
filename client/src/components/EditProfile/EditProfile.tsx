@@ -9,7 +9,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
 const EditProfile = ({profileUser}:any) => {
-  const [user, setUser] = useState<any>({userName: profileUser.result.userName, image: profileUser.result.image, password: profileUser.result.password})
+  const [user, setUser] = useState<any>({userName: profileUser?.userName, image: profileUser?.image, password: profileUser?.password})
   const [dragActive, setDragActive] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>()   
   const navigate = useNavigate()

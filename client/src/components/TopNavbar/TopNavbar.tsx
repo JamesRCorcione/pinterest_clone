@@ -87,7 +87,7 @@ const TopNavbar = () => {
 
 
   const handleOpenSearch = () => {
-    //window.scrollTo(0,0)
+    window.scrollTo(0,0)
     setOpenMobileSearch((prev) => !prev)
     navigate('/')
   }

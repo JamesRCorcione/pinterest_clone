@@ -12,10 +12,10 @@ export default makeStyles()((theme) => {
       },   
       popup: {
         width: 400,
-        height: 640,        
-        [theme.breakpoints.down(800)]: { 
+        height: 640,
+        [theme.breakpoints.down(800)]: {
           width: 300,
-          height: 640,     
+          height: 640,
         },
       }, 
       exitButton: {
@@ -75,7 +75,7 @@ export default makeStyles()((theme) => {
           fontStyle: 'sans', fontSize: '13px', fontWeight: 'bold'
         },
         '& input': {
-          marginBottom: 3,          
+          marginBottom: 5,          
         },
         '& fieldset': {
           borderRadius: '30px',
@@ -83,6 +83,20 @@ export default makeStyles()((theme) => {
           height: 50
         },
       }, 
+      inputPassword: {
+        borderRadius: '30px',
+        marginBottom: 3,          
+        height: 50,
+        backgroundColor: 'white',
+        border: `1px solid ${grey[400]}`, 
+        borderColor: grey[300],
+        '& .MuiFilledInput-input': {
+          fontStyle: 'sans', fontSize: '13px', fontWeight: 'bold', color: 'black', marginBottom: 8
+        },
+        '&:hover': {
+          backgroundColor: 'white',
+        },
+      },
       inputTextSignup: {
         '& label': {
           fontStyle: 'sans', fontSize: '13px', fontWeight: 'bold'
@@ -125,7 +139,6 @@ export default makeStyles()((theme) => {
       googleButton: {
         marginBottom: 10,        
       },      
-      
       signup: {
         color: 'black',
         position: 'absolute',

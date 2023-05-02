@@ -28,7 +28,7 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
   const navigate = useNavigate()
   const usersState = useSelector((state: RootState) => state.usersState);
   let { users } = usersState
-  const commentsState = useSelector((state: RootState) => state.commentsState);
+  let commentsState = useSelector((state: RootState) => state.commentsState);
   let { comments } = commentsState
   const [replying, setReplying] = useState(false)
   const [replies, setReplies] = useState<any>()
@@ -45,7 +45,7 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
 
   useEffect(() => {
     getCommenterUser()
-  }, [])
+  }, [comments])
 
   useEffect(() => {
     if (comment.hearts?.includes(user.result._id)) {
@@ -92,15 +92,12 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
   }
 
   const getCommenterUser = async () => {
-    //let data = await dispatch(GetUserById(commenterId))
-    //setCommenterUserName(data.payload.userName)
-    //setCommenterUserImage(data.payload.image)
     if (users) {
-      const creatorUser = await users.find((user:any) => user._id === commenterId)
-      setCommenterUserName(creatorUser?.userName)
-      setCommenterUserImage(creatorUser?.image)
-    }
-    
+      const commenterUser = await users.find((user:any) => user._id === commenterId)
+      console.log(comment.text.slice(0, 5), commenterUser.userName)
+      setCommenterUserName(commenterUser?.userName)
+      setCommenterUserImage(commenterUser?.image)
+    }    
   }
 
   const handleUpdateComment = async (e:any) => {
@@ -165,7 +162,7 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
   const handleGoToProfile = () => {
     //window.scrollTo(0, 0)
     //setOpenMobileSearch(false)
-    navigate(`/user-profile/${user?.result._id}`)    
+    navigate(`/user-profile/${commenterId}`)    
     window.location.reload()
   }
 
@@ -310,7 +307,7 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
                         }
                       }}
                       sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
-                      InputProps={{endAdornment: <Button onClick={(e) => handleUpdateComment({e, taggedUser: taggedUser})}>Submit</Button>}}
+                      InputProps={{endAdornment: <Button onClick={(e) => handleCreateComment({e, taggedUser: taggedUser})}>Submit</Button>}}
                     >                      
                   </TextField>
             </form>
