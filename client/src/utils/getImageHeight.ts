@@ -16,6 +16,4 @@ export function getImageDimensions(file:any) {
 //  const imgWidth = img.naturalWidth;
 //  const imgHeight = img.naturalHeight;
 //
-//  console.log('imgWidth: ', imgWidth);
-//  console.log('imgHeight: ', imgHeight);
 //};

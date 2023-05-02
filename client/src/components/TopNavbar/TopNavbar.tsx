@@ -45,7 +45,6 @@ const TopNavbar = () => {
       if(token) {
           const decodedToken = decode<MyToken>(token)  
           if(decodedToken.exp * 1000 < new Date().getTime()) {       
-            console.log('navbar effect')     
             logoutUser()
           }
       }

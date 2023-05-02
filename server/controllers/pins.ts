@@ -54,7 +54,6 @@ export const createPin = async (req: Request, res: Response) => {
 //Retreive
 export const getPins = async (req: Request, res: Response) => {
     const { startIndex } = req.query
-    console.log('starting index',Number(startIndex))
     try {
       //Missed timestamps on my pin Model so sorting is not working with 
       //current temp mock up.... must fix before finished  

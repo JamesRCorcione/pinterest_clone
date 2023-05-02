@@ -18,7 +18,6 @@ export const getUser = async (req: Request, res: Response) => {
 
   try {
       const user = await User.findById(id)
-      console.log(user?.userName, id)
       res.status(200).json(user)
   } catch (error) {
       res.status(404).json({ message: error })
@@ -62,10 +61,8 @@ export const signup = async (req: Request, res: Response) => {
   try {   
       const { userName, email, password, birthday, saves, uid } = req.body
 
-      console.log(email)
       const emailSchema = Joi.string().email()
       const { error } = emailSchema.validate(email)    
-      console.log(error)
       if (error) return res.status(400).send({ message: 'Please Enter a valid Email!' })
 
       const oldUser = await User.findOne({ email })
@@ -217,7 +214,6 @@ export const updateUser = async (req: Request, res: Response) => {
 
 //Delete
 export const deleteUser = async (req: Request, res: Response) => {
-  console.log('hi')
   const user = await User.findById(req.params.id)
 
   if (!user) return res.status(404).send("Pin not found...")

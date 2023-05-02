@@ -57,8 +57,6 @@ const Feed = ({pins}:any) => {
     setLoading(false)
   }
 
-  console.log('f')
-  
 
   const handleScroll = (e:any) => {
     window.addEventListener('scroll', 

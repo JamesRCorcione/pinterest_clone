@@ -177,7 +177,6 @@ export const UpdateUser = createAsyncThunk (
   async ({_id, userName, password, image}: any = null, { rejectWithValue }) => {
     try {
       const response = await API.put(baseURL + `users/${_id}`, {userName, password, image})
-      console.log('rep', response)
       localStorage.setItem('profile', JSON.stringify({ ...response.data }))
       return response.data
     } catch (err: any) {
@@ -192,7 +191,6 @@ export const DeleteUser = createAsyncThunk(
   async ({userId}: any, { rejectWithValue }) => {
     try {
       const response = await API.delete('users/' + userId)
-      console.log('responser', response.data)
       return response.data
     } catch (err: any) {
       let error: AxiosError<ValidationErrors> = err // cast the error for access

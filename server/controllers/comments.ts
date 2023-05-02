@@ -47,7 +47,6 @@ export const getCommentsByPin = async (req: Request, res: Response) => {
 export const updateComment = async (req: Request, res: Response) => {
     const { commentId, replyId } = req.params
     const { text } = req.body
-    console.log(text)
 
     try {
       await Comments.findByIdAndUpdate(commentId, {text})      

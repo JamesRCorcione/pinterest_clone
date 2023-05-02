@@ -46,7 +46,7 @@ const PinDetails = () => {
 
   
 
-  const [pin, setPin] = useState<IPin>()  
+  const [pin, setPin] = useState<any>(null)  
   const [openPinMenu, setOpenPinMenu] = useState(false)
   const [savingPost, setSavingPost] = useState(false)
   const [expandComments, setExpandComments] = useState(false)
@@ -61,25 +61,29 @@ const PinDetails = () => {
   const [imageDimensions, setImageDimensions] = useState<any>()
   
   let totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
-  let saved = totalSaved?.length > 0 ? true : false 
+  let saved = totalSaved?.length > 0 ? true : false   
 
   useEffect(() => {    
     const updatePinDetials = async () => {
-      getPinDetails()
-      getCommentsUpdate()
+      await getPinDetails()
+      await getCommentsUpdate()
          
     }
     setLoading(true)
     updatePinDetials()
     setLoading(false)
-    console.log('hi')
-  }, [])
+  }, [pinId])
 
+  useEffect(() => {
+    getCreatorPins()
+  }, [pin])
 
 
   useEffect(() => {
     getCreatorUser()
-  }, [users])
+    console.log('pin',pin)
+    
+  }, [users, pinId])
   
   const getCreatorUser = async () => {
     if (users) {
@@ -87,20 +91,17 @@ const PinDetails = () => {
       setCreatorUserName(creatorUser?.userName)
       setCreatorUserImage(creatorUser?.image)
     }
-    //let data = await dispatch(GetUserById(creatorId))
-    //setCreatorUserName(data.payload.userName)
-    //setCreatorUserImage(data.payload.image)
+    console.log('pin',pin)
+  }
 
+  const getCreatorPins = async () => {
     await getImageDimensions(pin?.image)
-      .then((d) => setImageDimensions(d))  
+      .then((d) => setImageDimensions(d)) 
   }
 
   const getPinDetails = async () => {
-    //window.scrollTo(0, 0)
-
-    console.log('hi')
     const data = await dispatch(getPin(pinId))
-    setPin(data.payload)
+    setPin(data.payload)    
   }
 
   const getCommentsUpdate = async () => {

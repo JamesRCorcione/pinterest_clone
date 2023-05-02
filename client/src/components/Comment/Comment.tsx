@@ -94,7 +94,6 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
   const getCommenterUser = async () => {
     if (users) {
       const commenterUser = await users.find((user:any) => user._id === commenterId)
-      console.log(comment.text.slice(0, 5), commenterUser.userName)
       setCommenterUserName(commenterUser?.userName)
       setCommenterUserImage(commenterUser?.image)
     }    

@@ -36,12 +36,15 @@ const Profile = () => {
   const [openEditProfile, setOpenEditProfile] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
+  console.log(profileUser?.userName, userId)
+
 
   useEffect(() => {  
-    if (!profileUser)  {
-      getUserProfile() 
-    }
-  }, [users])
+    
+    //if (!profileUser)  {
+    getUserProfile() 
+    //}
+  }, [users, userId])
 
   async function getUserProfile() {
     setLoading(true)
