@@ -241,34 +241,35 @@ const CreatePin = ({user}:CreatePinProps) => {
           </Box>
           }
 
-        <Box>
-        <form onSubmit={handleAddTag}>
-          <Input                  
-            onChange={(e:any) => setTag(e.target.value)}
-            placeholder='Add some tags!'
-            disableUnderline={true}
-            sx={{border: 1, marginLeft: 1}}
-            />
-          <Button
-            type="submit"
-            variant="contained"
-            size="small"
-            sx={{
-              marginLeft: 10,
-              fontFamily: "'Abel', 'sansSerif'",
-            }}
-          >
-              Add Tag       
-          </Button>
-          
-        </form>
-          
+        
+          <Box sx={{position: 'absolute', top: 100}}>
+          <Box>
+            <form onSubmit={handleAddTag}>
+              <Input                  
+                onChange={(e:any) => setTag(e.target.value)}
+                placeholder='Add some tags!'
+                disableUnderline={true}
+                sx={{border: 1, marginLeft: 1}}
+                />
+              <Button
+                type="submit"
+                variant="contained"
+                size="small"
+                sx={{
+                  marginLeft: 10,
+                  fontFamily: "'Abel', 'sansSerif'",
+                }}
+              >
+                  Add Tag       
+              </Button>              
+            </form>              
           </Box>
           {chips &&
             chips?.map((chip:any, i:number) => (
               <Chip key={i} label={chip} onDelete={() => handleDeleteTag(chip)} />
             ))
           }
+          </Box>
           
       </Box>    
     </Box>

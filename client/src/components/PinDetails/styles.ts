@@ -53,8 +53,7 @@ export default makeStyles()((theme) => {
     topButtonsContainer: {
       display: 'flex', width: '100%',// paddingBottom: 50,
       [theme.breakpoints.down(750)]: { 
-        display: 'none'
-        
+        display: 'none'        
       }
     },
     topButtonsMobileContainer: {
@@ -166,13 +165,33 @@ export default makeStyles()((theme) => {
       //"& fieldset": { borderRadius: 10 }
     },
     actionButton: {
-      position: 'relative', left: 70, top: 25, color: grey[900], minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30
+      position: 'relative', top: 25, color: grey[900], minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30,
+      [theme.breakpoints.up(750)]: { 
+        left: 190,
+      },
+      [theme.breakpoints.down(750)]: { 
+        left: 70
+      }
     },
     downloadButton: {
-      position: 'relative', left: 50, top: 25, color: grey[900], minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30
+      position: 'relative', top: 25, color: grey[900], minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30,
+      [theme.breakpoints.up(750)]: { 
+        left: 170,
+      },
+      [theme.breakpoints.down(750)]: { 
+        left: 50
+      }
     },
     shareButton: {
-      position: 'relative', left: 30, top: 25, color: grey[900], minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30
-    },    
+      position: 'relative', top: 25, color: grey[900], minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30,
+      [theme.breakpoints.up(750)]: { 
+        left: 150,
+      },
+      [theme.breakpoints.down(750)]: { 
+        left: 30
+      }
+    },  
+    htmlLinkButton: {
+      '&:hover': { backgroundColor: 'white', opacity: 1}}
   }
 })

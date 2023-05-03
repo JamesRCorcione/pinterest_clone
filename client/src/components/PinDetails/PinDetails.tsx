@@ -35,7 +35,6 @@ const PinDetails = ({pinId, pin, imageDimensions, creatorUserName, creatorUserIm
   let user = fetchUser()
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
-
   
   const { classes } = useStyle()
   const commentsState = useSelector((state: RootState) => state.commentsState);
@@ -52,6 +51,15 @@ const PinDetails = ({pinId, pin, imageDimensions, creatorUserName, creatorUserIm
   
   let totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
   let saved = totalSaved?.length > 0 ? true : false
+
+  let tags = []
+  for (let i = 0; i < pin?.tags.length; i++) { 
+    if (i !== pin.tags.length - 1) {
+      tags.push(`#${pin.tags[i]}, `)
+    } else {
+      tags.push(`#${pin.tags[i]}`)
+    }
+  }
 
   const handleComment = async (e:any) => {
     //e.preventDefault()
@@ -197,7 +205,6 @@ const PinDetails = ({pinId, pin, imageDimensions, creatorUserName, creatorUserIm
     </>
   )
 
-  console.log('im',imageDimensions)
 
   return (
     <>  
@@ -205,7 +212,6 @@ const PinDetails = ({pinId, pin, imageDimensions, creatorUserName, creatorUserIm
         <Box className={classes.imageContainer} sx={{height: imageDimensions.h}}>
           {/* Mobile view is rendered below */}
           {renderMobileView()}
-
           {/* Non mobile dynamic view rendering below */}
           <img className={classes.image} width={400} height={'auto'} src={pin?.image}></img>
           <Box className={classes.commentSectionContainer}>   
@@ -268,19 +274,29 @@ const PinDetails = ({pinId, pin, imageDimensions, creatorUserName, creatorUserIm
             </Box>     
 
             {/* Pin Details are rending below */}
-            <Box>
-              <Box sx={{display: 'flex', marginLeft: 1, width: 'auto',}}>
-                <Link>{pin?.destination}</Link>
+            <Box sx={{marginX: 1}}>
+              <Box sx={{display: 'flex', marginLeft: 1, width: 'auto'}}>
+              <Button
+                  sx={{textTransform: 'none'}}
+                  href={`${pin?.destination}`}
+                  disableElevation
+                  disableFocusRipple
+                >
+                  {pin?.destination && pin?.destination?.length < 12 ?
+                    <Typography sx={{fontSize: 12, color: blue[500]}}>{pin?.destination}</Typography>
+                  :
+                  <Typography sx={{fontSize: 12, color: blue[500]}}>{pin?.destination?.slice(12,23)}...</Typography>
+                  }
+                </Button>
               </Box>
-              <Box sx={{display: 'flex', flexDirection: 'column', marginLeft: 1, width: 'auto',}}>
-                <Box sx={{display: 'flex',}}>
-                  {pin?.title}
-                </Box>
-                <Box sx={{display: 'flex',}}>
-                  {pin?.text}
-                </Box>
+              <Box sx={{display: 'flex', marginLeft: 2}}>
+                {pin?.tags &&
+                  tags
+                }
               </Box>
-              <Box sx={{display: 'flex', width: 'auto'}}>
+
+              {/* Pin creator user image and name */}
+              <Box sx={{display: 'flex', width: 'auto', marginTop: 1}}>
               <Button 
                 onClick={handleGoToProfile}
               >
@@ -299,9 +315,19 @@ const PinDetails = ({pinId, pin, imageDimensions, creatorUserName, creatorUserIm
                 </Avatar>
               }
               </Button>
-                {creatorUserName}
-                {pin?.tags}
+                <Typography sx={{paddingTop: 2}}>{creatorUserName}</Typography>
               </Box>
+
+
+              <Box sx={{display: 'flex', flexDirection: 'column', marginLeft: 1, width: 'auto',}}>
+                <Box sx={{display: 'flex', marginY: 1}}>
+                  <Typography sx={{fontSize: 22}}>{pin?.title}</Typography>
+                </Box>
+                <Box sx={{display: 'flex', marginY: 1}}>
+                <Typography>{pin?.text}</Typography>
+                </Box>
+              </Box>
+              
               <Box sx={{display: 'flex'}}>
                 <Typography sx={{marginTop: 1}}>
                   {comments.length} Comments 

@@ -28,8 +28,7 @@ const PinPage = () => {
 
     useEffect(() => {        
         setLoading(true)
-        getPinDetails()
-        
+        getPinDetails()        
       }, [])
     
       useEffect(() => {  
@@ -47,7 +46,7 @@ const PinPage = () => {
       }
     
       const setCreatorUser = async () => {
-        if (users && ! creatorUserName) {
+        if (users && !creatorUserName) {
           const creatorUser = await users.find((user:any) => user._id === creatorId)
           setCreatorUserName(creatorUser?.userName)
           setCreatorUserImage(creatorUser?.image)
@@ -55,24 +54,22 @@ const PinPage = () => {
         }
       }    
 
-    if (loading) return (
-        <Box className={classes.loading} >
-            <LinearProgress color='inherit' />
-        </Box>
-    )
     
   return (
     <>
+    {loading &&
+      <Box className={classes.loading} >
+        <LinearProgress color='inherit' />
+      </Box>
+    }
     {imageDimensions &&
     <>
     <PinDetails pinId={pinId} pin={pin} imageDimensions={imageDimensions} creatorUserName={creatorUserName} creatorUserImage={creatorUserImage} />
     {/* Text and Spacing rendered below */}
     <Box sx={{display: 'flex', justifyContent: 'center', width: '100%', paddingTop: 10}}>
         <Typography sx={{fontSize: 22}}>More like this</Typography>
-      </Box>
-    {!loading &&
-        <Feed pins={pins} />        
-    }
+    </Box>
+    <Feed pins={pins} />
     </>
     }
     </>
