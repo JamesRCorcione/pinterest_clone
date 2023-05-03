@@ -25,91 +25,36 @@ import { createComment, getComments, getCommentsByPin } from '../../features/com
 import { Circles } from 'react-loader-spinner'
 
 import { handleDownload, handleDeletePin, removeSavePin, savePin, } from '../../utils/pinUtils'
-import { GetUserById } from '../../features/usersSlice'
+import { GetUserById, getUsers } from '../../features/usersSlice'
 import { getImageDimensions } from '../../utils/getImageHeight'
 import Spinner from '../Spinner/Spinner'
+import SendIcon from '@mui/icons-material/Send';
 
-const PinDetails = () => {
+
+const PinDetails = ({pinId, pin, imageDimensions, creatorUserName, creatorUserImage}:any) => {
   let user = fetchUser()
-  const location = useLocation()
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
 
-  const { pinId } = useParams()
+  
   const { classes } = useStyle()
   const commentsState = useSelector((state: RootState) => state.commentsState);
-  let { comments } = commentsState
-  const pinsState = useSelector((state: RootState) => state.pinsState);
-  let { pins } = pinsState
-  const usersState = useSelector((state: RootState) => state.usersState);
-  let { users } = usersState
+  let { comments } = commentsState  
 
-  
-
-  const [pin, setPin] = useState<any>(null)  
   const [openPinMenu, setOpenPinMenu] = useState(false)
   const [savingPost, setSavingPost] = useState(false)
   const [expandComments, setExpandComments] = useState(false)
-  const [loading, setLoading] = useState(false)
+
   const [loadingComment, setLoadingComment] = useState(false)
-  const [text, setText] = useState<string>('')
-  const [openShare, setOpenShare] = useState<boolean>(false)
+  const [text, setText] = useState<any>()
+  const [openShare, setOpenShare] = useState<boolean>(false)  
   
-  const creatorId = pin?.creatorId
-  const [creatorUserName, setCreatorUserName] = useState('Hi')
-  const [creatorUserImage, setCreatorUserImage] = useState('Hi')
-  const [imageDimensions, setImageDimensions] = useState<any>()
   
   let totalSaved = user?.result.saves.filter((save:any) => save?._id === pin?._id)
-  let saved = totalSaved?.length > 0 ? true : false   
-
-  useEffect(() => {    
-    const updatePinDetials = async () => {
-      await getPinDetails()
-      await getCommentsUpdate()
-         
-    }
-    setLoading(true)
-    updatePinDetials()
-    setLoading(false)
-  }, [pinId])
-
-  useEffect(() => {
-    getCreatorPins()
-  }, [pin])
-
-
-  useEffect(() => {
-    getCreatorUser()
-    console.log('pin',pin)
-    
-  }, [users, pinId])
-  
-  const getCreatorUser = async () => {
-    if (users) {
-      const creatorUser = await users.find((user:any) => user._id === creatorId)
-      setCreatorUserName(creatorUser?.userName)
-      setCreatorUserImage(creatorUser?.image)
-    }
-    console.log('pin',pin)
-  }
-
-  const getCreatorPins = async () => {
-    await getImageDimensions(pin?.image)
-      .then((d) => setImageDimensions(d)) 
-  }
-
-  const getPinDetails = async () => {
-    const data = await dispatch(getPin(pinId))
-    setPin(data.payload)    
-  }
-
-  const getCommentsUpdate = async () => {
-    await dispatch(getCommentsByPin(pinId))
-  }
+  let saved = totalSaved?.length > 0 ? true : false
 
   const handleComment = async (e:any) => {
-    e.preventDefault()
+    //e.preventDefault()
     if (pinId) {
       setLoadingComment(true)
       await dispatch(createComment({ pinId, text, commentingUserId: user.result._id }))
@@ -138,81 +83,128 @@ const PinDetails = () => {
     window.location.reload()
   }
 
-  if (loading) (
-    <Box sx={{position: 'absolute', top: 70, width: '100%', color: red[400]}}>
-      <LinearProgress color='inherit' />
-    </Box>
+  const renderInputBox = () => (
+    <>
+    {/* Comments are expanded and rendering below*/}
+      <Box className={classes.commentInputContainer}>
+        <Divider />
+          <Box className={classes.profileImage}>
+          {user.result.image ?
+            <Box onClick={handleGoToProfile} sx={{cursor: 'pointer', borderRadius: 99, minWidth: 40, maxWidth: 40, minHeight: 40, maxHeight: 40, overflow: 'hidden', marginBottom: 1, marginLeft: 2, marginRight: 2}}>
+              <img  
+                src={user.result.image}
+                width={40}
+                height={40}
+                alt="user-profile"
+              />
+            </Box>
+          :
+            <Avatar sx={{marginBottom: 1, marginLeft: 2, marginRight: 2}}>
+              {user?.result.userName.charAt(0)}
+            </Avatar>
+          }
+          <Box sx={{marginTop: 1, marginRight: 5}} className={classes.inputBar}>
+            <TextField
+              id={'commentInput'}
+              className={classes.input}
+              onChange={(e:any) => setText(e.target.value)}
+              placeholder='Add a comment'
+              multiline
+              maxRows={10} 
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handleComment({e})
+                }
+              }}
+              InputProps={{endAdornment: 
+                <>
+                {text &&
+                <Button sx={{position: 'relative', bottom: 0, backgroundColor: red[500], minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30, borderRadius: 99}} onClick={(e) => handleComment(e)}>
+                  <SendIcon sx={{color: 'white', paddingLeft: 0.3, paddingTop: 0.2, minHeight: 20, maxHeight: 20, minWidth: 20, maxWidth: 20}} />
+                </Button>
+              }
+                </>
+              }}
+            />
+          </Box>
+        </Box>
+      </Box>
+    </>
   )
 
+  const renderMobileView = () => (
+    <>
+    <img className={classes.mobileImage} width={'100vw'} height={'auto'} src={pin?.image}></img>
+    <Box className={classes.topButtonsMobileContainer}>
+        
+      <Button className={classes.shareButton} onClick={(e) => handleDownload({e, pin})}>              
+          <DownloadIcon />              
+      </Button>            
+       <Button className={classes.downloadButton} onClick={() => setOpenShare((prev) => !prev)}>
+          <ShareIcon />
+       </Button>    
+       {openShare &&
+         <Box sx={{position: 'absolute', top: 60, left: 38, zIndex: 2}}>
+            <Share image={pin?.image} />
+         </Box>
+       }
+       {user.result._id === pin?.creatorId &&
+       <>
+          <Button 
+            className={classes.actionButton}
+            onClick={() => setOpenPinMenu((prev) => !prev)}
+          >
+            <MoreHorizIcon />
+          </Button>
+          {openPinMenu &&                  
+              <Box sx={{position: 'absolute', width: 0}}>
+                  <Box sx={{position: 'relative', display: 'flex', flexDirection: 'column', borderRadius: 2, left: 130, top: 60, height: 80, width: 150, backgroundColor: 'white', boxShadow: 2, zIndex: 200}}>
+                    <Button onClick={(e) => handleUpdatePin(pinId)}>Edit</Button>
+                    <Button onClick={(e) => handleDeletePin(pinId)}>Delete</Button>
+              </Box>
+            </Box>
+          }
+          
+       </>
+       }
+       <Box className={classes.saveButtonContainer}>
+          {saved ? (
+            <Button 
+              className={classes.savedButton}
+              variant="contained" 
+              onClick={(e) => {
+                e.stopPropagation()
+                removeSavePin({e, user, pin, saved, dispatch})
+              }}
+            >
+              Saved
+            </Button>
+          ) : (
+            <Button 
+              className={classes.saveButton}
+              variant="contained" 
+              onClick={(e) => {
+                e.stopPropagation()
+                savePin({e, user, pin, saved, dispatch})
+              }}
+              type="button" 
+            >
+              {savingPost ? 'Saving...' : 'Save'}
+            </Button>                  
+          )}
+       </Box>
+    </Box>  
+    </>
+  )
+
+  console.log('im',imageDimensions)
 
   return (
-    <>
-    {imageDimensions &&
-    <>
-      <Box className={classes.pageContainer}>
-        <Box className={classes.pinContainer} sx={{height: imageDimensions.h}}>
-
+    <>  
+      <Box className={classes.pinContainer}>
+        <Box className={classes.imageContainer} sx={{height: imageDimensions.h}}>
           {/* Mobile view is rendered below */}
-          <img className={classes.mobileImage} width={'100vw'} height={'auto'} src={pin?.image}></img>
-          <Box className={classes.topButtonsMobileContainer}>
-              
-            <Button className={classes.shareButton} onClick={(e) => handleDownload({e, pin})}>              
-                <DownloadIcon />              
-            </Button>            
-             <Button className={classes.downloadButton} onClick={() => setOpenShare((prev) => !prev)}>
-                <ShareIcon />
-             </Button>    
-             {openShare &&
-               <Box sx={{position: 'absolute', top: 60, left: 38, zIndex: 2}}>
-                  <Share image={pin?.image} />
-               </Box>
-             }
-             {user.result._id === pin?.creatorId &&
-             <>
-                <Button 
-                  className={classes.actionButton}
-                  onClick={() => setOpenPinMenu((prev) => !prev)}
-                >
-                  <MoreHorizIcon />
-                </Button>
-                {openPinMenu &&                  
-                    <Box sx={{position: 'absolute', width: 0}}>
-                        <Box sx={{position: 'relative', display: 'flex', flexDirection: 'column', borderRadius: 2, left: 130, top: 60, height: 80, width: 150, backgroundColor: 'white', boxShadow: 2, zIndex: 200}}>
-                          <Button onClick={(e) => handleUpdatePin(pinId)}>Edit</Button>
-                          <Button onClick={(e) => handleDeletePin(pinId)}>Delete</Button>
-                    </Box>
-                  </Box>
-                }
-                
-             </>
-             }
-             <Box className={classes.saveButtonContainer}>
-                {saved ? (
-                  <Button 
-                    className={classes.savedButton}
-                    variant="contained" 
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      removeSavePin({e, user, pin, saved, dispatch})
-                    }}
-                  >
-                    Saved
-                  </Button>
-                ) : (
-                  <Button 
-                    className={classes.saveButton}
-                    variant="contained" 
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      savePin({e, user, pin, saved, dispatch})
-                    }}
-                    type="button" 
-                  >
-                    {savingPost ? 'Saving...' : 'Save'}
-                  </Button>                  
-                )}
-             </Box>
-          </Box>  
+          {renderMobileView()}
 
           {/* Non mobile dynamic view rendering below */}
           <img className={classes.image} width={400} height={'auto'} src={pin?.image}></img>
@@ -338,55 +330,15 @@ const PinDetails = () => {
               </Box>
             :
             <Box className={classes.openCommentsContainer}></Box>
-            }            
-
-            {/* Comments are expanded and rendering below*/}
-            <Box sx={{position: 'relative'}}>
-            <Box className={classes.commentInputContainer}>
-              <Divider />
-                <Box className={classes.profileImage}>
-                <Avatar sx={{marginBottom: 1, marginLeft: 2, marginRight: 2}}>
-                  {user?.result.userName.charAt(0)}
-                </Avatar>
-                <Box sx={{marginTop: 1, marginRight: 5}} className={classes.inputBar}>
-                  <form onSubmit={handleComment}>
-                    <TextField
-                      id={'commentInput'}
-                      className={classes.input}
-                      onChange={(e:any) => setText(e.target.value)}
-                      placeholder='Add a comment'
-                      multiline
-                      maxRows={10} 
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          handleComment(e)
-                        }
-                      }}
-                      InputProps={{endAdornment: <Button onClick={handleComment}>Submit</Button>}}
-                    />
-                  </form>
-                                   
-                </Box>
-              </Box>
-            </Box>
-            </Box>
-            
+            }   
+            {/** Input box under here originally */}       
+            {renderInputBox()}
           </Box>
+
         </Box>
-      </Box> 
-
-      {/* Text and Spacing rendered below */}
-      <Box sx={{display: 'flex', justifyContent: 'center', width: '100%', paddingTop: 10}}>
-        <Typography sx={{fontSize: 22}}>More like this</Typography>
-      </Box>
-
-      {/* Feed is rendered below */}
-      <Box sx={{width: '100%'}}>
-        <Feed pins={pins} />
       </Box>
     </>
-    }
-    </>
+
   )
 }
 

@@ -187,13 +187,13 @@ const TopNavbar = () => {
             <Box sx={{position: 'absolute', top: 55, right: 10}}>
               <Box className={classes.dropDownMenu}>
                 <Button 
-                  sx={{paddingRight: 10, marginTop: 2, height: 50, width: '100%'}}
+                  sx={{height: 50, width: '100%'}}
                   onClick={handleGoToProfile} 
                 >
                   Profile
                 </Button>
                 <Button 
-                  sx={{paddingRight: 10, height: 50, width: '100%'}}
+                  sx={{height: 50, width: '100%'}}
                   onClick={logoutUser}
                 >
                   Logout

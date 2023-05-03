@@ -3,20 +3,6 @@ import { grey, red } from '@mui/material/colors';
 
 export default makeStyles()((theme) => {
   return {
-    pin: {
-      display: 'flex',  
-      //marginTop: 80, 
-      width: '100%',
-      paddingTop: 80,
-      paddingBottom: 70,
-      '&:hover': {
-        //transition: 1,
-        //left: 0
-      },
-      [theme.breakpoints.down(750)]: { 
-        paddingTop: 5,
-    }
-    },
     loading: {
       [theme.breakpoints.up(750)]: {
         position: 'fixed', top: 66, width: '100%', color: red[800], zIndex: 3000,
@@ -26,8 +12,7 @@ export default makeStyles()((theme) => {
         bottom: 66,
         width: '100%',
         color: red[800],
-        zIndex: 3000,
-        
+        zIndex: 3000,      
       }
     }
   }

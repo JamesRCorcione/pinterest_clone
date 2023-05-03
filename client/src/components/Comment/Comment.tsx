@@ -1,11 +1,14 @@
-import { Avatar, Box, Button, TextField, Typography } from '@mui/material'
+import { Avatar, Box, Button, Divider, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { grey, blue, red } from '@mui/material/colors';
 import { useDispatch, useSelector } from 'react-redux';
-import { createReply, deleteComment, getCommentsByPin, heartCommentPin, unheartCommentPin, updateComment,  } from '../../features/commentsSlice'
+import { createComment, createReply, deleteComment, getCommentsByPin, heartCommentPin, unheartCommentPin, updateComment,  } from '../../features/commentsSlice'
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import SendIcon from '@mui/icons-material/Send';
+
+import useStyle from './styles'
 
 import { useNavigate, useParams } from 'react-router-dom';
 import Spinner from '../Spinner/Spinner';
@@ -26,6 +29,7 @@ interface CommentProps {
 const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
+  const { classes } = useStyle()
   const usersState = useSelector((state: RootState) => state.usersState);
   let { users } = usersState
   let commentsState = useSelector((state: RootState) => state.commentsState);
@@ -42,6 +46,12 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
   const commenterId = comment.commentingUserId
   const [commenterUserName, setCommenterUserName] = useState('')
   const [commenterUserImage, setCommenterUserImage] = useState('')
+  const [loadingComment, setLoadingComment] = useState(false)
+
+  //useEffect(() => {
+  //  //const el = document.getElementById(`action-bar-${comment._id}`)
+  //  //el.onclick = function () { alert('hi')}
+  //}, [actionBar])
 
   useEffect(() => {
     getCommenterUser()
@@ -65,10 +75,7 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
      setActionBar((prev) => !prev)
  }
 
- useEffect(() => {
-  //const el = document.getElementById(`action-bar-${comment._id}`)
-  //el.onclick = function () { alert('hi')}
- }, [actionBar])
+
 
   const handleCreateComment = async ({e, taggedUser}:any) => {
     setReplying(false)
@@ -157,6 +164,19 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
   const getElapsedTime = () => {
     console.log(((new Date().getTime() - new Date(comment.createdAt).getTime()) / 1000) / 60, 'minutes')
   }
+  
+
+  const handleComment = async (e:any) => {
+    //e.preventDefault()
+    if (pinId) {
+      setLoadingComment(true)
+      await dispatch(createComment({ pinId, text, commentingUserId: user.result._id }))
+      await dispatch(getCommentsByPin(pinId))     
+      let removeText = (document.getElementById('commentInput') as HTMLInputElement).value = ''
+      setText(removeText)
+      setLoadingComment(false)      
+    }
+  }
 
   const handleGoToProfile = () => {
     //window.scrollTo(0, 0)
@@ -164,7 +184,6 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
     navigate(`/user-profile/${commenterId}`)    
     window.location.reload()
   }
-
 
   const renderHeart = () => (
     <Box sx={{marginRight: 1}}>
@@ -237,7 +256,15 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
                   }
                 }}
                 sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
-                InputProps={{endAdornment: <Button onClick={(e) => handleUpdateComment(e)}>Submit</Button>}}
+                InputProps={{endAdornment: 
+                  <>
+                  {(text || comment?.text) &&
+                  <Button sx={{position: 'absolute', bottom: 10, right: 3, backgroundColor: red[500], minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30, borderRadius: 99}} onClick={(e) => handleUpdateComment(e)}>                    
+                    <SendIcon sx={{color: 'white', paddingLeft: 0.3, paddingTop: 0.2, minHeight: 20, maxHeight: 20, minWidth: 20, maxWidth: 20}} />
+                  </Button>
+                  }
+                  </>
+                }}
 
               >
             </TextField>        
@@ -306,8 +333,16 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
                         }
                       }}
                       sx={{ typography: 'subtitle2', width: '75%', marginBottom: 1.5, marginLeft: 5, color: grey[600], "& fieldset": { borderRadius: 3 }}} 
-                      InputProps={{endAdornment: <Button onClick={(e) => handleCreateComment({e, taggedUser: taggedUser})}>Submit</Button>}}
-                    >                      
+                      InputProps={{endAdornment: 
+                        <>
+                        {text &&
+                          <Button sx={{position: 'relative', bottom: 0, backgroundColor: red[500], minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30, borderRadius: 99}} onClick={(e) => handleCreateComment({e, taggedUser: taggedUser})}>                    
+                            <SendIcon sx={{color: 'white', paddingLeft: 0.3, paddingTop: 0.2, minHeight: 20, maxHeight: 20, minWidth: 20, maxWidth: 20}} />
+                          </Button>
+                          }
+                        </>
+                      }}
+                     >                      
                   </TextField>
             </form>
           }
@@ -315,6 +350,56 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
          
     </Box>
   )
+
+  const renderInputBox = () => (
+    <>
+    {/* Comments are expanded and rendering below*/}
+      <Box className={classes.commentInputContainer}>
+        <Divider />
+          <Box className={classes.profileImage}>
+          {user.result.image ?
+            <Box onClick={handleGoToProfile} sx={{cursor: 'pointer', borderRadius: 99, minWidth: 40, maxWidth: 40, minHeight: 40, maxHeight: 40, overflow: 'hidden', marginBottom: 1, marginLeft: 2, marginRight: 2}}>
+              <img  
+                src={user.result.image}
+                width={40}
+                height={40}
+                alt="user-profile"
+              />
+            </Box>
+          :
+            <Avatar sx={{marginBottom: 1, marginLeft: 2, marginRight: 2}}>
+              {user?.result.userName.charAt(0)}
+            </Avatar>
+          }
+          <Box sx={{marginTop: 1, marginRight: 5}} className={classes.inputBar}>
+            <TextField
+              id={'commentInput'}
+              className={classes.input}
+              onChange={(e:any) => setText(e.target.value)}
+              placeholder='Add a comment'
+              multiline
+              maxRows={10} 
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handleComment({e})
+                }
+              }}
+              InputProps={{endAdornment: 
+                <>
+                {text &&
+                <Button sx={{position: 'relative', bottom: 0, backgroundColor: red[500], minHeight: 30, maxHeight: 30, minWidth: 30, maxWidth: 30, borderRadius: 99}} onClick={(e) => handleComment(e)}>
+                  <SendIcon sx={{color: 'white', paddingLeft: 0.3, paddingTop: 0.2, minHeight: 20, maxHeight: 20, minWidth: 20, maxWidth: 20}} />
+                </Button>
+              }
+                </>
+              }}
+            />
+          </Box>
+        </Box>
+      </Box>
+    </>
+  )
+
 
   //Temp time keeping, just an accurate date of posting
   let x = new Date(comment.createdAt).toString().split(' ')
@@ -327,7 +412,7 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
   }
 
   return (
-    <>    
+    <>
       {/* Head comment rendering and Reply indented rendering */}
       {reply ?       
       /* load over */ 
@@ -338,7 +423,7 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
       :            
         /* load under */
         <>
-        {renderComment({margin: 0, taggedUser: false})    }
+        {renderComment({margin: 0, taggedUser: false})}
         {loading && <Box sx={{position: 'relative', height: 60, marginLeft: 15, marginTop: 3}}><Circles color={grey[400]} height={30} width={30} /></Box>}        
         </>
       } 
@@ -350,6 +435,7 @@ const Comment = ({index, user, pinId, comment, reply}:CommentProps) => {
         ))
       )}
     </>
+    
   )
 }
 

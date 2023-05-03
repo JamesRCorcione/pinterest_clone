@@ -163,8 +163,8 @@ export default makeStyles()((theme) => {
     }, 
     dropDownMenu: {
       position: 'relative',
-      height: 250, 
-      width: 200, 
+      height: '100%', 
+      width: '100%', 
       borderRadius: 10, 
       backgroundColor: 'white', 
       boxShadow: '1px 1px 5px rgba(0, 0, 0, 0.3)',

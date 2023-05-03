@@ -22,6 +22,7 @@ import NotFound from './pages/NotFound';
 import { getUsers, Logout } from './features/usersSlice';
 import { getComments } from './features/commentsSlice';
 import AgreementAndPolicy from './pages/AgreementAndPolicy';
+import PinPage from './pages/PinPage/PinPage';
 
 interface MyToken {
   name: string
@@ -82,7 +83,7 @@ function App() {
         <Route path='/' index element={<Feed pins={pins} /> } />             
         <Route path='/createPin' index element={<CreatePin user={user} /> } />
         <Route path='/category/:category' element={<Feed />} />
-        <Route path='/pin-detail/:pinId' element={<PinDetails />} />
+        <Route path='/pin-detail/:pinId' element={<PinPage />} />
         <Route path='/user-profile/:userId' index element={<Profile  />} />    
         <Route path='/search/*' element={<Search />} />
         <Route path='/agreementAndPolicy' element={<AgreementAndPolicy />} />

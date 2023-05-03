@@ -26,14 +26,13 @@ const breakpointObj = {
 const Feed = ({pins}:any) => {
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch<AppDispatch>()
-  const classes = useStyles()
+  const { classes } = useStyles()
   const [totalPins, setTotalPins] = useState<number>(20)
   const [atBottom, setAtBottom] = useState<boolean>(false)
   const [prevBottom, setPrevBottom] = useState<number>(0)
   const usersState = useSelector((state: RootState) => state.usersState);
   const { users } = usersState
   let scrollBefore = 0
-
 
 
   useEffect(() => {        
@@ -49,14 +48,12 @@ const Feed = ({pins}:any) => {
     setAtBottom(false) 
   }, [atBottom])
 
-
   async function loadPins() {
     setLoading(true)
     setPrevBottom(document.body.offsetHeight)
     await dispatch(getPins(pins.length + 20))    
     setLoading(false)
   }
-
 
   const handleScroll = (e:any) => {
     window.addEventListener('scroll', 
@@ -76,7 +73,6 @@ const Feed = ({pins}:any) => {
     )
   }
 
-
   //if (loading) return <Box sx={{position: 'relative', top: 0}}><Circles color="#00BFFF" height={50} width={200}/></Box>
   if (pins?.length === 0 && !loading) return <Box sx={{position: 'relative', width: '90%', top: 80, left: 50}}><h2>No Pins Available</h2></Box>
 
@@ -92,9 +88,7 @@ const Feed = ({pins}:any) => {
           {pins?.map((pin:IPin, i:number) => <Pin key={i} pin={pin} />)}        
         </Masonry>                       
       </Box>
-    </>
-
-    
+    </>    
   )
 }
 
