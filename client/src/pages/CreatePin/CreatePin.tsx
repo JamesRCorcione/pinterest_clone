@@ -7,6 +7,8 @@ import FileBase from 'react-file-base64'
 import { FileUploader } from "react-drag-drop-files"
 import { grey, red } from '@mui/material/colors'
 import useStyles from './styles'
+import { Typography } from '@material-ui/core'
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface CreatePinProps {
     user: {
@@ -34,7 +36,7 @@ const CreatePin = ({user}:CreatePinProps) => {
       }
     }, [state])
 
-    const handlePinSave = async (e:React.FormEvent) => {
+    const handleCreatePin = async (e:React.FormEvent) => {
       e.preventDefault()
       pin.tags = chips
       try{
@@ -51,7 +53,7 @@ const CreatePin = ({user}:CreatePinProps) => {
     const handleDeleteTag = (chipDelete:string) => {
       const updatedChips = chips.filter((chip) => chip !== chipDelete)
       setChips(updatedChips)
-    }     
+    }
 
     const handleAddTag = (e:any) => {
       e.preventDefault()
@@ -126,7 +128,31 @@ const CreatePin = ({user}:CreatePinProps) => {
 
       
       }
-    };
+    }
+
+
+    const handleTitleLimit = (e:any) => {
+      if (pin.title.length < 100) {
+        setPin({ ...pin, title: e.target.value })
+      } 
+    }
+
+    const handleTextLimit = (e:any) => {
+      if (pin.text.length < 500)
+        setPin({ ...pin, text: e.target.value })
+    }
+
+    const handleTitleDeletePressAtLimit = (e:any) => {
+      console.log(e.target.selectionStart)
+      let title_front = pin.title.substring(0, e.target.selectionStart)
+      let title_back = pin.title.substring(e.target.selectionStart + 1, pin.title.length)
+      setPin({ ...pin, title: title_front + title_back })
+    }
+
+    const handleTextDeletePressAtLimit = (e:any) => {
+      let text = pin.text.slice(e.target.selectionStart, e.target.selectionStart + 1)
+      setPin({ ...pin, text})
+    }
 
     if (loading) return (
       <Box sx={{position: 'absolute', top: 70, width: '100%', color: red[400]}}>
@@ -134,143 +160,159 @@ const CreatePin = ({user}:CreatePinProps) => {
       </Box>
     )
 
+
   return (
     <Box className={classes.background}>
       <Box className={classes.createPinContainer}>
 
-        <form onSubmit={handlePinSave}>
-          <input
-            type="text"
-            placeholder="Enter a Title"
-            value={pin.title}
-            onChange={(e) => setPin({ ...pin, title: e.target.value })}
-          />
-          <br />
-          <br />
-          <TextField
-            sx={{backgroundColor: 'white'}}
-            type="text"
-            placeholder="Enter Pin Text"
-            fullWidth
-            multiline
-            rows={5}
-            value={pin.text}
-            onChange={(e) => setPin({ ...pin, text: e.target.value })}
-          />
-          <br />
-          <br />
-          <TextField 
-            sx={{backgroundColor: 'white'}}
+        <Box className={classes.imageSection}>
+          {/* Image upload */}
+            {!pin?.image ?
+              <Box sx={{height: '100%', position: 'relative', top: 0}}>
+                <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
+                <label title='Photo Upload'>
+                  <Box 
+                      onDragEnter={handleDrag}
+                      onDragLeave={handleDrag} 
+                      onDragOver={handleDrag} 
+                      onDrop={handleDrop}
+                      draggable
+                      sx={{display: 'flex',
+                        justifyContent: 'flex-start',
+                        alignItems: 'center',
+                        flexDirection: 'row',
+                        width: '20vw',
+                        height: '30vw',
+                        padding: 5,
+                        borderStyle: 'solid',
+                        borderWidth: 1,
+                        borderColor: 'green',
+                        borderRadius: 5,
+                        color: 'green',
+                      }}>
+                        Drag and Drop to Upload Photo
+                    <Input 
+                      type="file"  
+                      disableUnderline
+                      sx={{display: 'none'}}
+                      onChange={(e) => handlePhotoUpload(e)}
+                    />
+                  </Box>            
+                </label>
+                { dragActive && 
+                
+                  <Box 
+                    id="drag-file-element" 
+                    onDragEnter={handleDrag}
+                    onDragLeave={handleDrag} 
+                    onDragOver={handleDrag} 
+                    onDrop={handleDrop}>
+                  </Box> 
+                }
+                </form>
+              </Box>
+            :        
+              <Box>
+                <DeleteIcon sx={{cursor: 'pointer', color: red[600]}} onClick={() => setPin({ ...pin, image: '' })} />
+                <Box sx={{borderRadius: 9, overflow: 'hidden'}}>
+                  <img src={pin?.image} width={'350px'} height={'auto'} border-radius={10}></img>
+                </Box>          
+              </Box>          
+            }
+        </Box>
+
+        <Box className={classes.detailSection}>
+          {/* Pin Details */}
+            <Input
+              type="text"
+              multiline
+              placeholder="Add you title"
+              sx={{fontSize: 24, fontWeight: 'bold', paddingTop: 1}}
+              value={pin.title}
+              onChange={(e) => handleTitleLimit(e)}  
+              onKeyDown={(e) => {
+                if (e.key === 'Backspace' && pin.title.length === 100) {
+                  setPin({ ...pin, title: pin.title.slice(0, -1)})
+                } else if (e.key === 'Delete' && pin.title.length === 100) {
+                  console.log('delete press')
+                  handleTitleDeletePressAtLimit(e)
+                }
+              }}        
+            />
+
+            <Input
+              sx={{backgroundColor: 'white', marginTop: 10}}
+              type="text"
+              placeholder="Enter Pin Text"
+              fullWidth
+              multiline
+              value={pin.text}
+              onChange={(e) => handleTextLimit(e)}
+              onKeyDown={(e) => {
+                if (e.key === 'Backspace' && pin.text.length === 500) {
+                  let text = pin.text.slice(0, -1)
+                  setPin({ ...pin, text})
+                } else if (e.key === 'Delete' && pin.text.length === 500) {
+                  handleTextDeletePressAtLimit(e)                  
+                }
+              }}
+            />
+
+          {/* Tags */}
+          <Box>
+            <Box>
+              <form onSubmit={handleAddTag}>
+                <Input                  
+                  onChange={(e:any) => setTag(e.target.value)}
+                  placeholder='Add some tags!'
+                  sx={{marginLeft: 1, marginTop: 10}}
+                  />
+                <Button
+                  type="submit"
+                  variant="contained"
+                  size="small"
+                  sx={{
+                    marginLeft: 2,
+                    fontFamily: "'Abel', 'sansSerif'",
+                  }}
+                >
+                    Add Tag       
+                </Button>              
+              </form>              
+            </Box>
+            <Box sx={{marginTop: 1}}>
+              {chips &&
+                chips?.map((chip:any, i:number) => (
+                  <Chip key={i} label={chip} onDelete={() => handleDeleteTag(chip)} />
+                ))
+              }
+            </Box>
+          </Box>
+
+          
+
+          <Input 
+            sx={{backgroundColor: 'white', marginTop: 10}}
             name="tags" 
-            variant="outlined" 
-            label="External Website Link" 
+            placeholder="Add destination link" 
             fullWidth 
             value={pin.destination} 
             onChange={(e:any) => setPin({ ...pin, destination: e.target.value })}
-          />     
-
-          <div className="flex flex-col">
-            <div>
-              <p className="mb-2 font-semibold text-lg sm:text-xl">Choose Pin Category</p>
-
-            </div>
-          </div>
-
-
-         
-
+          />
 
           <Button
-            type="submit"
-            variant="contained"
-            size="small"
-            sx={{
-              margin: "0.9rem 0rem",
-              fontFamily: "'Abel', 'sansSerif'",
-            }}
-          >
-              Add Post         
+              type="submit"
+              variant="contained"
+              size="small"
+              sx={{
+                margin: "0.9rem 0rem",
+                fontFamily: "'Abel', 'sansSerif'",
+              }}
+              onClick={handleCreatePin}
+            >
+                Add Post         
           </Button>
-          
-        </form>  
-
-        <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
-            <label title='Photo Upload'>
-              <Box 
-                  onDragEnter={handleDrag}
-                  onDragLeave={handleDrag} 
-                  onDragOver={handleDrag} 
-                  onDrop={handleDrop}
-                  draggable
-                  sx={{display: 'flex',
-                    justifyContent: 'flex-start',
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                    width: '20vw',
-                    padding: 5,
-                    borderStyle: 'solid',
-                    borderWidth: 1,
-                    borderColor: 'green',
-                    borderRadius: 5,
-                    color: 'green',
-                  }}>
-                    Drag and Drop to Upload Photo
-                <Input 
-                  type="file"  
-                  disableUnderline
-                  sx={{display: 'none'}}
-                  onChange={(e) => handlePhotoUpload(e)}
-                />
-              </Box>            
-            </label>
-            { dragActive && 
-            
-              <Box 
-                id="drag-file-element" 
-                onDragEnter={handleDrag}
-                onDragLeave={handleDrag} 
-                onDragOver={handleDrag} 
-                onDrop={handleDrop}>
-              </Box> 
-            }
-        </form>
-        
-          {pin?.image &&
-          <Box sx={{position: 'absolute', top: 100, right: 180}}>
-            <img src={pin?.image} width={'350px'} height={'100vw'} border-radius={10}></img>
-          </Box>
-          }
-
-        
-          <Box sx={{position: 'absolute', top: 100}}>
-          <Box>
-            <form onSubmit={handleAddTag}>
-              <Input                  
-                onChange={(e:any) => setTag(e.target.value)}
-                placeholder='Add some tags!'
-                disableUnderline={true}
-                sx={{border: 1, marginLeft: 1}}
-                />
-              <Button
-                type="submit"
-                variant="contained"
-                size="small"
-                sx={{
-                  marginLeft: 10,
-                  fontFamily: "'Abel', 'sansSerif'",
-                }}
-              >
-                  Add Tag       
-              </Button>              
-            </form>              
-          </Box>
-          {chips &&
-            chips?.map((chip:any, i:number) => (
-              <Chip key={i} label={chip} onDelete={() => handleDeleteTag(chip)} />
-            ))
-          }
-          </Box>
-          
+        </Box> 
       </Box>    
     </Box>
   )

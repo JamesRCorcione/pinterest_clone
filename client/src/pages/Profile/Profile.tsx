@@ -36,11 +36,7 @@ const Profile = () => {
   const [openEditProfile, setOpenEditProfile] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
-  console.log(profileUser?.userName, userId)
-
-
-  useEffect(() => {  
-    
+  useEffect(() => {      
     //if (!profileUser)  {
     getUserProfile() 
     //}
@@ -112,8 +108,10 @@ const Profile = () => {
 
         <Box className={classes.editProfileButton}>
           {openEditProfile &&
-            <Box sx={{position: 'absolute', top: 60, zIndex: 2}}>
-              <EditProfile profileUser={profileUser} />
+            <Box sx={{position: 'absolute', left: -50, top: 60, zIndex: 2, width: '100%'}}>
+              <Box sx={{display: 'flex', width: 300}}>
+                <EditProfile profileUser={profileUser} />
+              </Box>
             </Box>
           }
         </Box>

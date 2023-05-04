@@ -319,11 +319,11 @@ const PinDetails = ({pinId, pin, imageDimensions, creatorUserName, creatorUserIm
               </Box>
 
 
-              <Box sx={{display: 'flex', flexDirection: 'column', marginLeft: 1, width: 'auto',}}>
-                <Box sx={{display: 'flex', marginY: 1}}>
+              <Box sx={{display: 'flex', flexDirection: 'column', marginLeft: 1, width: 'auto'}}>
+                <Box sx={{marginY: 1, overflowWrap: 'break-word'}}>
                   <Typography sx={{fontSize: 22}}>{pin?.title}</Typography>
                 </Box>
-                <Box sx={{display: 'flex', marginY: 1}}>
+                <Box sx={{marginY: 1, overflowWrap: 'break-word'}}>
                 <Typography>{pin?.text}</Typography>
                 </Box>
               </Box>

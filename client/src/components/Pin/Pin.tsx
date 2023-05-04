@@ -180,7 +180,7 @@ const Pin = ({ pin }:PinProps) => {
       </Box>
 
       {/* Pin title */}
-      <Box sx={{marginLeft: 2}}>
+      <Box sx={{marginLeft: 2, overflowWrap: 'break-word'}}>
         <Typography sx={{fontSize: 14}}>{pin?.title}</Typography>
       </Box>
           

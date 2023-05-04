@@ -16,14 +16,34 @@ export default makeStyles()((theme) => {
     createPinContainer: {
         marginTop: 5, 
         marginBottom: 10, 
-        display: 'flex', 
-        overflowY: 'hidden',
+        display: 'flex',         
         justifyContent: 'center', 
         alignItems: 'center', 
-        borderRadius: 5, 
-        height: 600, 
+        borderRadius: 25, 
+        minHeight: 600, 
+        height: 'auto',
         width: 800, 
         backgroundColor: 'white'
+    },
+    imageSection: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+      width: '100%',
+      marginLeft: 5,
+      marginRight: 5,
+    },
+    detailSection: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      alignItems: 'space-between',
+      height: '80%',
+      width: '100%',
+      marginTop: 100,
+      marginLeft: 5,
+      marginRight: 50,
     }
   }
 })

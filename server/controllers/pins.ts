@@ -54,11 +54,13 @@ export const createPin = async (req: Request, res: Response) => {
 //Retreive
 export const getPins = async (req: Request, res: Response) => {
     const { startIndex } = req.query
+    console.log(startIndex)
     try {
       //Missed timestamps on my pin Model so sorting is not working with 
       //current temp mock up.... must fix before finished  
       //const pins = await Pin.find().sort({ timestamp: 'desc' }).limit(Number(startIndex))//.skip(Number(startIndex))
-      const pins = await Pin.find().limit(Number(startIndex))//.skip(Number(startIndex))
+      const pins = await Pin.find().sort({ timestamps: -1 }).limit(Number(startIndex))//.skip(Number(startIndex))
+      console.log(pins)
         res.send(pins)
       } catch (error) {
         res.status(500).send("Error: " + error)

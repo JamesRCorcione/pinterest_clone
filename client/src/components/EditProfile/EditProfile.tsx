@@ -4,15 +4,21 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { DeleteUser, Logout, UpdateUser } from '../../features/usersSlice';
 import { red } from '@mui/material/colors';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+import useStyles from './styles'
 
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import { classnames } from 'tss-react/tools/classnames';
 
 const EditProfile = ({profileUser}:any) => {
-  const [user, setUser] = useState<any>({userName: profileUser?.userName, image: profileUser?.image, password: profileUser?.password})
+  const [user, setUser] = useState<any>({userName: profileUser?.userName, image: null, password: null})
   const [dragActive, setDragActive] = useState<boolean>(false);
+  const [confirmDeleteButton, setConfirmDeleteButton] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>()   
   const navigate = useNavigate()
+  const { classes } = useStyles()
 
   const [showPassword, setShowPassword] = useState(false)
   const handleShowPassword = () => setShowPassword(!showPassword)
@@ -80,8 +86,9 @@ const EditProfile = ({profileUser}:any) => {
 
   const handleUpdateUser = async (e:React.FormEvent) => {
     e.preventDefault()
+    console.log('pro', profileUser._id)
       try{
-        await dispatch(UpdateUser({_id: profileUser.result._id, userName: user.userName, password: user.password, image: user.image})).unwrap()
+        await dispatch(UpdateUser({_id: profileUser._id, userName: user.userName, password: user.password, image: user.image})).unwrap()
         navigate('/')
       } catch (error:any) {
         alert(error.message)
@@ -90,7 +97,8 @@ const EditProfile = ({profileUser}:any) => {
 
   const handleDeleteProfile = async () => {
     try{
-      await dispatch(DeleteUser({userId: profileUser.result._id})).unwrap()
+      
+      await dispatch(DeleteUser({userId: profileUser._id})).unwrap()
       await dispatch(Logout())
       navigate('/login')
     } catch (error:any) {
@@ -99,117 +107,160 @@ const EditProfile = ({profileUser}:any) => {
   }
 
   return (
-    <Box sx={{display: 'flex', flexDirection:'column', width: 500, backgroundColor: 'white', boxShadow: 2, borderRadius: 5}}>
-        <Typography sx={{display: 'flex',  justifyContent: 'center', marginTop: 1}}>Edit Profile</Typography>
-        <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', margin: 2}}>
-        <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
-            <label title='Photo Upload'>
-              New Profile Image
-              <Box 
+    <Box className={classes.editProfileContainer}>
+        <Typography sx={{marginTop: 0}}>Edit Profile</Typography>
+
+        
+        <Box className={classes.imageSection}>
+          {!user.image ?
+          <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
+              <label title='Photo Upload'>
+                <Typography sx={{marginLeft: 2}}>New Profile Image</Typography>
+                <Box 
+                    className={classes.imageDropBox}
+                    onDragEnter={handleDrag}
+                    onDragLeave={handleDrag} 
+                    onDragOver={handleDrag} 
+                    onDrop={handleDrop}
+                    draggable
+                  >
+                      Drag and Drop to Upload Photo
+                  <Input 
+                    type="file"  
+                    disableUnderline
+                    sx={{display: 'none'}}
+                    onChange={(e) => handlePhotoUpload(e)}
+                  />
+                </Box>            
+              </label>
+              { dragActive && 
+              
+                <Box 
+                  id="drag-file-element" 
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag} 
                   onDragOver={handleDrag} 
-                  onDrop={handleDrop}
-                  draggable
-                  sx={{display: 'flex',
-                    justifyContent: 'flex-start',
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                    width: '7.5vw',
-                    padding: 5,
-                    marginBottom: 1,
-                    borderStyle: 'solid',
-                    borderWidth: 1,
-                    borderColor: 'green',
-                    borderRadius: 5,
-                    color: 'green',
-                  }}>
-                    Drag and Drop to Upload Photo
-                <Input 
-                  type="file"  
-                  disableUnderline
-                  sx={{display: 'none'}}
-                  onChange={(e) => handlePhotoUpload(e)}
-                />
-              </Box>            
-            </label>
-            { dragActive && 
-            
-              <Box 
-                id="drag-file-element" 
-                onDragEnter={handleDrag}
-                onDragLeave={handleDrag} 
-                onDragOver={handleDrag} 
-                onDrop={handleDrop}>
-              </Box> 
-            }
-        </form>
-        <form onSubmit={handleUpdateUser}>
-          <label>New User Name</label>
-          <TextField
-            type="text"
-            placeholder="new user name"
-            value={user.userName}
-            onChange={(e) => setUser({ ...user, userName: e.target.value })}
-          />
-          <br />
-          <br />
-          <label>New Password</label>
-          <FilledInput 
-              name="password" 
-              fullWidth 
-              disableUnderline
-              type={showPassword ? 'text' : 'password'} 
-              endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleShowPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                    </IconButton>
-                  </InputAdornment>
+                  onDrop={handleDrop}>
+                </Box> 
               }
-              onChange={(e) => setUser({ ...user, password: e.target.value })}
-          />
+          </form>
+          :        
+          <Box>
+            <Typography sx={{marginLeft: 2}}>New Profile Image</Typography>
+            <Box>
+              <DeleteIcon sx={{cursor: 'pointer', color: red[600]}} onClick={() => setUser({ ...user, image: null })} />
+            <Box 
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+                flexDirection: 'row',
+                borderRadius: 99, 
+                width: '175px', 
+                height: '175px',
+                overflow: 'hidden',           
+                marginBottom: 1,
+              }}
+            >
 
-          <div className="flex flex-col">
-            <div>
-              <p className="mb-2 font-semibold text-lg sm:text-xl">Choose Pin Category</p>
-            </div>
-          </div>
-          </form>  
-          <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
-            <Button
+              <img src={user?.image} width={'100%'} height={'100%'} border-radius={10}></img>
+            </Box>          
+          </Box>          
+          </Box>
+        }
+        </Box>
+
+        <Box className={classes.detailSection}>
+          <form onSubmit={handleUpdateUser}>
+            <Box sx={{display: 'flex', flexDirection: 'column'}}>
+              <label>New User Name</label>
+              <TextField
+                className={classes.usernameInput}
+                type="text"
+                placeholder="new user name"
+                value={user.userName}
+                onChange={(e) => setUser({ ...user, userName: e.target.value })}
+                
+              />
+            </Box>
+            <Box sx={{display: 'flex', flexDirection: 'column'}}>
+              <label>New Password</label>
+              <FilledInput 
+                className={classes.inputPassword} 
+                name="password" 
+                placeholder={'Password'}
+                fullWidth 
+                disableUnderline
+                type={showPassword ? 'text' : 'password'} 
+                endAdornment={
+                    <InputAdornment position="end">
+                    <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleShowPassword}
+                        edge="end"
+                    >
+                        {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                    </InputAdornment>
+                }
+                onChange={(e:any) => setUser({ ...user, password: e.target.value })} 
+              />
+            </Box>
+          </form> 
+           
+        </Box>
+        
+        <Box sx={{display: 'flex', justifyContent: 'space-evenly', alignItems: 'space-evenly', width: '100%'}}>
+          <Button
               type="submit"
               variant="contained"
               size="small"
               sx={{
+                display: 'flex',
+                flexDirection: 'column',
                 margin: "0.9rem 0rem",
                 fontFamily: "'Abel', 'sansSerif'",
               }}
               onClick={handleUpdateUser}
             >
                 Update Profile         
-            </Button>     
+          </Button>     
+
+          {confirmDeleteButton ?
             <Button
               type="submit"
               variant="contained"
               size="small"
               sx={{
+                display: 'flex',
+                flexDirection: 'column',
                 backgroundColor: red[400],
                 margin: "0.9rem 0rem",
                 fontFamily: "'Abel', 'sansSerif'",
               }}
               onClick={handleDeleteProfile}
             >
-                Delete Profile         
+                Confirm Delete ?         
+            </Button>  
+          :
+            <Button
+              type="submit"
+              variant="contained"
+              size="small"
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                backgroundColor: red[400],
+                margin: "0.9rem 0rem",
+                fontFamily: "'Abel', 'sansSerif'",
+              }}
+              onClick={() => setConfirmDeleteButton(true)}
+            >
+              Delete Profile         
             </Button>    
-          </Box>  
-
-                
+          }
         </Box>
+
     </Box>
   )
 }

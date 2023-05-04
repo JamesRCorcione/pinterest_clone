@@ -190,24 +190,43 @@ export const updateUser = async (req: Request, res: Response) => {
   //});
   //const { error } = schema.validate(req.body)
   //if (error) return res.status(400).send(error.details[0].message)
+  console.log(typeof(req.params.id))
   try {    
   
-    const user = await User.findById(req.params.id)
-  
-    if (!user) return res.status(404).send("Post not found...")
-  
+    const user = await User.findById(req.params.id)  
+    if (!user) return res.status(404).send("Post not found...")  
+
     const { userName, password, image, authType } = req.body
+    let result
 
-    const hashedPassword = await bcrypt.hash(password, 12)
-
-    const result = await User.findByIdAndUpdate( req.params.id, { userName, password: hashedPassword, image })
+    // All combinations that can be updated
+    if (userName && password && image) {
+      const hashedPassword = await bcrypt.hash(password, 12)
+      result = await User.findByIdAndUpdate( req.params.id, { userName, password: hashedPassword, image })
+    } else if (userName && password) {
+      const hashedPassword = await bcrypt.hash(password, 12)
+      result = await User.findByIdAndUpdate( req.params.id, { userName, password: hashedPassword })
+    } else if (userName && image) {
+      result = await User.findByIdAndUpdate( req.params.id, { userName, image })
+    } else if (image && password) {
+      const hashedPassword = await bcrypt.hash(password, 12)
+      result = await User.findByIdAndUpdate( req.params.id, { password: hashedPassword, image })
+    } else if (userName) {
+      result = await User.findByIdAndUpdate( req.params.id, { userName })
+    } else if (image) {
+      result = await User.findByIdAndUpdate( req.params.id, { image })
+    } else if (password) {
+      const hashedPassword = await bcrypt.hash(password, 12)
+      result = await User.findByIdAndUpdate( req.params.id, { password: hashedPassword })
+    }
     
     const secret = process.env.SECRET as string
     const token = jwt.sign( { userName, id: req.params.id }, secret, { expiresIn: "1h" } )
     
     res.status(200).json({ result, token, authType: 'Custom' })
   } catch (err) {
-    res.status(500).json({ message: "Something went wrong" })
+    console.log(err)
+    // /res.status(500).json({ message: "Something went wrong" })
   }
 }
 

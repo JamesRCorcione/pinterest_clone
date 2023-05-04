@@ -76,6 +76,8 @@ const Feed = ({pins}:any) => {
   //if (loading) return <Box sx={{position: 'relative', top: 0}}><Circles color="#00BFFF" height={50} width={200}/></Box>
   if (pins?.length === 0 && !loading) return <Box sx={{position: 'relative', width: '90%', top: 80, left: 50}}><h2>No Pins Available</h2></Box>
 
+  console.log(pins)
+
   return (
     <>
     {loading &&
