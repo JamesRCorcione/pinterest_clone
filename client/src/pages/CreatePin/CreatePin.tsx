@@ -12,7 +12,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 interface CreatePinProps {
     user: {
-      result: IUser    
+      result: IUser
     }
 }
 
@@ -164,7 +164,6 @@ const CreatePin = ({user}:CreatePinProps) => {
   return (
     <Box className={classes.background}>
       <Box className={classes.createPinContainer}>
-
         <Box className={classes.imageSection}>
           {/* Image upload */}
             {!pin?.image ?
