@@ -2,6 +2,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+This project did have some enviornmental variables exposed by accident. These variables were updated before deployment.
+
 ## Available Scripts
 
 In the project directory, you can run:
