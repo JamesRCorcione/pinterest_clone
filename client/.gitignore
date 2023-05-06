@@ -8,6 +8,7 @@
 .env
 package.json
 yarn.lock
+nginx.conf
 
 # testing
 /coverage
